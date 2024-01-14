@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Column } from '@ant-design/plots';
 import { Empty } from 'antd';
+import { useSelector } from 'react-redux';
 
 export default function Barra({ data, actualizacionCualificados }) {
+  const storedCualificadosData = useSelector((state) => state.cualificadosData);
   const [graficoData, setGraficoData] = useState([]);
   const [cualificadosData, setCualificadosData] = useState([]);
 
   useEffect(() => {
-    // Cargar cualificadosData desde el localStorage al montar el componente
-    const storedCualificadosData = JSON.parse(localStorage.getItem('cualificadosData')) || [];
     setCualificadosData(storedCualificadosData);
 
     if (!data || data.length === 0 || !storedCualificadosData) {

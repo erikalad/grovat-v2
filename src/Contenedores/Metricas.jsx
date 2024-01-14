@@ -9,15 +9,16 @@ import MetricasDetalle from "./MetricasDetalle";
 import TreeMapComponent from "../Graficos/Treemap";
 import EstadisticasConexiones from "../Graficos/EstadisticasConexiones";
 import ProgresoConexiones from "../Graficos/ProgresoConexiones";
+import { useSelector } from "react-redux";
 
 export default function Metricas() {
-  const invitacionesString = localStorage.getItem("invitacionesData");
-  const archivos = invitacionesString ? JSON.parse(invitacionesString) : [];
+  const invitacionesString = useSelector((state) => state.invitacionesData);
+  const archivos = invitacionesString ? invitacionesString : [];
   const cantArchivos = archivos.length
-  const conexionesString = localStorage.getItem("conexionesData");
-  const archivosConexiones = conexionesString ? JSON.parse(conexionesString) : [];
-  const mensajesString = localStorage.getItem("mensajesData");
-  const archivosMensajes = mensajesString ? JSON.parse(mensajesString) : [];
+  const conexionesString = useSelector((state) => state.conexionesData);
+  const archivosConexiones = conexionesString ? conexionesString : [];
+  const mensajesString = useSelector((state) => state.mensajesData);
+  const archivosMensajes = mensajesString ? mensajesString : [];
   const cantMens = archivosMensajes.length
 
   const datosConcatenados = archivos.flatMap((archivo) => archivo.datos);

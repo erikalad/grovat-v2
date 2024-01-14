@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Line } from '@ant-design/plots';
 import { Empty } from 'antd';
+import { useSelector } from 'react-redux';
 
 export default function Linea({ data,actualizacionCualificados }) {
   const [lineChartData, setLineChartData] = useState([]);
 
-  const cualificadosData = localStorage.getItem('cualificadosData');
-  const cualificados = cualificadosData ? JSON.parse(cualificadosData) : [];
+  const cualificadosData = useSelector((state) => state.cualificadosData);
+
+  const cualificados = cualificadosData ? cualificadosData : [];
 
   // Esta función se encarga de actualizar los datos del gráfico
   const updateChartData = () => {

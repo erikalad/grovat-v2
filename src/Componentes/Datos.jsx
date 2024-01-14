@@ -2,41 +2,40 @@ import React, { useEffect, useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
 import { Button, Upload, Alert, Space, Tooltip, message } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
+import { actualizarPosicionesAction, setConexionesData, setInvitacionesData, setMensajesData } from "../Redux/actions";
 
 export default function Datos() {
   const Papa = require("papaparse");
+  const dispatch = useDispatch()
+  
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [showSuccessMessageCon, setShowSuccessMessageCon] = useState(false);
   const [showSuccessMessageMes, setShowSuccessMessageMes] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
-  const invitacionesData = localStorage.getItem("invitacionesData");
-  const conexionesData = localStorage.getItem("conexionesData");
-  const mensajesData = localStorage.getItem("mensajesData");
 
-  console.log(mensajesData)
-  
-  const numArchivosCargados = invitacionesData ? JSON.parse(invitacionesData).length : 0;
-  const conexionesNumArchivosCargados = conexionesData ? JSON.parse(conexionesData).length : 0;
-  const mensajesnumArchivosCargados = mensajesData ? JSON.parse(mensajesData).length : 0;
+  const invitacionesData = useSelector((state) => state.invitacionesData);
+  const conexionesData = useSelector((state) => state.conexionesData);
+  const mensajesData = useSelector((state) => state.mensajesData);
+  const cualificadosData = useSelector((state) => state.cualificadosData);
+
+  const numArchivosCargados = invitacionesData ? invitacionesData.length : 0;
+  const conexionesNumArchivosCargados = conexionesData ? conexionesData.length : 0;
+  const mensajesnumArchivosCargados = mensajesData ? mensajesData.length : 0;
   
   function actualizarPosiciones() {
-    let invitaciones = localStorage.getItem("invitacionesData");
-    invitaciones = invitaciones ? JSON.parse(invitaciones) : [];
-    const cualificadosString = localStorage.getItem("cualificadosData");
-    const cualificados = cualificadosString ? JSON.parse(cualificadosString) : [];
   
-    if (invitaciones && cualificados) {
-      invitaciones.forEach((invitacion) => {
+    if (invitacionesData && cualificadosData) {
+      invitacionesData.forEach((invitacion) => {
         invitacion.datos.forEach((dato) => {
-          const cualificado = cualificados.find((c) => c.name === dato.To);
+          const cualificado = cualificadosData.find((c) => c.name === dato.To);
   
           if (cualificado) {
             dato.position = cualificado.position;
           }
         });
       });
-  
-      localStorage.setItem("invitacionesData", JSON.stringify(invitaciones));
+      dispatch(actualizarPosicionesAction(invitacionesData));
     }
   }
   
@@ -65,24 +64,18 @@ export default function Datos() {
 
   const handleCloseAlert = (id, archivo) => {
     if (archivo === "invitacionesData") {
-      const invitacionesString = localStorage.getItem("invitacionesData");
-      let data = invitacionesString ? JSON.parse(invitacionesString) : [];
-  
-      const newData = data.filter((item) => item.id !== id);
-  
-      localStorage.setItem("invitacionesData", JSON.stringify(newData));
-  
+
+      const newData = invitacionesData.filter((item) => item.id !== id);
+      
+      dispatch(setInvitacionesData(newData));
       setShowSuccessMessage(true);
     }
   
     if (archivo === "conexionesData") {
-      const invitacionesString = localStorage.getItem("conexionesData");
-      let data = invitacionesString ? JSON.parse(invitacionesString) : [];
-  
-      const newData = data.filter((item) => item.id !== id);
-  
-      localStorage.setItem("conexionesData", JSON.stringify(newData));
-  
+
+      const newData = conexionesData.filter((item) => item.id !== id);
+        dispatch(setConexionesData(newData));
+
       setShowSuccessMessageCon(true);
   
       // Borrar el localStorage de "puestos" cuando se elimina el archivo de conexiones
@@ -90,13 +83,11 @@ export default function Datos() {
     }
   
     if (archivo === "mensajesData") {
-      const invitacionesString = localStorage.getItem("mensajesData");
-      let data = invitacionesString ? JSON.parse(invitacionesString) : [];
   
-      const newData = data.filter((item) => item.id !== id);
+      const newData = mensajesData.filter((item) => item.id !== id);
   
-      localStorage.setItem("mensajesData", JSON.stringify(newData));
-  
+      dispatch(setMensajesData(newData));
+
       setShowSuccessMessageMes(true);
     }
   };
@@ -196,23 +187,18 @@ export default function Datos() {
           const datosFiltrados = datos.filter(
             (objeto) => objeto.From === nombreMasComun
           );
-  
-          const invitacionesString = localStorage.getItem("invitacionesData");
-          const data = invitacionesString ? JSON.parse(invitacionesString) : [];
-  
+    
           const nuevoArchivo = {
             id: generateUniqueId(),
             encabezados: resultado.encabezados,
             datos: datosFiltrados,
             nombre: nombreArchivo, // Agregar el nombre del archivo
           };
-          const datosFinales = [...data, nuevoArchivo];
-  
-          localStorage.setItem(
-            "invitacionesData",
-            JSON.stringify(datosFinales)
-          );
 
+          const datosFinales = [...invitacionesData, nuevoArchivo];
+
+          dispatch(setInvitacionesData(datosFinales));
+  
           messageApi.open({
             type: "success",
             content: `El archivo "${nombreArchivo}" se subió correctamente`,
@@ -234,9 +220,6 @@ export default function Datos() {
         .then((resultado) => {
           const { datos } = resultado;
   
-          const dataString = localStorage.getItem("conexionesData");
-          const data = dataString ? JSON.parse(dataString) : [];
-  
           const nuevoArchivo = {
             id: generateUniqueId(),
             encabezados: resultado.encabezados,
@@ -244,9 +227,10 @@ export default function Datos() {
             nombre: nombreArchivo, // Agregar el nombre del archivo
           };
   
-          const datosFinales = [...data, nuevoArchivo];
+          const datosFinales = [...conexionesData, nuevoArchivo];
   
-          localStorage.setItem("conexionesData", JSON.stringify(datosFinales));
+          dispatch(setConexionesData(datosFinales));
+
           messageApi.open({
             type: "success",
             content: `El archivo "${nombreArchivo}" se subió correctamente`,
@@ -298,9 +282,6 @@ export default function Datos() {
         .then((resultado) => {
           const { encabezados, datos } = resultado;
   
-          const dataString = localStorage.getItem("mensajesData");
-          const data = dataString ? JSON.parse(dataString) : [];
-  
           const nuevoArchivo = {
             id: generateUniqueId(),
             encabezados: encabezados,
@@ -308,9 +289,10 @@ export default function Datos() {
             nombre: nombreArchivo, // Agregar el nombre del archivo
           };
   
-          const datosFinales = [...data, nuevoArchivo];
+          const datosFinales = [...mensajesData, nuevoArchivo];
   
-          localStorage.setItem("mensajesData", JSON.stringify(datosFinales));
+          dispatch(setMensajesData(datosFinales));
+
           messageApi.open({
             type: "success",
             content: `El archivo "${nombreArchivo}" se subió correctamente`,
@@ -345,9 +327,7 @@ export default function Datos() {
         {contextHolder}
 
         {Array.from({ length: numArchivosCargados }, (_, index) => {
-  const invitacionesString = localStorage.getItem("invitacionesData");
-  const data = invitacionesString ? JSON.parse(invitacionesString) : [];
-  const archivo = data[index];
+  const archivo = invitacionesData[index];
 
   if (archivo) {
     return (
@@ -391,9 +371,7 @@ export default function Datos() {
         {contextHolder}
 
         {Array.from({ length: conexionesNumArchivosCargados }, (_, index) => {
-          const conexionesData = localStorage.getItem("conexionesData");
-          const data = conexionesData ? JSON.parse(conexionesData) : [];
-          const archivo = data[index];
+          const archivo = conexionesData[index];
 
           if (archivo) {
             return (
@@ -437,9 +415,7 @@ export default function Datos() {
         {contextHolder}
 
         {Array.from({ length: mensajesnumArchivosCargados }, (_, index) => {
-          const mensajesData = localStorage.getItem("mensajesData");
-          const data = mensajesData ? JSON.parse(mensajesData) : [];
-          const archivo = data[index];
+          const archivo = mensajesData[index];
 
           if (archivo) {
             return (

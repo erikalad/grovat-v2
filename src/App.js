@@ -1,24 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { Route, Routes, Navigate } from "react-router-dom";
+import "./App.css";
+import Menu from "./Componentes/Menu"
+import Login from "./Contenedores/Login";
+import esES from 'antd/es/locale/es_ES'; // Importar el paquete de idioma español
+import { ConfigProvider } from "antd";
 
 function App() {
+
+  const ProtectedRoute = ({ element }) => {
+    const isLoggedIn = localStorage.getItem("username") && localStorage.getItem("password");
+    return isLoggedIn ? element : <Navigate to="/" />;
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <ConfigProvider locale={esES}>
+
+<div className="App">
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute
+              element={<Menu />}
+            />
+          }
+        />
+      </Routes>
     </div>
+    </ConfigProvider>
   );
 }
 

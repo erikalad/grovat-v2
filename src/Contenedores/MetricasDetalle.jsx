@@ -4,6 +4,7 @@ import Barra from "../Graficos/Barra";
 import { BsTable } from "react-icons/bs";
 import { BsInfo } from "react-icons/bs";
 import Linea from "../Graficos/Linea";
+import LineaMensajes from "../Graficos/LineaMensajes";
 
 const MetricasDetalle = ({ data, filteredColumns, type }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -61,10 +62,12 @@ const MetricasDetalle = ({ data, filteredColumns, type }) => {
     <>
       <div className="barra-button carta">
         {type === "invitaciones" ? (
-          <Barra data={data} type={type} />
-        ) : (
-          <Linea data={data} type={type} />
-        )}
+          <Barra data={data}  />
+        ) : type === "conexiones" ? (
+          <Linea data={data}  />
+        ) : 
+          <LineaMensajes data={data} />
+        }
         <Tooltip title="Ver detalle de los datos">
           <Button
             onClick={showModal}

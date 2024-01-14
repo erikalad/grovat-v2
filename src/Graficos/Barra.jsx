@@ -7,10 +7,8 @@ export default function Barra({ data }) {
   const storedCualificadosData = useSelector((state) => state.cualificadosData);
   const actualizacionCualificados = useSelector((state) => state.transfer);
   const [graficoData, setGraficoData] = useState([]);
-  const [cualificadosData, setCualificadosData] = useState([]);
-
+  const [cualificadosData, setCualificadosData] = useState(storedCualificadosData);
   useEffect(() => {
-    setCualificadosData(storedCualificadosData);
 
     if (!data || data.length === 0 || !storedCualificadosData) {
       setGraficoData([]);
@@ -59,7 +57,10 @@ export default function Barra({ data }) {
 
     const datosGrafico = Object.values(conteoPorFecha);
 
-    setGraficoData(datosGrafico);
+     // Ordena los datos de más antiguo a más reciente
+     const sortedDatosGrafico = datosGrafico.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+
+    setGraficoData(sortedDatosGrafico);
 
   }, [data, actualizacionCualificados]);
 

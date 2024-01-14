@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Transfer } from 'antd';
+import { useDispatch } from 'react-redux';
+import { setCualificadosData, setPuestos } from '../Redux/actions';
 
 export default function TransferCualificados({ data }) {
   const [mockData, setMockData] = useState([]);
@@ -10,7 +12,7 @@ export default function TransferCualificados({ data }) {
   const [noCualificados, setNoCualificados] = useState(positions);
   const [cualificados, setCualificados] = useState([]);
   const [dataCualificada, setDataCualificada] = useState([]);
-
+  const dispatch = useDispatch()
 
   // Obtener datos de localStorage
   const storedPuestos = JSON.parse(localStorage.getItem('puestos')) || { cualificados: [], noCualificados: positions };
@@ -52,10 +54,11 @@ export default function TransferCualificados({ data }) {
   }, [data, cualificados]);
   
 
-
   useEffect(() => {
     // Guardar los datos en localStorage cuando cambian
+    dispatch(setPuestos({ cualificados, noCualificados }))
     localStorage.setItem('puestos', JSON.stringify({ cualificados, noCualificados }));
+    dispatch(setCualificadosData(dataCualificada))
     localStorage.setItem('cualificadosData', JSON.stringify(dataCualificada));
   }, [cualificados, noCualificados, dataCualificada]);
 

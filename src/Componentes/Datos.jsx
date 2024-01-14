@@ -3,7 +3,7 @@ import { UploadOutlined } from "@ant-design/icons";
 import { Button, Upload, Alert, Space, Tooltip, message } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { actualizarPosicionesAction, setConexionesData, setInvitacionesData, setMensajesData } from "../Redux/actions";
+import { actualizarPosicionesAction, setConexionesData, setInvitacionesData, setMensajesData, setNameCuenta } from "../Redux/actions";
 
 export default function Datos() {
   const Papa = require("papaparse");
@@ -14,6 +14,7 @@ export default function Datos() {
   const [showSuccessMessageMes, setShowSuccessMessageMes] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
 
+  const nombreCuenta = useSelector((state)=> state.nombreCuenta)
   const invitacionesData = useSelector((state) => state.invitacionesData);
   const conexionesData = useSelector((state) => state.conexionesData);
   const mensajesData = useSelector((state) => state.mensajesData);
@@ -191,6 +192,7 @@ export default function Datos() {
             (objeto) => objeto.From === nombreMasComun
           );
     
+          dispatch(setNameCuenta(nombreMasComun))
           const nuevoArchivo = {
             id: generateUniqueId(),
             encabezados: resultado.encabezados,
@@ -244,7 +246,8 @@ export default function Datos() {
         });
     }
   }
-  
+
+
   function parsearCSVMensajes(archivo) {
     return new Promise((resolve, reject) => {
       Papa.parse(archivo, {
@@ -276,26 +279,48 @@ export default function Datos() {
     });
   }
   
+  function ordenarMensajesPorFecha(mensajes) {
+    return mensajes.sort((a, b) => new Date(a.DATE.DATE) - new Date(b.DATE.DATE));
+  }
+  
   function handleFileUploadMensajes(info) {
     if (info.fileList.length > 0) {
       const archivo = info.fileList[info.fileList.length - 1].originFileObj;
       const nombreArchivo = info.file.name; // Obtener el nombre del archivo subido
-    
+  
       parsearCSVMensajes(archivo)
         .then((resultado) => {
           const { encabezados, datos } = resultado;
   
+          // Filtrar los datos para incluir solo los mensajes con 'TO' igual a los valores en nombreCuenta
+          const mensajesFiltrados = datos.filter(item => nombreCuenta.includes(item.FROM));
+  
+          // Ordenar los mensajes por fecha de forma ascendente
+          const mensajesOrdenados = ordenarMensajesPorFecha(mensajesFiltrados);
+  
+          // Utilizar un conjunto para realizar un seguimiento de los mensajes únicos basados en 'TO'
+          const mensajesUnicosSet = new Set();
+  
+          // Filtrar y agregar solo los mensajes únicos más antiguos
+          const mensajesUnicos = mensajesOrdenados.filter((mensaje) => {
+            if (!mensajesUnicosSet.has(mensaje.TO)) {
+              mensajesUnicosSet.add(mensaje.TO);
+              return true;
+            }
+            return false;
+          });
+  
           const nuevoArchivo = {
             id: generateUniqueId(),
             encabezados: encabezados,
-            datos: datos,
+            datos: mensajesUnicos, // Usar los mensajes filtrados y únicos
             nombre: nombreArchivo, // Agregar el nombre del archivo
           };
   
           const datosFinales = [...mensajesData, nuevoArchivo];
   
           dispatch(setMensajesData(datosFinales));
-
+  
           messageApi.open({
             type: "success",
             content: `El archivo "${nombreArchivo}" se subió correctamente`,
@@ -306,7 +331,7 @@ export default function Datos() {
         });
     }
   }
-  
+
   
   return (
     <div>

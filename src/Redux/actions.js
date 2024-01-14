@@ -9,7 +9,8 @@ import {
     SET_INVITACIONES_DATA,
     ACTUALIZAR_POSICIONES,
     TRANSFER_OK,
-    SET_MES
+    SET_MES,
+    NOMBRE_CUENTA
   } from './actionTypes';
   
   export const setMensajesData = (mensajes) => ({
@@ -21,6 +22,12 @@ import {
     type: TRANSFER_OK,
   });
 
+  export const setNameCuenta = (nombre) => ({
+    type: NOMBRE_CUENTA,
+    payload: nombre
+  });
+
+
   export const setMes = (mes) => ({
     type: SET_MES,
     payload: mes,
@@ -28,15 +35,16 @@ import {
   
   export const setCualificadosData = (cualificados) => ({
     type: SET_CUALIFICADOS_DATA,
-    patload: cualificados
+    payload: cualificados
   });
   
   export const setUsername = () => ({
     type: SET_USERNAME,
   });
   
-  export const setPuestos = () => ({
+  export const setPuestos = (puestos) => ({
     type: SET_PUESTOS,
+    payload: puestos
   });
   
   export const setConexionesData = (conexiones) => ({

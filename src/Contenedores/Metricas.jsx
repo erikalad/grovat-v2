@@ -9,6 +9,8 @@ import MetricasDetalle from "./MetricasDetalle";
 import TreeMapComponent from "../Graficos/Treemap";
 import EstadisticasConexiones from "../Graficos/EstadisticasConexiones";
 import ProgresoConexiones from "../Graficos/ProgresoConexiones";
+import EstadisticasMensajes from "../Graficos/EstadisticasMensajes";
+import ProgresoMensajes from "../Graficos/ProgresoMensajes";
 import { useSelector } from "react-redux";
 
 export default function Metricas() {
@@ -323,8 +325,8 @@ const columnsConexionesFiltered = columnsConexiones.filter((column, index, self)
         <Progreso data={datosFiltrados} mesesFiltrados={mesesFiltrados} cantArchivos={cantArchivos}/>
         <EstadisticasConexiones className="statidistics" data={datosFiltradoCon}/>
         <ProgresoConexiones data={datosFiltradoCon} invitaciones={datosFiltrados}/>
-        <Estadisticas className="statidistics" data={datosFiltradosMes} cantArchivos={cantMens} type='mensajes' mesesFiltrados={mesesFiltrados}/>
-        <Progreso data={datosFiltradosMes} mesesFiltrados={mesesFiltrados} cantArchivos={cantMens}/>
+        <EstadisticasMensajes className="statidistics" data={datosFiltradosMes} cantArchivos={cantMens} type='mensajes' mesesFiltrados={mesesFiltrados}/>
+        <ProgresoMensajes data={datosFiltradosMes} mesesFiltrados={mesesFiltrados} cantArchivos={cantMens} conexiones={datosFiltradoCon}/>
       </div>
       <div className="contenedor-estadisticas-barra">
       <MetricasDetalle data={datosFiltrados} filteredColumns={filteredColumns} type='invitaciones' />

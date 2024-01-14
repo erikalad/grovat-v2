@@ -3,11 +3,11 @@ import { Line } from '@ant-design/plots';
 import { Empty } from 'antd';
 import { useSelector } from 'react-redux';
 
-export default function Linea({ data,actualizacionCualificados }) {
+export default function Linea({ data }) {
   const [lineChartData, setLineChartData] = useState([]);
 
   const cualificadosData = useSelector((state) => state.cualificadosData);
-
+  const actualizacionCualificados = useSelector((state) => state.transfer);
   const cualificados = cualificadosData ? cualificadosData : [];
 
   // Esta función se encarga de actualizar los datos del gráfico

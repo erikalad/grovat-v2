@@ -7,12 +7,23 @@ import {
     SET_CONEXIONES_DATA,
     SET_PASSWORD,
     SET_INVITACIONES_DATA,
-    ACTUALIZAR_POSICIONES
+    ACTUALIZAR_POSICIONES,
+    TRANSFER_OK,
+    SET_MES
   } from './actionTypes';
   
   export const setMensajesData = (mensajes) => ({
     type: SET_MENSAJES_DATA,
     payload: mensajes,
+  });
+
+  export const transferOk = () => ({
+    type: TRANSFER_OK,
+  });
+
+  export const setMes = (mes) => ({
+    type: SET_MES,
+    payload: mes,
   });
   
   export const setCualificadosData = (cualificados) => ({

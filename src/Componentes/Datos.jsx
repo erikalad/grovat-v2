@@ -39,9 +39,12 @@ export default function Datos() {
     }
   }
   
-  actualizarPosiciones();
   
-  
+  useEffect(() => {
+    // Mueve la llamada a actualizarPosiciones dentro del efecto
+    actualizarPosiciones();
+  }, [invitacionesData, cualificadosData]);  // Agrega las dependencias necesarias
+
 
 
   const moment = require('moment');

@@ -7,7 +7,9 @@ import {
     SET_CONEXIONES_DATA,
     SET_PASSWORD,
     SET_INVITACIONES_DATA,
-    ACTUALIZAR_POSICIONES
+    ACTUALIZAR_POSICIONES,
+    TRANSFER_OK,
+    SET_MES
   } from './actionTypes';
   
   const initialState = {
@@ -18,12 +20,19 @@ import {
     conexionesData: [],
     password: [],
     invitacionesData: [],
+    transfer: true,
+    mes: ''
   };
   
   const rootReducer = (state = initialState, action) => {
     switch (action.type) {
       case SET_MENSAJES_DATA:
         return { ...state, mensajesData: action.payload};
+
+        case TRANSFER_OK:
+        return { ...state, transfer: !state.transfer};
+        case SET_MES:
+          return { ...state, mes: action.payload};
   
       case SET_CUALIFICADOS_DATA:
         return { ...state, cualificadosData: action.payload };

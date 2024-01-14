@@ -33,10 +33,6 @@ export default function Metricas() {
   const [datosFiltradoCon, setDatosFiltradosCon] = useState(dataCon.datos || []);
   const [datosFiltradosMes, setDatosFiltradosMes] = useState(dataMes.datos || []);
 
-  const [actualizacionCualificados,setActualizacionCualificados] = useState(false)
-
-  const [mesEnCurso, setMesEnCurso] = useState("");
-
   const obtenerMesesFiltrados = () => {
     const meses = datosFiltrados.reduce((acc, item) => {
       const [_, month] = item.Fecha.split("/").map(Number);
@@ -73,9 +69,7 @@ export default function Metricas() {
     return meses[numeroMes - 1];
   };
 
-  const recibirMes = (mes) => {
-    setMesEnCurso(mes);
-  };
+
 
   const filterByMonthConexiones = () => {
     const fechaActual = new Date();
@@ -309,9 +303,6 @@ const columnsConexionesFiltered = columnsConexiones.filter((column, index, self)
   const mesesFiltrados = obtenerMesesFiltrados(); 
 
 
-  function actualizacionCuaificados(){
-    setActualizacionCualificados(!actualizacionCualificados)
-  }
 
 
   return (
@@ -319,8 +310,6 @@ const columnsConexionesFiltered = columnsConexiones.filter((column, index, self)
       <Filtros
         onFilterByDate={filterByDate}
         data={data}
-        recibirMes={recibirMes}
-        actualizacionCuaificados={actualizacionCuaificados}
       />
       <Divider orientation="left">
         <div className="mes">
@@ -338,8 +327,8 @@ const columnsConexionesFiltered = columnsConexiones.filter((column, index, self)
         <Progreso data={datosFiltradosMes} mesesFiltrados={mesesFiltrados} cantArchivos={cantMens}/>
       </div>
       <div className="contenedor-estadisticas-barra">
-      <MetricasDetalle data={datosFiltrados} filteredColumns={filteredColumns} type='invitaciones' actualizacionCualificados={actualizacionCualificados}/>
-      <MetricasDetalle data={datosFiltradoCon} filteredColumns={columnsConexionesFiltered} type='conexiones' actualizacionCualificados={actualizacionCualificados}/>
+      <MetricasDetalle data={datosFiltrados} filteredColumns={filteredColumns} type='invitaciones' />
+      <MetricasDetalle data={datosFiltradoCon} filteredColumns={columnsConexionesFiltered} type='conexiones' />
       <MetricasDetalle data={datosFiltradosMes} filteredColumns={filteredColumns} type='mensajes'/>
       </div>
       <div>

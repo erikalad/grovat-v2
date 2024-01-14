@@ -3,8 +3,9 @@ import { Column } from '@ant-design/plots';
 import { Empty } from 'antd';
 import { useSelector } from 'react-redux';
 
-export default function Barra({ data, actualizacionCualificados }) {
+export default function Barra({ data }) {
   const storedCualificadosData = useSelector((state) => state.cualificadosData);
+  const actualizacionCualificados = useSelector((state) => state.transfer);
   const [graficoData, setGraficoData] = useState([]);
   const [cualificadosData, setCualificadosData] = useState([]);
 

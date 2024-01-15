@@ -10,13 +10,19 @@ import {
     ACTUALIZAR_POSICIONES,
     TRANSFER_OK,
     SET_MES,
-    NOMBRE_CUENTA
+    NOMBRE_CUENTA,
+    SET_MENSAJES_NEW
   } from './actionTypes';
   
   export const setMensajesData = (mensajes) => ({
     type: SET_MENSAJES_DATA,
     payload: mensajes,
   });
+
+  export const setMensajesDataNew = (mensajes) => ({
+    type : SET_MENSAJES_NEW,
+    payload : mensajes
+  })
 
   export const transferOk = () => ({
     type: TRANSFER_OK,

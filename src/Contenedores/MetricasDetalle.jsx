@@ -75,6 +75,7 @@ const MetricasDetalle = ({ data, filteredColumns, type }) => {
         ) : (
           <LineaMensajes data={data} />
         )}
+        <div>
         <Tooltip title="Ver detalle de los datos">
           <Button
             onClick={showModal}
@@ -92,6 +93,7 @@ const MetricasDetalle = ({ data, filteredColumns, type }) => {
             <Button onClick={infoMen} shape="circle" icon={<BsInfo />} />
           )}
         </Tooltip>
+        </div>
       </div>
       <Modal
         title={

@@ -247,7 +247,6 @@ export default function Datos() {
     }
   }
 
-
   function parsearCSVMensajes(archivo) {
     return new Promise((resolve, reject) => {
       Papa.parse(archivo, {
@@ -291,7 +290,7 @@ export default function Datos() {
       parsearCSVMensajes(archivo)
         .then((resultado) => {
           const { encabezados, datos } = resultado;
-  
+
           // Filtrar los datos para incluir solo los mensajes con 'TO' igual a los valores en nombreCuenta
           const mensajesFiltrados = datos.filter(item => nombreCuenta.includes(item.FROM));
   
@@ -320,6 +319,7 @@ export default function Datos() {
           const datosFinales = [...mensajesData, nuevoArchivo];
   
           dispatch(setMensajesData(datosFinales));
+
   
           messageApi.open({
             type: "success",
@@ -335,13 +335,15 @@ export default function Datos() {
   
   return (
     <div>
+
+
       <Upload
         action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
         listType="picture"
         beforeUpload={() => false}
         onChange={handleFileUpload}
       >
-        <Button icon={<UploadOutlined />}>Subir CSV Invitaciones</Button>
+        <Button icon={<UploadOutlined />} className="btn-subir">Subir CSV Invitaciones</Button>
       </Upload>
 
       <Space
@@ -384,7 +386,7 @@ export default function Datos() {
         beforeUpload={() => false}
         onChange={handleFileUploadConexiones}
       >
-        <Button icon={<UploadOutlined />}>Subir CSV Conexiones</Button>
+        <Button icon={<UploadOutlined />} className="btn-subir">Subir CSV Conexiones</Button>
       </Upload>
 
 
@@ -428,7 +430,7 @@ export default function Datos() {
         beforeUpload={() => false}
         onChange={handleFileUploadMensajes}
       >
-        <Button icon={<UploadOutlined />}>Subir CSV Mensajes</Button>
+        <Button icon={<UploadOutlined />} className="btn-subir">Subir CSV Mensajes</Button>
       </Upload>
 
 

@@ -11,6 +11,7 @@ import {
   TRANSFER_OK,
   SET_MES,
   NOMBRE_CUENTA,
+  SET_MENSAJES_NEW,
 } from "./actionTypes";
 const storedCualificadosData =
   JSON.parse(localStorage.getItem("cualificadosData")) || [];
@@ -26,6 +27,7 @@ const initialState = {
   transfer: true,
   mes: "",
   nombreCuenta: [],
+  mensajesCualificados: []
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -33,6 +35,9 @@ const rootReducer = (state = initialState, action) => {
     case SET_MENSAJES_DATA:
       return { ...state, mensajesData: action.payload };
 
+      case SET_MENSAJES_NEW:
+        return { ...state, mensajesCualificados: action.payload };
+      
     case TRANSFER_OK:
       return { ...state, transfer: !state.transfer };
     case SET_MES:

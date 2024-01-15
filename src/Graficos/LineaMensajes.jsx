@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Line } from '@ant-design/plots';
 import { Empty } from 'antd';
-import { useSelector } from 'react-redux';
 
 export default function LineaMensajes({ data }) {
   const [lineChartData, setLineChartData] = useState([]);
@@ -29,7 +28,6 @@ export default function LineaMensajes({ data }) {
     const sortedChartData = chartData.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
 
     setLineChartData(sortedChartData);
-    console.log(sortedChartData);
   };
 
   useEffect(() => {

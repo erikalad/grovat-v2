@@ -204,6 +204,64 @@ export default function Metricas() {
   const primerEntradaMes =
   dataMes && dataMes.datos && dataMes.datos.length > 0 ? dataMes.datos[0] : {};
 
+  const allowedColumnsMes = ["FROM", "DATE", "CONTENT", "TO"];
+
+  const columnsMes = Object.keys(primerEntradaMes).map((clave, index) => {
+    const uniqueValues = Array.from(
+      new Set(dataMes.datos.map((item) => item[clave]))
+    ).filter(Boolean);
+
+    const filters = allowedColumnsMes.includes(clave)
+      ? uniqueValues.map((value) => ({ text: value, value: value }))
+      : null;
+  
+    return {
+      title: clave,
+      dataIndex: clave,
+      key: `columna_${index}`,
+      filters: filters,
+      onFilter: allowedColumnsMes.includes(clave)
+        ? (value, record) => record[clave] === value
+        : null,
+      sorter: (a, b) => {
+        const aValue = a[clave];
+        const bValue = b[clave];
+  
+        // Verificar si la clave es "DATE" y acceder a las propiedades internas "DATE" y "HORA"
+        if (clave === "DATE") {
+          const aDate = aValue ? new Date(aValue.DATE).getTime() : 0;
+          const bDate = bValue ? new Date(bValue.DATE).getTime() : 0;
+          return aDate - bDate;
+        }
+  
+        // Verificar si los valores son definidos antes de acceder a 'length'
+        const aLength = aValue ? aValue.length : 0;
+        const bLength = bValue ? bValue.length : 0;
+  
+        return aLength - bLength;
+      },
+      sortDirections: ["descend"],
+    };
+  });
+  
+  
+  const excludedColumnsMes = [
+    "CONVERSATION ID",
+    "CONVERSATION TITLE",
+    "FOLDER",
+    "RECIPIENT PROFILE URLS",
+    "SENDER PROFILE URL",
+    "SUBJECT"
+  ];
+  
+  const filteredColumnsMes = columnsMes.filter(
+    (column) => !excludedColumnsMes.includes(column.title)
+  );
+  
+  
+  
+
+
   const columns = Object.keys(primerEntrada).map((clave, index) => {
     const uniqueValues = Array.from(
       new Set(data.datos.map((item) => item[clave]))
@@ -331,7 +389,7 @@ const columnsConexionesFiltered = columnsConexiones.filter((column, index, self)
       <div className="contenedor-estadisticas-barra">
       <MetricasDetalle data={datosFiltrados} filteredColumns={filteredColumns} type='invitaciones' />
       <MetricasDetalle data={datosFiltradoCon} filteredColumns={columnsConexionesFiltered} type='conexiones' />
-      <MetricasDetalle data={datosFiltradosMes} filteredColumns={filteredColumns} type='mensajes'/>
+      <MetricasDetalle data={datosFiltradosMes} filteredColumns={filteredColumnsMes} type='mensajes'/>
       </div>
       <div>
         <TreeMapComponent data={datosFiltradoCon}/>

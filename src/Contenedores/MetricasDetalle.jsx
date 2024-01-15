@@ -53,7 +53,14 @@ const MetricasDetalle = ({ data, filteredColumns, type }) => {
   const infoMen = () => {
     Modal.info({
       title: "Mensaje importante",
-      content: <div></div>,
+      content: (
+        <div>
+          Esta visualización corresponde a los mensajes enviados solo desde la
+          cuenta asignada, para identificar las primeras interacciones con nuevas
+          conexiones. Esta información permitirá evaluar cuántas cuentas nuevas
+          se han contactado por día.
+        </div>
+      ),
       onOk() {},
     });
   };
@@ -62,12 +69,12 @@ const MetricasDetalle = ({ data, filteredColumns, type }) => {
     <>
       <div className="barra-button carta">
         {type === "invitaciones" ? (
-          <Barra data={data}  />
+          <Barra data={data} />
         ) : type === "conexiones" ? (
-          <Linea data={data}  />
-        ) : 
+          <Linea data={data} />
+        ) : (
           <LineaMensajes data={data} />
-        }
+        )}
         <Tooltip title="Ver detalle de los datos">
           <Button
             onClick={showModal}
@@ -87,7 +94,13 @@ const MetricasDetalle = ({ data, filteredColumns, type }) => {
         </Tooltip>
       </div>
       <Modal
-        title={type === "invitaciones" ? "Invitaciones" : type === "conexiones" ? "Conexiones" : "Mensajes"}  
+        title={
+          type === "invitaciones"
+            ? "Invitaciones"
+            : type === "conexiones"
+            ? "Conexiones"
+            : "Mensajes"
+        }
         open={isModalOpen}
         onCancel={handleCancel}
         footer={null}

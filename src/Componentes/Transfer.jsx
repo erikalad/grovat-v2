@@ -1,43 +1,44 @@
 import React, { useEffect, useState } from 'react';
 import { Transfer } from 'antd';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setCualificadosData, setPuestos } from '../Redux/actions';
 
 export default function TransferCualificados({ data }) {
   const [mockData, setMockData] = useState([]);
   const [targetKeys, setTargetKeys] = useState([]);
-  const positions = [...new Set(data.map((item) => item.position))].filter(
-    (position) => position
-  );
-  const [noCualificados, setNoCualificados] = useState(positions);
-  const [cualificados, setCualificados] = useState([]);
-  const [dataCualificada, setDataCualificada] = useState([]);
-  const dispatch = useDispatch()
+  const positions = [...new Set(data.map((item) => item.position))].filter((position) => position);
 
-  // Obtener datos de localStorage
   const storedPuestos = JSON.parse(localStorage.getItem('puestos')) || { cualificados: [], noCualificados: positions };
-  const cualificadosArray = storedPuestos.cualificados;
+  const [dataCualificada, setDataCualificada] = useState([]);
 
-  
+  const [noCualificados, setNoCualificados] = useState(storedPuestos.noCualificados);
+  const [cualificados, setCualificados] = useState(storedPuestos.cualificados);
+  const dispatch = useDispatch();
+  const actualizacionCualificados = useSelector((state) => state.transfer);
+
   useEffect(() => {
-    setCualificados(storedPuestos.cualificados);
-    setNoCualificados(storedPuestos.noCualificados);
-  
+    // Cargar datos iniciales
     const tempMockData = positions.map((position, index) => ({
       key: index.toString(),
       title: position,
       chosen: false,
     }));
-  
+
     setMockData(tempMockData);
-    
-    // Establecer las targetKeys basándose en los puestos cualificados
-    const targetKeys = tempMockData
-      .filter((item) => storedPuestos.cualificados.includes(item.title))
+
+    const storedCualificados = storedPuestos.cualificados;
+    const storedNoCualificados = storedPuestos.noCualificados;
+
+    setNoCualificados(storedNoCualificados);
+    setCualificados(storedCualificados);
+
+    const initialTargetKeys = tempMockData
+      .filter((item) => storedCualificados.includes(item.title))
       .map((item) => item.key);
-    setTargetKeys(targetKeys);
+
+    setTargetKeys(initialTargetKeys);
   }, [data]);
-  
+
   useEffect(() => {
     // Iterar sobre los elementos de data
     const newData = data.map(item => {
@@ -52,53 +53,32 @@ export default function TransferCualificados({ data }) {
     });
     setDataCualificada(newData);
   }, [data, cualificados]);
-  
 
   useEffect(() => {
-    // Guardar los datos en localStorage cuando cambian
-    dispatch(setPuestos({ cualificados, noCualificados }))
+    // Actualizar datos cualificados en localStorage
+    dispatch(setPuestos({ cualificados, noCualificados }));
     localStorage.setItem('puestos', JSON.stringify({ cualificados, noCualificados }));
     dispatch(setCualificadosData(dataCualificada))
     localStorage.setItem('cualificadosData', JSON.stringify(dataCualificada));
-  }, [cualificados, noCualificados, dataCualificada]);
-
-  useEffect(() => {
-    setCualificados(storedPuestos.cualificados);
-    setNoCualificados(storedPuestos.noCualificados);
-
-    const tempMockData = positions.map((position, index) => ({
-      key: index.toString(),
-      title: position,
-      chosen: false,
-    }));
-
-    setMockData(tempMockData);
-  }, [data]);
+  }, [actualizacionCualificados]);
 
   const handleChange = (newTargetKeys, direction, moveKeys) => {
     setTargetKeys(newTargetKeys);
 
+    const movedPositions = moveKeys.map((key) => mockData.find((item) => item.key === key).title);
+
     if (direction === 'left') {
-      // Elementos movidos a la izquierda son "NO CUALIFICADOS"
-      const noCualificadosKeys = moveKeys.map((key) => mockData.find((item) => item.key === key).title);
-      setNoCualificados([...noCualificados, ...noCualificadosKeys]);
-
-      // Quitar puestos cualificados que fueron movidos a la izquierda
-      setCualificados(cualificados.filter((item) => !noCualificadosKeys.includes(item)));
+      setNoCualificados([...noCualificados, ...movedPositions]);
+      setCualificados(cualificados.filter((item) => !movedPositions.includes(item)));
     } else {
-      // Elementos movidos a la derecha son "CUALIFICADOS"
-      const cualificadosKeys = moveKeys.map((key) => mockData.find((item) => item.key === key).title);
-      setCualificados([...cualificados, ...cualificadosKeys]);
-
-      // Quitar puestos no cualificados que fueron movidos a la derecha
-      setNoCualificados(noCualificados.filter((item) => !cualificadosKeys.includes(item)));
+      setCualificados([...cualificados, ...movedPositions]);
+      setNoCualificados(noCualificados.filter((item) => !movedPositions.includes(item)));
     }
   };
 
-
   return (
     <div>
-    <Transfer
+      <Transfer
         dataSource={mockData}
         showSearch
         pagination

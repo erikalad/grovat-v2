@@ -7,10 +7,11 @@ export default function Linea({ data }) {
   const [lineChartData, setLineChartData] = useState([]);
 
   const cualificadosData = useSelector((state) => state.cualificadosData);
-  const mensajesFiltrados = useSelector((state)=> state.mensajesCualificados)
   const actualizacionCualificados = useSelector((state) => state.transfer);
   const cualificados = cualificadosData ? cualificadosData : [];
 
+
+  console.log(data)
   // Esta función se encarga de actualizar los datos del gráfico
   const updateChartData = () => {
     if (!data || data.length === 0) {

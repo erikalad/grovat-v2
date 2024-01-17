@@ -1,10 +1,12 @@
 import React from "react";
 import { Table, Modal, Tooltip, Button } from "antd";
-import Barra from "../Graficos/Barra";
 import { BsTable } from "react-icons/bs";
 import { BsInfo } from "react-icons/bs";
 import Linea from "../Graficos/Linea";
 import LineaMensajes from "../Graficos/LineaMensajes";
+import Barra from "../Graficos/Barra";
+import * as XLSX from "xlsx";
+import { DownloadOutlined } from "@ant-design/icons";
 
 const MetricasDetalle = ({ data, filteredColumns, type }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -15,6 +17,18 @@ const MetricasDetalle = ({ data, filteredColumns, type }) => {
 
   const handleCancel = () => {
     setIsModalOpen(false);
+  };
+
+  const exportToExcel = () => {
+    const modifiedData = data.map(item => ({
+      ...item,
+      contactado: item.contactado ? 'Contactado' : 'No contactado'
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(modifiedData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Conexiones");
+    XLSX.writeFile(wb, `export_${type}.xlsx`);
   };
 
   const info = () => {
@@ -93,6 +107,16 @@ const MetricasDetalle = ({ data, filteredColumns, type }) => {
             <Button onClick={infoMen} shape="circle" icon={<BsInfo />} />
           )}
         </Tooltip>
+        {type === "conexiones" && (
+        <Tooltip title="Exportar a Excel">
+            <Button
+              onClick={exportToExcel}
+              shape="circle"
+              icon={<DownloadOutlined />}
+              style={{ marginLeft: "1rem", marginTop: "1rem" }}
+            />
+          </Tooltip>
+        )}
         </div>
       </div>
       <Modal

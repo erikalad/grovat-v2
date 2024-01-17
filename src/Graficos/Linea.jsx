@@ -7,6 +7,7 @@ export default function Linea({ data }) {
   const [lineChartData, setLineChartData] = useState([]);
 
   const cualificadosData = useSelector((state) => state.cualificadosData);
+  const mensajesFiltrados = useSelector((state)=> state.mensajesCualificados)
   const actualizacionCualificados = useSelector((state) => state.transfer);
   const cualificados = cualificadosData ? cualificadosData : [];
 
@@ -16,6 +17,7 @@ export default function Linea({ data }) {
       setLineChartData([]);
       return;
     }
+
 
     const chartData = data.reduce((acc, item) => {
       const fecha = item['Connected On'];

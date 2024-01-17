@@ -11,7 +11,8 @@ import EstadisticasConexiones from "../Graficos/EstadisticasConexiones";
 import ProgresoConexiones from "../Graficos/ProgresoConexiones";
 import EstadisticasMensajes from "../Graficos/EstadisticasMensajes";
 import ProgresoMensajes from "../Graficos/ProgresoMensajes";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setMensajesDataNew } from "../Redux/actions";
 
 export default function Metricas() {
   const invitacionesString = useSelector((state) => state.invitacionesData);
@@ -35,9 +36,10 @@ export default function Metricas() {
   const [datosFiltrados, setDatosFiltrados] = useState(data.datos || []);
   const [datosFiltradoCon, setDatosFiltradosCon] = useState(dataCon.datos || []);
   const [datosFiltradosMes, setDatosFiltradosMes] = useState(dataMes.datos || []);
-console.log(datosFiltradosMes)
-  useEffect(()=>{
 
+  const dispatch = useDispatch()
+
+  useEffect(()=>{
       // Iterar sobre cada elemento en datosFiltradosMes
 datosFiltradosMes.forEach((itemFiltrado) => {
   // Buscar el elemento correspondiente en storedCualificadosData
@@ -54,6 +56,23 @@ datosFiltradosMes.forEach((itemFiltrado) => {
     itemFiltrado.cualificados = matchingItem.cualificados;
   }
 });
+
+dispatch(setMensajesDataNew(datosFiltradosMes))
+
+  // Recorre los objetos en data
+  datosFiltradoCon.forEach((item) => {
+    // Construye el nombre completo
+    const fullName = `${item["First Name"]} ${item["Last Name"]}`;
+
+    // Busca si hay un mensaje filtrado con el mismo TO
+    const mensajeFiltrado = datosFiltradosMes.find(
+      (mensaje) => mensaje.TO === fullName
+    );
+    // Actualiza la propiedad contactado según las condiciones
+    item.contactado = mensajeFiltrado
+        ? true
+        : false
+  });
 
   },[storedCualificadosData])
 
@@ -408,7 +427,22 @@ if (clave === "DATE") {
           return nameA.localeCompare(nameB);
         },
     };
-  } else if (clave === 'Connected On') {
+  } 
+  else if (clave === 'contactado') {
+    columnConfig = {
+      title: 'Contactado',
+      dataIndex: 'contactado',
+      width: '5%',
+      key: 'contactado',
+      render: (contactado) => (
+        <Tag color={contactado ? 'green' : 'red'}>
+          {contactado ? 'Contactado' : 'No Contactado'}
+        </Tag>
+      ),
+      sorter: (a, b) => (a.contactado ? 1 : 0) - (b.contactado ? 1 : 0),
+    };
+  }
+  else if (clave === 'Connected On') {
     // Columna de fecha con el formato dd/mm/aaaa
     columnConfig = {
       title: 'Connected On',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Progress, Space } from 'antd';
+import { Progress, Space, Tooltip } from 'antd';
 
 const twoColors = {
   '0%': '#108ee9',
@@ -20,8 +20,10 @@ const ProgresoMensajes = ({ data, conexiones }) => {
         rowGap: 16,
       }}
     >
-      <Space wrap>
+      <Space wrap style={{cursor:'pointer'}}>
+      <Tooltip title={`El ${parseInt(porcentaje)}% de las conexiones fueron contactadas`}>
         <Progress type="dashboard" percent={parseInt(porcentaje)} strokeColor={twoColors} />
+        </Tooltip>
       </Space>
     </div>
   );

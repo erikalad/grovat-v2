@@ -293,6 +293,19 @@ if (clave === "cualificados") {
     },
   };
 }
+ // Modifica la configuración de la columna "CONTENT"
+ if (clave === "CONTENT") {
+  return {
+    title: clave,
+    dataIndex: clave,
+    key: `columna_${index}`,
+    width: 300, // Modifica este valor según tus necesidades
+    filters: filters, // Agrega esto si necesitas filtros
+    onFilter: allowedColumnsMes.includes(clave)
+      ? (value, record) => record[clave] === value
+      : null,
+  };
+}
 // Modifica la configuración de la columna "DATE"
 if (clave === "DATE") {
   return {

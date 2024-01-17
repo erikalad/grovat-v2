@@ -112,7 +112,7 @@ const MetricasDetalle = ({ data, filteredColumns, type }) => {
           <Table
             columns={filteredColumns}
             dataSource={data}
-            scroll={{ x: "max-content", y: 600 }}
+            scroll={{ y: 400 }}
           />
         </div>
       </Modal>

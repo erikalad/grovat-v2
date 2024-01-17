@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Divider } from "antd";
+import { Divider, Tag } from "antd";
 import Filtros from "../Componentes/Filtros";
 import Estadisticas from "../Graficos/Estadisticas";
 import Progreso from "../Graficos/Progreso";
@@ -22,6 +22,7 @@ export default function Metricas() {
   const mensajesString = useSelector((state) => state.mensajesData);
   const archivosMensajes = mensajesString ? mensajesString : [];
   const cantMens = archivosMensajes.length
+  const storedCualificadosData = useSelector((state) => state.cualificadosData);
 
   const datosConcatenados = archivos.flatMap((archivo) => archivo.datos);
   const datosConcatenadosConexiones = archivosConexiones.flatMap((archivo) => archivo.datos);
@@ -34,6 +35,28 @@ export default function Metricas() {
   const [datosFiltrados, setDatosFiltrados] = useState(data.datos || []);
   const [datosFiltradoCon, setDatosFiltradosCon] = useState(dataCon.datos || []);
   const [datosFiltradosMes, setDatosFiltradosMes] = useState(dataMes.datos || []);
+console.log(datosFiltradosMes)
+  useEffect(()=>{
+
+      // Iterar sobre cada elemento en datosFiltradosMes
+datosFiltradosMes.forEach((itemFiltrado) => {
+  // Buscar el elemento correspondiente en storedCualificadosData
+  const matchingItem = storedCualificadosData.find((itemCualificado) => {
+    return (
+      itemCualificado.name === itemFiltrado.TO &&
+      itemCualificado.TO === itemFiltrado.name
+    );
+  });
+
+  // Si se encuentra una coincidencia, agregar propiedades a datosFiltradosMes
+  if (matchingItem) {
+    itemFiltrado.position = matchingItem.position;
+    itemFiltrado.cualificados = matchingItem.cualificados;
+  }
+});
+
+  },[storedCualificadosData])
+
 
   const obtenerMesesFiltrados = () => {
     const meses = datosFiltrados.reduce((acc, item) => {
@@ -204,17 +227,88 @@ export default function Metricas() {
   const primerEntradaMes =
   dataMes && dataMes.datos && dataMes.datos.length > 0 ? dataMes.datos[0] : {};
 
-  const allowedColumnsMes = ["FROM", "DATE", "CONTENT", "TO"];
+  const allowedColumnsMes = ["FROM", "CONTENT", "TO", "position", "cualificados"];
 
   const columnsMes = Object.keys(primerEntradaMes).map((clave, index) => {
     const uniqueValues = Array.from(
       new Set(dataMes.datos.map((item) => item[clave]))
     ).filter(Boolean);
-
+  
     const filters = allowedColumnsMes.includes(clave)
       ? uniqueValues.map((value) => ({ text: value, value: value }))
       : null;
   
+ // Modifica la configuración de la columna "cualificados"
+if (clave === "cualificados") {
+  const cualificadosFilterOptions = [
+    { text: 'Cualificado', value: true },
+    { text: 'No Cualificado', value: false },
+    { text: 'Sin Especificar', value: null },
+  ];
+
+  return {
+    title: clave,
+    dataIndex: clave,
+    key: `columna_${index}`,
+    filters: cualificadosFilterOptions,
+    onFilter: allowedColumnsMes.includes(clave)
+      ? (value, record) => {
+          if (value === null) {
+            // Filtra registros con cualificados null o sin propiedad cualificados
+            return record[clave] === null || record[clave] === undefined;
+          } else {
+            // Filtra registros según el valor booleano
+            return record[clave] === value;
+          }
+        }
+      : null,
+    render: (text, record) => {
+      // Renderiza un Tag de Ant Design basado en el valor booleano
+      return record.cualificados === true ? (
+        <Tag color="green">Cualificado</Tag>
+      ) : record.cualificados === false ? (
+        <Tag color="red">No Cualificado</Tag>
+      ) : (
+        <Tag color="blue">Sin Especificar</Tag>
+      );
+    },
+  };
+}
+// Modifica la configuración de la columna "DATE"
+if (clave === "DATE") {
+  return {
+    title: clave,
+    dataIndex: clave,
+    key: `columna_${index}`,
+    filters: filters,
+    onFilter: allowedColumnsMes.includes(clave)
+      ? (value, record) => {
+          // Filtra registros por valor de la propiedad "DATE"
+          return record[clave].DATE === value;
+        }
+      : null,
+    render: (text, record) => {
+      // Renderiza solo la parte de la fecha en un formato deseado
+      const fecha = record[clave].DATE;
+      return fecha;
+    },
+    sorter: (a, b) => {
+      const aValue = a[clave];
+      const bValue = b[clave];
+  
+      // Accede a la propiedad "DATE" para la clasificación
+      const aDate = aValue ? new Date(aValue.DATE).getTime() : 0;
+      const bDate = bValue ? new Date(bValue.DATE).getTime() : 0;
+      return aDate - bDate;
+    },
+    sortDirections: ["descend"],
+  };
+}
+
+
+
+  
+    // Resto de la configuración de las columnas
     return {
       title: clave,
       dataIndex: clave,
@@ -227,13 +321,6 @@ export default function Metricas() {
         const aValue = a[clave];
         const bValue = b[clave];
   
-        // Verificar si la clave es "DATE" y acceder a las propiedades internas "DATE" y "HORA"
-        if (clave === "DATE") {
-          const aDate = aValue ? new Date(aValue.DATE).getTime() : 0;
-          const bDate = bValue ? new Date(bValue.DATE).getTime() : 0;
-          return aDate - bDate;
-        }
-  
         // Verificar si los valores son definidos antes de acceder a 'length'
         const aLength = aValue ? aValue.length : 0;
         const bLength = bValue ? bValue.length : 0;
@@ -243,7 +330,6 @@ export default function Metricas() {
       sortDirections: ["descend"],
     };
   });
-  
   
   const excludedColumnsMes = [
     "CONVERSATION ID",

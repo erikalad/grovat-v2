@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Line } from '@ant-design/plots';
 import { Empty } from 'antd';
+import { useSelector } from 'react-redux';
 
 export default function LineaMensajes({ data }) {
   const [lineChartData, setLineChartData] = useState([]);
+  const actualizacionCualificados = useSelector((state) => state.transfer);
+
 
   const updateChartData = () => {
     if (!data || data.length === 0) {
@@ -11,31 +14,46 @@ export default function LineaMensajes({ data }) {
       return;
     }
 
-    // Cuenta los mensajes por fecha
-    const messageCountsByDate = data.reduce((acc, item) => {
-      const fecha = item.DATE.DATE;
-      acc[fecha] = (acc[fecha] || 0) + 1;
-      return acc;
-    }, {});
+    // Cuenta el total de mensajes y el total de mensajes cualificados por fecha
+    const totalMessagesByDate = {};
+    const qualifiedMessagesByDate = {};
 
-    const chartData = Object.keys(messageCountsByDate).map((fecha) => ({
+    data.forEach((item) => {
+      const fecha = item.DATE.DATE;
+
+      totalMessagesByDate[fecha] = (totalMessagesByDate[fecha] || 0) + 1;
+
+      if (item.cualificados) {
+        qualifiedMessagesByDate[fecha] = (qualifiedMessagesByDate[fecha] || 0) + 1;
+      }
+    });
+
+    // Formatea los datos para el gráfico
+    const totalMessagesChartData = Object.keys(totalMessagesByDate).map((fecha) => ({
       fecha,
       type: 'Mensajes',
-      cantidad: messageCountsByDate[fecha],
+      cantidad: totalMessagesByDate[fecha],
+    }));
+
+    const qualifiedMessagesChartData = Object.keys(qualifiedMessagesByDate).map((fecha) => ({
+      fecha,
+      type: 'Cualificados',
+      cantidad: qualifiedMessagesByDate[fecha],
     }));
 
     // Ordena los mensajes de más antiguo a más reciente
-    const sortedChartData = chartData.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+    const sortedTotalMessagesChartData = totalMessagesChartData.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+    const sortedQualifiedMessagesChartData = qualifiedMessagesChartData.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
 
-    setLineChartData(sortedChartData);
+    setLineChartData([sortedTotalMessagesChartData, sortedQualifiedMessagesChartData]);
   };
 
   useEffect(() => {
     updateChartData();
-  }, [data]);
+  }, [data, actualizacionCualificados]);
 
   const config = {
-    data: lineChartData,
+    data: lineChartData.flat(),
     xField: 'fecha',
     yField: 'cantidad',
     seriesField: 'type',
@@ -57,4 +75,3 @@ export default function LineaMensajes({ data }) {
 
   return <Line {...config} />;
 }
-

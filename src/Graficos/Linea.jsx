@@ -11,7 +11,6 @@ export default function Linea({ data }) {
   const cualificados = cualificadosData ? cualificadosData : [];
 
 
-  console.log(data)
   // Esta función se encarga de actualizar los datos del gráfico
   const updateChartData = () => {
     if (!data || data.length === 0) {

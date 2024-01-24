@@ -1,0 +1,65 @@
+@import "./../App.scss";
+
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: max-content;
+}
+
+.user {
+  margin-top: 1.5rem;
+  margin-left: 1.5rem;
+  color: white;
+  font-size: 20px;
+}
+
+.button-cualificados {
+  background-color: $color-principal;
+  color: white;
+  margin-left: 1rem;
+}
+
+.button-cualificados:hover {
+  background-color: #5b5b5c !important;
+  color: white !important;
+  border-color: white !important;
+}
+
+.transfer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.btn-subir {
+  min-width: 200px;
+}
+
+.btn-subir:hover {
+  color:  $color-principal !important;
+  border-color:  $color-principal !important;
+}
+
+
+.tags-cuenta {
+  margin-top: 1rem;
+}
+
+.tag {
+  margin-left: 0.5rem;
+}
+
+.icono1 .ant-float-btn-body {
+  background: $color-wsp !important;
+}
+
+.icono2 .ant-float-btn-body {
+  background: $color-principal !important;
+  color: white;
+}
+
+.btn-customizacion {
+  margin-top: 1rem;
+}

@@ -6,7 +6,7 @@ import Progreso from "../Graficos/Progreso";
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Space } from 'antd';
 import Highlighter from 'react-highlight-words';
-import "./styles.css";
+import "./styles.scss";
 import MetricasDetalle from "./MetricasDetalle";
 import TreeMapComponent from "../Graficos/Treemap";
 import EstadisticasConexiones from "../Graficos/EstadisticasConexiones";

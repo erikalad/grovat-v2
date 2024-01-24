@@ -1,9 +1,9 @@
 import React, { Fragment, useState } from "react";
-import { Button, Collapse, DatePicker, Modal } from "antd";
+import { Button, Collapse, DatePicker, Modal, Tag } from "antd";
 import locale from "antd/lib/date-picker/locale/es_ES";
 import dayjs from 'dayjs';
 import 'dayjs/locale/es'; 
-import './styles.css'
+import './styles.scss'
 import TransferCualificados from "./Transfer";
 import { useDispatch, useSelector } from "react-redux";
 import { setMes, transferOk } from "../Redux/actions";
@@ -12,11 +12,13 @@ const { Panel } = Collapse;
 const { RangePicker } = DatePicker;
 
 export default function Filtros({ onFilterByDate, data }) {
-
+  const colorPrincipal = useSelector(state => state.customizaciones.find(item => item.fieldName === 'Color Principal')?.fieldValue);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const conexiones = useSelector((state) => state.conexionesData);
   const positions = [...new Set(conexiones[0]?.datos.map((dato) => dato.Position))];
   const dataTabla = positions.map((position, index) => ({ position, key: index }));
+  const nombreCuenta = useSelector((state)=> state.nombreCuenta)
+
   const dispatch = useDispatch()
 
   const handleOk = () => {
@@ -71,7 +73,7 @@ export default function Filtros({ onFilterByDate, data }) {
       <Panel header="Filtros" key="1">
         <p>Selecciona un rango de fechas:</p>
         {Object.keys(data).length === 0 ? (
-          <RangePicker disabled locale={locale}/>
+          <RangePicker disabled locale={locale} className="rangepicker"/>
         ) : (
           <RangePicker
             onChange={handleDateChange}
@@ -80,6 +82,31 @@ export default function Filtros({ onFilterByDate, data }) {
           />
         )}
         <Button className="button-cualificados" onClick={showModal}>Puestos cualificados</Button>
+ 
+          {nombreCuenta.length > 1 ? (
+                <div className="tags-cuenta">
+                Cuentas: 
+                {nombreCuenta.map((nombre, index) => (
+              <Tag key={index} className="tag">
+                {nombre}
+              </Tag>
+                  ))}
+            </div>
+          ) : (
+            <div className="tags-cuenta">
+            Cuenta: 
+            {nombreCuenta.map((nombre, index) => (
+          <Tag key={index} className="tag">
+            {nombre}
+          </Tag>
+              ))}
+        </div>
+          )
+       
+          }
+       
+
+   
       </Panel>
     </Collapse>
 
@@ -89,6 +116,7 @@ export default function Filtros({ onFilterByDate, data }) {
       onOk={handleOk}
       onCancel={handleCancel}
       width={1000}
+      okButtonProps={{ style: { backgroundColor: {colorPrincipal} } }}
     >
       <div className="transfer">
         <TransferCualificados data={prepareDataForTransfer()}/>

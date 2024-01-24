@@ -1,3 +1,6 @@
+@import "./../App.scss";
+
+
 .statidistics-progress {
   display: flex;
   gap: 2rem;
@@ -37,7 +40,7 @@ box-shadow: 2px 4px 5px -2px rgba(182, 182, 182, 0.75);
 
 .mes {
   display: flex;
-  margin: 2rem 0.5rem;
+  margin: 1rem 0.5rem;
   font-weight: 300;
 }
 
@@ -70,12 +73,9 @@ box-shadow: 2px 4px 5px -2px rgba(182, 182, 182, 0.75);
 
   .login {
     width: 100%;
-    background-image: url(./../imagenes/grovat-fondo.jpeg);
-    background-size: cover; 
-    background-repeat: no-repeat; 
     background-size: 50%;
-    height: 800px;
-    background-color: #25272E;
+    height: 900px;
+    background-color: $color-principal;
   }
 
   .contenedor-metricas{

@@ -1,9 +1,12 @@
 import React from 'react'
-import fondo from './../imagenes/grovat-fondo.jpeg'
-import './styles.css'
+import fondo from './../imagenes/LogoCircular.jpeg'
+import './styles.scss'
 import LoginForm from '../Componentes/Loginform'
+import { useSelector } from 'react-redux';
 
 export default function Login() {
+  // const fondo = useSelector(state => state.customizaciones.find(item => item.fieldName === 'URL del Logo')?.fieldValue);
+
   return (
     <div className='contenedor-login'>
     <div className='login'>
@@ -11,7 +14,7 @@ export default function Login() {
         <LoginForm/>
         </div>
     </div>
-    <div className='img-login'><img src={fondo} className='img-fondo'/></div>
+  <img src={fondo} className='img-fondo img-login'/>
     </div>
   )
 }

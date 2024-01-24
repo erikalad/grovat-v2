@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, Statistic } from "antd";
-import "./styles.css";
+import "./styles.scss";
 
 const Estadisticas = ({ data, cantArchivos,mesesFiltrados }) => {
   const cantidadElementos = data.length;

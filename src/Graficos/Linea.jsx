@@ -9,6 +9,8 @@ export default function Linea({ data }) {
   const cualificadosData = useSelector((state) => state.cualificadosData);
   const actualizacionCualificados = useSelector((state) => state.transfer);
   const cualificados = cualificadosData ? cualificadosData : [];
+  const colorPrincipal = useSelector(state => state.customizaciones.find(item => item.fieldName === 'Color Principal')?.fieldValue);
+  const colorSecundario = useSelector(state => state.customizaciones.find(item => item.fieldName === 'Color Secundario')?.fieldValue);
 
 
   // Esta función se encarga de actualizar los datos del gráfico
@@ -62,6 +64,7 @@ export default function Linea({ data }) {
 
   const config = {
     data: lineChartData,
+    color:[colorPrincipal, colorSecundario],
     xField: 'fecha',
     yField: 'value',
     seriesField: 'type',

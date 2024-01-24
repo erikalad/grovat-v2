@@ -27,7 +27,7 @@ function App() {
 
 
   return (
-    <ConfigProvider locale={esES}>
+    <ConfigProvider locale={esES} theme={{token:{colorPrimary: colorPrincipal}}}>
 
 <div className="App" data-color-principal={colorPrincipal}>
       <Routes>

@@ -143,7 +143,7 @@ const EditableTable = () => {
         <span>
           {record.editable ? (
             <Tooltip title="Guardar">
-              <Button type="primary" shape="circle" onClick={() => handleSave(record.key)} icon={<TfiSave />} />
+              <Button className='btn-guardar' shape="circle" onClick={() => handleSave(record.key)} icon={<TfiSave />} />
             </Tooltip>
           ) : (
             <Tooltip title="Editar">

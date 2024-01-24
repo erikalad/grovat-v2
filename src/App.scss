@@ -23,24 +23,11 @@ $color-wsp: #25D366;
     background-color: $color-principal !important
 }
 
+.ant-menu-item-selected{
+    background-color: $color-secundario !important
+ 
+}
+
 *{
     font-family: $font;
-}
-
-.ant-btn-primary{
-    background-color: $color-principal !important;
-    color: white !important;
-}
-
-
-
-.ant-btn-primary:hover{
-    border-color: white !important;
-    color: white !important;
-
-}
-
-.ant-btn-default:hover{
-   border-color: $color-principal !important;
-   color: black !important;
 }

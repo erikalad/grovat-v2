@@ -27,6 +27,11 @@
   border-color: white !important;
 }
 
+.btn-guardar{
+  background-color: $color-secundario;
+  color: white;
+}
+
 .transfer {
   display: flex;
   justify-content: center;
@@ -56,10 +61,11 @@
 }
 
 .icono2 .ant-float-btn-body {
-  background: $color-principal !important;
-  color: white;
+  background: $color-secundario !important;
+  color: white !important;
 }
 
 .btn-customizacion {
   margin-top: 1rem;
 }
+

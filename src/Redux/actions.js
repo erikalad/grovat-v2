@@ -11,7 +11,9 @@ import {
     TRANSFER_OK,
     SET_MES,
     NOMBRE_CUENTA,
-    SET_MENSAJES_NEW
+    SET_MENSAJES_NEW,
+    NOMBRE_CUENTA_BORRAR,
+    SET_CUSTOMIZACIONES
   } from './actionTypes';
   
   export const setMensajesData = (mensajes) => ({
@@ -33,6 +35,10 @@ import {
     payload: nombre
   });
 
+  export const deleteNameCuenta = (nombre) => ({
+    type: NOMBRE_CUENTA_BORRAR,
+    payload: nombre
+  });
 
   export const setMes = (mes) => ({
     type: SET_MES,
@@ -71,3 +77,8 @@ import {
     type: ACTUALIZAR_POSICIONES,
     payload: invitaciones,
   });
+
+export const setCustomizaciones = (fieldName, fieldValue) => ({
+  type: SET_CUSTOMIZACIONES,
+  payload: { fieldName, fieldValue },
+});

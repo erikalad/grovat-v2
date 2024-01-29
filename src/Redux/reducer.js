@@ -12,6 +12,8 @@ import {
   SET_MES,
   NOMBRE_CUENTA,
   SET_MENSAJES_NEW,
+  NOMBRE_CUENTA_BORRAR,
+  SET_CUSTOMIZACIONES,
 } from "./actionTypes";
 const storedCualificadosData =
   JSON.parse(localStorage.getItem("cualificadosData")) || [];
@@ -27,7 +29,39 @@ const initialState = {
   transfer: true,
   mes: "",
   nombreCuenta: [],
-  mensajesCualificados: []
+  mensajesCualificados: [],
+  customizaciones:[
+    {
+      key: '1',
+      fieldName: 'Nombre de la Empresa',
+      fieldValue: 'MeIC Analitycs',
+      editable: false,
+    },
+    {
+      key: '2',
+      fieldName: 'Color Principal',
+      fieldValue: '#343041',
+      editable: false,
+    },
+    {
+      key: '3',
+      fieldName: 'Color Secundario',
+      fieldValue: '#C7AE6A',
+      editable: false,
+    },
+    {
+      key: '4',
+      fieldName: 'URL del Logo',
+      fieldValue: 'https://media.licdn.com/dms/image/D4D0BAQE0mxb1TZiJ7w/company-logo_200_200/0/1706100610750?e=1714003200&v=beta&t=5bX3Q7_4khxM5MToQnjtuj3OwcMX3gHtqrdOIOQ6eOg',
+      editable: false,
+    },
+    {
+      key: '5',
+      fieldName: 'Tipo de Letra',
+      fieldValue: 'Montserrat',
+      editable: false,
+    },
+  ]
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -44,6 +78,7 @@ const rootReducer = (state = initialState, action) => {
       return { ...state, mes: action.payload };
 
     case NOMBRE_CUENTA:
+
       return {
         ...state,
         nombreCuenta: state.nombreCuenta.concat(action.payload),
@@ -52,7 +87,15 @@ const rootReducer = (state = initialState, action) => {
     case SET_CUALIFICADOS_DATA:
       return { ...state, cualificadosData: action.payload };
 
+      case NOMBRE_CUENTA_BORRAR:
+        const nombreABorrar = action.payload;
+        return {
+          ...state,
+          nombreCuenta: state.nombreCuenta.filter(nombre => nombre !== nombreABorrar),
+        };
+
     case SET_USERNAME:
+
       const username = localStorage.getItem("username") || [];
       return { ...state, username: username };
 
@@ -67,6 +110,7 @@ const rootReducer = (state = initialState, action) => {
       return { ...state, password: password };
 
     case SET_INVITACIONES_DATA:
+
       return {
         ...state,
         invitacionesData: action.payload,
@@ -76,6 +120,15 @@ const rootReducer = (state = initialState, action) => {
         ...state,
         invitacionesData: action.payload,
       };
+
+      case SET_CUSTOMIZACIONES:
+        const { fieldName, fieldValue } = action.payload;
+        return {
+          ...state,
+          customizaciones: state.customizaciones.map((item) =>
+            item.fieldName === fieldName ? { ...item, fieldValue } : item
+          ),
+        };
 
     default:
       return state;

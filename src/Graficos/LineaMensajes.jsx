@@ -6,6 +6,8 @@ import { useSelector } from 'react-redux';
 export default function LineaMensajes({ data }) {
   const [lineChartData, setLineChartData] = useState([]);
   const actualizacionCualificados = useSelector((state) => state.transfer);
+  const colorPrincipal = useSelector(state => state.customizaciones.find(item => item.fieldName === 'Color Principal')?.fieldValue);
+  const colorSecundario = useSelector(state => state.customizaciones.find(item => item.fieldName === 'Color Secundario')?.fieldValue);
 
 
   const updateChartData = () => {
@@ -54,6 +56,7 @@ export default function LineaMensajes({ data }) {
 
   const config = {
     data: lineChartData.flat(),
+    color:[colorPrincipal, colorSecundario],
     xField: 'fecha',
     yField: 'cantidad',
     seriesField: 'type',

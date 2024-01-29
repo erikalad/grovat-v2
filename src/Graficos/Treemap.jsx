@@ -1,10 +1,14 @@
 import React from 'react';
 import { Treemap } from '@ant-design/plots';
 import { Empty } from 'antd';
+import { useSelector } from 'react-redux';
+import * as d3 from 'd3';
 
 export default function TreeMapComponent({ data }) {
   // Crear un objeto para contar la cantidad de cada posición
   const positionsCount = {};
+  const colorPrincipal = useSelector(state => state.customizaciones.find(item => item.fieldName === 'Color Principal')?.fieldValue);
+  const colorSecundario = useSelector(state => state.customizaciones.find(item => item.fieldName === 'Color Secundario')?.fieldValue);
 
   // Contar la cantidad de cada posición en los datos
   data.forEach(person => {
@@ -35,12 +39,23 @@ export default function TreeMapComponent({ data }) {
     })),
   };
 
+// Función para generar una escala de colores con diferente luminosidad
+const generateColorScale = (mainColor, steps) => {
+  const colorScale = d3
+    .scaleLinear()
+    .domain([0, steps - 1]) // Rango de valores para la escala
+    .range([0, 1]); // Rango de salida
+
+  return Array.from({ length: steps }, (_, i) => {
+    const brightness = colorScale(i); // Obtener el valor de la escala para cada paso
+    return d3.interpolateRgb(mainColor, 'white')(brightness); // Convertir el valor a un color
+  });
+};
   // Configuración del Treemap
   const config = {
     data: formattedData,
     colorField: 'name',
-    color: ['#0000FF', '#0000CC', '#000099', '#000066', '#000033', '#0000AA', '#000077', '#000044', '#000022', '#000011']
-  };
+    color: generateColorScale(colorPrincipal,20),  };
 
 
 

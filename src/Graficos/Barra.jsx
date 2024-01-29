@@ -8,6 +8,9 @@ export default function Barra({ data }) {
   const actualizacionCualificados = useSelector((state) => state.transfer);
   const [graficoData, setGraficoData] = useState([]);
   const [cualificadosData, setCualificadosData] = useState(storedCualificadosData);
+  const colorPrincipal = useSelector(state => state.customizaciones.find(item => item.fieldName === 'Color Principal')?.fieldValue);
+  const colorSecundario = useSelector(state => state.customizaciones.find(item => item.fieldName === 'Color Secundario')?.fieldValue);
+
   useEffect(() => {
 
     if (!data || data.length === 0 || !storedCualificadosData) {
@@ -70,6 +73,7 @@ export default function Barra({ data }) {
 
   const config = {
     data: graficoData,
+    color: [colorPrincipal, colorSecundario],
     xField: 'fecha',
     yField: 'value',
     seriesField: 'type',

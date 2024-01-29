@@ -1,26 +1,43 @@
 import React, { useState } from "react";
 import { BsGraphUp } from "react-icons/bs";
+import { Link } from "react-router-dom";
 import { BsUpload } from "react-icons/bs";
 import { Layout, Menu, theme } from "antd";
 import Metricas from "./../Contenedores/Metricas";
 import Datos from "./Datos";
-import logo from "./../imagenes/grovat.jpeg";
-import "./styles.css";
+// import logo from "./../imagenes/grovat.jpeg";
+import "./styles.scss";
+import { RiMenuSearchLine } from "react-icons/ri";
+import { FloatButton, Tooltip } from "antd";
+import { BsWhatsapp } from "react-icons/bs";
+import { IoSettingsSharp } from "react-icons/io5";
+import Ajustes from "../Contenedores/Ajustes";
+import { useSelector } from "react-redux";
+import { MdOutlineContactSupport } from "react-icons/md";
+import { MdOutlineMailOutline } from "react-icons/md";
+
 
 const { Header, Content, Footer, Sider } = Layout;
 
 export default function MenuDesplegable() {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const [page, setPage] = useState("1");
-  const username = localStorage.getItem('username');
+
+  const username = localStorage.getItem("username");
+  const nameEmpresa = useSelector(
+    (state) =>
+      state.customizaciones.find(
+        (item) => item.fieldName === "Nombre de la Empresa"
+      )?.fieldValue
+  );
 
   const usernameMappings = {
-    lourdesaraoz: 'Lourdes',
-    lucasdeleon: 'Lucas',
-    mercately: 'Mercately',
-    tomasmarcilese: 'Tomás',
-    beehr: 'Beehr',
-    carlosterzano: 'Carlos'
+    lourdesaraoz: "Lourdes",
+    lucasdeleon: "Lucas",
+    mercately: "Mercately",
+    tomasmarcilese: "Tomás",
+    beehr: "Beehr",
+    carlosterzano: "Carlos",
   };
 
   const formattedUsername = usernameMappings[username] || username;
@@ -45,7 +62,9 @@ export default function MenuDesplegable() {
         onCollapse={(value) => setCollapsed(value)}
       >
         <div className="nav">
-          <img src={logo} className="logo" /> <div className="user">Bienvenid@ {formattedUsername}</div>
+          <div className="user">
+            Bienvenid@ {nameEmpresa} / {formattedUsername}
+          </div>
         </div>
         <Menu
           theme="dark"
@@ -59,6 +78,10 @@ export default function MenuDesplegable() {
 
           <Menu.Item key="2" icon={<BsGraphUp />}>
             <span>Métricas</span>
+          </Menu.Item>
+
+          <Menu.Item key="3" icon={<IoSettingsSharp />}>
+            <span>Ajustes</span>
           </Menu.Item>
         </Menu>
       </Sider>
@@ -81,7 +104,51 @@ export default function MenuDesplegable() {
               borderRadius: borderRadiusLG,
             }}
           >
-            {page === "1" ? <Datos /> : <Metricas />}
+            {page === "1" ? (
+              <Datos />
+            ) : page === "2" ? (
+              <Metricas />
+            ) : (
+              <Ajustes />
+            )}
+
+            <FloatButton.Group
+              trigger="hover"
+              style={{
+                right: 24,
+              }}
+              icon={<MdOutlineContactSupport/>}
+            >
+              <Tooltip title="Contactanos por WhatsApp" placement="left">
+                <Link to="https://wa.me/qr/Q2YIOQL7UXOPH1" target="_blank">
+                  <FloatButton
+                    className="icono1"
+                    trigger="click"
+                    type="primary"
+                    style={{
+                      right: 94,
+                      marginBottom:'1rem'
+                    }}
+                    icon={<BsWhatsapp />}
+                  ></FloatButton>
+                </Link>
+              </Tooltip>
+
+              <Tooltip title="Contactanos por mail" placement="left">
+                <Link to="mailto:erikaladner5@gmail.com" target="_blank">
+                  <FloatButton
+                    className="icono2"
+                    trigger="click"
+                    type="primary"
+                    style={{
+                      right: 94,
+                    }}
+                    icon={<MdOutlineMailOutline />
+                  }
+                  ></FloatButton>
+                </Link>
+              </Tooltip>
+            </FloatButton.Group>
           </div>
         </Content>
         <Footer

@@ -1,0 +1,121 @@
+@import "./../App.scss";
+
+
+.statidistics-progress {
+  display: flex;
+  gap: 2rem;
+  justify-content: space-between;
+flex-wrap: wrap;}
+
+.statidistics {
+  display: flex;
+  width: 100%;
+}
+
+.barra-button{
+  width: 50%;
+
+}
+
+.carta{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 0.5px solid rgb(212, 212, 212);
+  border-radius: 20px;
+  background-color: rgb(255, 255, 255);
+box-shadow: 2px 4px 5px -2px rgba(182, 182, 182, 0.75);
+-webkit-box-shadow: 2px 4px 5px -2px rgba(182, 182, 182, 0.75);
+-moz-box-shadow: 2px 4px 5px -2px rgba(182, 182, 182, 0.75);
+  padding: 1rem;
+  margin-bottom: 1rem;
+} 
+
+.contenedor-estadisticas-barra {
+  display: flex;
+  width: 100%;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.mes {
+  display: flex;
+  margin: 1rem 0.5rem;
+  font-weight: 300;
+}
+
+.contenedor-metricas {
+  display: flex;
+  gap: 1rem;
+}
+
+.contenedor-login{
+  display: flex;
+  align-items: center;
+}
+
+.img-fondo{
+  width: 100%;
+}
+
+.login{
+  width: 50%;
+}
+
+.img-login{
+  width: 50%;
+}
+
+@media (max-width: 1100px) {
+  .img-login{
+    display: none;
+  }
+
+  .login {
+    width: 100%;
+    background-size: 50%;
+    height: 900px;
+    background-color: $color-principal;
+  }
+
+  .contenedor-metricas{
+    flex-direction: column;
+  }
+
+  .contenedor-estadisticas-barra{
+    display: block;
+    width: 100%;
+  }
+
+.barra-button{
+  width: 100%;
+  
+}
+
+.form-login{
+  margin-top: 50%;
+}
+  
+}
+
+.form-login{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.boton-login{
+width: 100%;
+background-color: #25272E;
+}
+
+.boton-login:hover{
+  background-color: #818181 !important;
+  }
+
+
+.subtitulo-carta{
+    font-weight: 200;
+    color:rgb(0, 0, 0);
+    margin-bottom: 1rem;
+}

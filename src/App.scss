@@ -1,0 +1,33 @@
+$color-principal: var(--color-principal);
+$color-secundario: var(--color-secundario);
+$font: var(--font);
+$color-wsp: #25D366; 
+
+
+.ant-layout-sider-children{
+    background-color: $color-principal !important
+}
+.ant-layout-header{
+    background-color: $color-principal !important
+}
+
+.ant-menu-item{
+    background-color: $color-principal !important
+}
+
+.ant-menu{
+    background-color: $color-principal !important
+}
+
+.ant-layout .ant-layout-sider-trigger{
+    background-color: $color-principal !important
+}
+
+.ant-menu-item-selected{
+    background-color: $color-secundario !important
+ 
+}
+
+*{
+    font-family: $font;
+}

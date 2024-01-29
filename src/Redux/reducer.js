@@ -78,6 +78,7 @@ const rootReducer = (state = initialState, action) => {
       return { ...state, mes: action.payload };
 
     case NOMBRE_CUENTA:
+
       return {
         ...state,
         nombreCuenta: state.nombreCuenta.concat(action.payload),
@@ -86,10 +87,15 @@ const rootReducer = (state = initialState, action) => {
     case SET_CUALIFICADOS_DATA:
       return { ...state, cualificadosData: action.payload };
 
-    case NOMBRE_CUENTA_BORRAR:
-      return { ...state, }
+      case NOMBRE_CUENTA_BORRAR:
+        const nombreABorrar = action.payload;
+        return {
+          ...state,
+          nombreCuenta: state.nombreCuenta.filter(nombre => nombre !== nombreABorrar),
+        };
 
     case SET_USERNAME:
+
       const username = localStorage.getItem("username") || [];
       return { ...state, username: username };
 
@@ -104,6 +110,7 @@ const rootReducer = (state = initialState, action) => {
       return { ...state, password: password };
 
     case SET_INVITACIONES_DATA:
+
       return {
         ...state,
         invitacionesData: action.payload,

@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Button, Collapse, DatePicker, Modal, Tag } from "antd";
 import locale from "antd/lib/date-picker/locale/es_ES";
 import dayjs from 'dayjs';
@@ -18,6 +18,7 @@ export default function Filtros({ onFilterByDate, data }) {
   const positions = [...new Set(conexiones[0]?.datos.map((dato) => dato.Position))];
   const dataTabla = positions.map((position, index) => ({ position, key: index }));
   const nombreCuenta = useSelector((state)=> state.nombreCuenta)
+  const [cuentas, setCuentas] = useState(nombreCuenta)
 
   const dispatch = useDispatch()
 
@@ -67,6 +68,10 @@ export default function Filtros({ onFilterByDate, data }) {
     return cualificadosData;
   };
 
+  useEffect(()=>{
+    setCuentas(nombreCuenta)
+  },[nombreCuenta])
+
   return (
     <Fragment>
     <Collapse accordion defaultActiveKey={1}>
@@ -83,27 +88,18 @@ export default function Filtros({ onFilterByDate, data }) {
         )}
         <Button className="button-cualificados" onClick={showModal}>Puestos cualificados</Button>
  
-          {nombreCuenta.length > 1 ? (
-                <div className="tags-cuenta">
-                Cuentas: 
-                {nombreCuenta.map((nombre, index) => (
-              <Tag key={index} className="tag">
-                {nombre}
-              </Tag>
-                  ))}
-            </div>
-          ) : (
-            <div className="tags-cuenta">
-            Cuenta: 
-            {nombreCuenta.map((nombre, index) => (
-          <Tag key={index} className="tag">
-            {nombre}
-          </Tag>
+        {cuentas.length > 0 && (
+        <div className="tags-cuenta">
+          {cuentas.length > 1 ? 'Cuentas:' : 'Cuenta:'}
+          {[...new Set(cuentas.filter(nombre => nombre !== null && nombre !== undefined))].map((nombre, index) => (
+            <Tag key={index} className="tag">
+              {nombre}
+            </Tag>
               ))}
-        </div>
-          )
-       
-          }
+            </div>
+          )}
+
+
        
 
    

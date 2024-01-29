@@ -3,7 +3,7 @@ import { UploadOutlined } from "@ant-design/icons";
 import { Button, Upload, Alert, Space, Tooltip, message } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { actualizarPosicionesAction, setConexionesData, setInvitacionesData, setMensajesData, setNameCuenta } from "../Redux/actions";
+import { actualizarPosicionesAction, deleteNameCuenta, setConexionesData, setInvitacionesData, setMensajesData, setNameCuenta } from "../Redux/actions";
 
 export default function Datos() {
   const Papa = require("papaparse");
@@ -68,10 +68,27 @@ export default function Datos() {
 
   const handleCloseAlert = (id, archivo) => {
     if (archivo === "invitacionesData") {
-
-      const newData = invitacionesData.filter((item) => item.id !== id);
+      const index = invitacionesData.findIndex((item) => item.id === id);
+  
+      if (index !== -1) {
+        // El elemento con el id se encontró en la posición 'index'
+        const newData = invitacionesData.filter((item) => item.id !== id);
+        // Obtener los nombres del archivo borrado
+        const nombresBorrados = invitacionesData[index].datos.map((objeto) => objeto.From);
+  
+      // Calcular el nombre más común de todos los datos que se borraron
+      const contadorNombres = nombresBorrados.reduce((contador, nombre) => {
+        contador[nombre] = (contador[nombre] || 0) + 1;
+        return contador;
+      }, {});
+      const nombreMasComunBorrado = Object.keys(contadorNombres).reduce((a, b) =>
+        contadorNombres[a] > contadorNombres[b] ? a : b
+      );
+      dispatch(deleteNameCuenta(nombreMasComunBorrado));
+     
       
       dispatch(setInvitacionesData(newData));
+    }
       setShowSuccessMessage(true);
     }
   
@@ -173,32 +190,62 @@ export default function Datos() {
     if (info.fileList.length > 0) {
       const archivo = info.fileList[info.fileList.length - 1].originFileObj;
       const nombreArchivo = info.file.name; // Obtener el nombre del archivo subido
+
+ 
+
     
       parsearCSV(archivo)
         .then((resultado) => {
+
+          
           const { datos } = resultado;
           const nombres = datos.map((objeto) => objeto.From);
-  
           const contadorNombres = nombres.reduce((contador, nombre) => {
             contador[nombre] = (contador[nombre] || 0) + 1;
             return contador;
           }, {});
-  
           const nombreMasComun = Object.keys(contadorNombres).reduce((a, b) =>
-            contadorNombres[a] > contadorNombres[b] ? a : b
-          );
+          contadorNombres[a] > contadorNombres[b] ? a : b
+        );
+
+          
+          const columnasEsperadas = ['From', 'To'];
+          const columnasArchivo = resultado.encabezados;
   
+          // Verificar que todas las columnas esperadas estén presentes en el archivo
+          if (!columnasEsperadas.every((columna) => columnasArchivo.includes(columna))) {
+            messageApi.open({
+              type: "error",
+              content: `Error: El archivo "${nombreArchivo}" no contiene todas las columnas esperadas.`,
+            });
+            return;
+          }
+         
+
+     
           const datosFiltrados = datos.filter(
             (objeto) => objeto.From === nombreMasComun
           );
     
-          dispatch(setNameCuenta(nombreMasComun))
           const nuevoArchivo = {
             id: generateUniqueId(),
             encabezados: resultado.encabezados,
             datos: datosFiltrados,
             nombre: nombreArchivo, // Agregar el nombre del archivo
           };
+          dispatch(setNameCuenta(nombreMasComun))
+
+             // Verificar si ya existe un archivo con la misma longitud de datos y el primer objeto de datos igual
+        if (invitacionesData.some((archivoExistente) =>
+        archivoExistente.datos.length === nuevoArchivo.datos.length &&
+        JSON.stringify(archivoExistente.datos[0]) === JSON.stringify(nuevoArchivo.datos[0])
+      )) {
+        messageApi.open({
+          type: "error",
+          content: `El archivo "${nombreArchivo}" ya se ha cargado anteriormente.`,
+        });
+        return;
+      }
 
           const datosFinales = [...invitacionesData, nuevoArchivo];
 
@@ -231,6 +278,30 @@ export default function Datos() {
             datos: datos,
             nombre: nombreArchivo, // Agregar el nombre del archivo
           };
+
+          const columnasEsperadas = ['Position'];
+          const columnasArchivo = resultado.encabezados;
+  
+          // Verificar que todas las columnas esperadas estén presentes en el archivo
+          if (!columnasEsperadas.every((columna) => columnasArchivo.includes(columna))) {
+            messageApi.open({
+              type: "error",
+              content: `Error: El archivo "${nombreArchivo}" no contiene todas las columnas esperadas.`,
+            });
+            return;
+          }
+
+           // Verificar si ya existe un archivo con la misma longitud de datos y el primer objeto de datos igual
+        if (conexionesData.some((archivoExistente) =>
+        archivoExistente.datos.length === nuevoArchivo.datos.length &&
+        JSON.stringify(archivoExistente.datos[0]) === JSON.stringify(nuevoArchivo.datos[0])
+      )) {
+        messageApi.open({
+          type: "error",
+          content: `El archivo "${nombreArchivo}" ya se ha cargado anteriormente.`,
+        });
+        return;
+      }
   
           const datosFinales = [...conexionesData, nuevoArchivo];
   
@@ -293,6 +364,19 @@ export default function Datos() {
 
           // Filtrar los datos para incluir solo los mensajes con 'TO' igual a los valores en nombreCuenta
           const mensajesFiltrados = datos.filter(item => nombreCuenta.includes(item.FROM));
+
+              
+          const columnasEsperadas = ['FROM', 'TO', 'CONTENT'];
+          const columnasArchivo = resultado.encabezados;
+  
+          // Verificar que todas las columnas esperadas estén presentes en el archivo
+          if (!columnasEsperadas.every((columna) => columnasArchivo.includes(columna))) {
+            messageApi.open({
+              type: "error",
+              content: `Error: El archivo "${nombreArchivo}" no contiene todas las columnas esperadas.`,
+            });
+            return;
+          }
   
           // Ordenar los mensajes por fecha de forma ascendente
           const mensajesOrdenados = ordenarMensajesPorFecha(mensajesFiltrados);
@@ -315,6 +399,18 @@ export default function Datos() {
             datos: mensajesUnicos, // Usar los mensajes filtrados y únicos
             nombre: nombreArchivo, // Agregar el nombre del archivo
           };
+
+                 // Verificar si ya existe un archivo con la misma longitud de datos y el primer objeto de datos igual
+        if (mensajesData.some((archivoExistente) =>
+        archivoExistente.datos.length === nuevoArchivo.datos.length &&
+        JSON.stringify(archivoExistente.datos[0]) === JSON.stringify(nuevoArchivo.datos[0])
+      )) {
+        messageApi.open({
+          type: "error",
+          content: `El archivo "${nombreArchivo}" ya se ha cargado anteriormente.`,
+        });
+        return;
+      }
   
           const datosFinales = [...mensajesData, nuevoArchivo];
   

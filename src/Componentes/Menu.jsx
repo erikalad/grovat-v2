@@ -20,7 +20,7 @@ import { MdOutlineMailOutline } from "react-icons/md";
 const { Header, Content, Footer, Sider } = Layout;
 
 export default function MenuDesplegable() {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const [page, setPage] = useState("1");
 
   const username = localStorage.getItem("username");

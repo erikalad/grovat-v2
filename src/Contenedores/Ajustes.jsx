@@ -6,7 +6,6 @@ const { TabPane } = Tabs;
 
 const Ajustes = () => {
   const onChange = (key) => {
-    console.log(key);
   };
 
   return (

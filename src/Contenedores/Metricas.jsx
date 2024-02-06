@@ -1,18 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Divider, Tag } from "antd";
 import Filtros from "../Componentes/Filtros";
-import Estadisticas from "../Graficos/Estadisticas";
-import Progreso from "../Graficos/Progreso";
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Space } from 'antd';
 import Highlighter from 'react-highlight-words';
 import "./styles.scss";
 import MetricasDetalle from "./MetricasDetalle";
 import TreeMapComponent from "../Graficos/Treemap";
-import EstadisticasConexiones from "../Graficos/EstadisticasConexiones";
-import ProgresoConexiones from "../Graficos/ProgresoConexiones";
-import EstadisticasMensajes from "../Graficos/EstadisticasMensajes";
-import ProgresoMensajes from "../Graficos/ProgresoMensajes";
 import { useDispatch, useSelector } from "react-redux";
 import { setMensajesDataNew } from "../Redux/actions";
 import esES from 'antd/es/locale/es_ES'; // Importar el paquete de idioma español
@@ -641,56 +635,29 @@ const columnsConexionesFiltered = columnsConexiones.filter(
             : obtenerMesEnCurso()}
         </div>
       </Divider>
-      <div className="statidistics-progress">
-        <Estadisticas
-          className="statidistics"
-          data={datosFiltrados}
-          cantArchivos={cantArchivos}
-          type="invitaciones"
-          mesesFiltrados={mesesFiltrados}
-        />
-        <Progreso
-          data={datosFiltrados}
-          mesesFiltrados={mesesFiltrados}
-          cantArchivos={cantArchivos}
-        />
-        <EstadisticasConexiones
-          className="statidistics"
-          data={datosFiltradoCon}
-        />
-        <ProgresoConexiones
-          data={datosFiltradoCon}
-          invitaciones={datosFiltrados}
-        />
-        <EstadisticasMensajes
-          className="statidistics"
-          data={datosFiltradosMes}
-          cantArchivos={cantMens}
-          type="mensajes"
-          mesesFiltrados={mesesFiltrados}
-        />
-        <ProgresoMensajes
-          data={datosFiltradosMes}
-          mesesFiltrados={mesesFiltrados}
-          cantArchivos={cantMens}
-          conexiones={datosFiltradoCon}
-        />
-      </div>
-      <div className="contenedor-estadisticas-barra">
+      <div className="container-metricdetail">
         <MetricasDetalle
           data={datosFiltrados}
           filteredColumns={filteredColumns}
           type="invitaciones"
+          estadisticas={datosFiltrados}
+          cantArchivos={cantArchivos}
+          mesesFiltrados={mesesFiltrados}
+          progreso={datosFiltrados}
         />
         <MetricasDetalle
           data={datosFiltradoCon}
           filteredColumns={columnsConexionesFiltered}
           type="conexiones"
+          invitaciones={datosFiltrados}
         />
         <MetricasDetalle
           data={datosFiltradosMes}
           filteredColumns={filteredColumnsMes}
           type="mensajes"
+          mesesFiltrados={mesesFiltrados}
+          cantArchivos={cantMens}
+          conexiones={datosFiltradoCon}
         />
       </div>
       <div>

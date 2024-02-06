@@ -30,6 +30,20 @@ const initialState = {
   mes: "",
   nombreCuenta: [],
   mensajesCualificados: [],
+  usuarios:[{
+    id_usuario: "2b643f4d-c1f4-4e28-b531-0cca19f638df",
+    nombre: "lourdes",
+    apellido: "molina",
+    email: "lourdes@gmail.com",
+    logueado: false,
+    usuario: "lourdesmolina",
+    contraseña: "sdasd",
+    type: "usuario",
+    activo: "Activo",
+    createdAt: "2024-01-30T00:16:33.741Z",
+    updatedAt: "2024-01-30T00:16:33.741Z",
+    clienteId: "f88a4b0d-b9bd-46a3-a9a7-4bbcd1172b14"
+  }],
   customizaciones:[
     {
       key: '1',
@@ -40,13 +54,13 @@ const initialState = {
     {
       key: '2',
       fieldName: 'Color Principal',
-      fieldValue: '#343041',
+      fieldValue: '#05061b',
       editable: false,
     },
     {
       key: '3',
       fieldName: 'Color Secundario',
-      fieldValue: '#C7AE6A',
+      fieldValue: '#ac9978',
       editable: false,
     },
     {

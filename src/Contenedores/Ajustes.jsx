@@ -1,6 +1,7 @@
 import React from 'react';
 import { Tabs } from 'antd';
 import TablaCustomizacion from './../Componentes/TablaCustomizacion';
+import TablaUsuarios from '../Componentes/TablaUsuarios';
 
 const { TabPane } = Tabs;
 
@@ -14,6 +15,7 @@ const Ajustes = () => {
         <TablaCustomizacion />
       </TabPane>
       <TabPane tab="Usuarios" key="usuarios">
+        <TablaUsuarios/>
       </TabPane>
       <TabPane tab="Perfil" key="perfil">
       </TabPane>

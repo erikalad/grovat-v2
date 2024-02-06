@@ -156,7 +156,7 @@ export default function MenuDesplegable() {
             textAlign: "center",
           }}
         >
-          Grovat ©2024
+          {nameEmpresa} ©2024
         </Footer>
       </Layout>
     </Layout>

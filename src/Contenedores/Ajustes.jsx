@@ -2,6 +2,7 @@ import React from 'react';
 import { Tabs } from 'antd';
 import TablaCustomizacion from './../Componentes/TablaCustomizacion';
 import TablaUsuarios from '../Componentes/TablaUsuarios';
+import TablaPerfil from '../Componentes/TablaPerfil';
 
 const { TabPane } = Tabs;
 
@@ -18,6 +19,7 @@ const Ajustes = () => {
         <TablaUsuarios/>
       </TabPane>
       <TabPane tab="Perfil" key="perfil">
+        <TablaPerfil/>
       </TabPane>
     </Tabs>
   );

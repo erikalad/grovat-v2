@@ -31,6 +31,7 @@ const initialState = {
   nombreCuenta: [],
   mensajesCualificados: [],
   usuarios:[{
+    key:1,
     id_usuario: "2b643f4d-c1f4-4e28-b531-0cca19f638df",
     nombre: "lourdes",
     apellido: "molina",

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Table, Input, Button, message, Tooltip, Select, Spin, Tag } from 'antd';
-import { CiEdit } from 'react-icons/ci';
-import { TfiSave } from 'react-icons/tfi';
+import { EditOutlined, SaveOutlined } from '@ant-design/icons';
 import './styles.scss';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -22,10 +21,10 @@ const TablaUsuarios = () => {
     });
   };
 
-  const handleFieldValueChange = (value, key) => {
+  const handleFieldValueChange = (value, key, fieldName) => {
     setData((prevData) =>
       prevData.map((item) =>
-        item.key === key ? { ...item, fieldValue: value } : item
+        item.id_usuario === key ? { ...item, [fieldName]: value } : item
       )
     );
   };
@@ -33,108 +32,83 @@ const TablaUsuarios = () => {
   const handleEdit = (key) => {
     setData((prevData) =>
       prevData.map((item) =>
-        item.key === key ? { ...item, editable: !item.editable } : item
+        item.id_usuario === key ? { ...item, editable: !item.editable } : item
       )
     );
   };
+
 
   const handleSave = async (key) => {
     const updatedData = data.map((item) =>
-      item.key === key ? { ...item, editable: false } : item
+      item.id_usuario === key ? { ...item, editable: false } : item
     );
-
+  
     setData(updatedData);
     showLoader();
     setTimeout(() => {
-      success();
+      success(updatedData, key);
     }, 1500);
-
-    setTimeout(() => {
-    const editedItem = updatedData.find((item) => item.key === key);
-    // if (editedItem) {
-    //   dispatch(setCustomizaciones(editedItem.fieldName, editedItem.fieldValue));
-    // }
-    }, 2000);
-
   };
+  
 
-  const handleColorChange = (color, key) => {
-    const hexColor = color?.toHexString();
-    setData((prevData) =>
-      prevData.map((item) =>
-        item.key === key ? { ...item, fieldValue: hexColor } : item
-      )
-    );
-  };
-
-  const handleFontChange = (fontName, key) => {
-    setData((prevData) =>
-      prevData.map((item) =>
-        item.key === key ? { ...item, fieldValue: fontName } : item
-      )
-    );
-  };
-
-
-    const columns = [
-        {
-          title: 'Nombre',
-          dataIndex: 'nombre',
-          key: 'nombre',
-          render: (text, record) => record.editable ? <Input value={text} onChange={(e) => handleFieldValueChange(e.target.value, record.key)} /> : text,
-        },
-        {
-          title: 'Apellido',
-          dataIndex: 'apellido',
-          key: 'apellido',
-          render: (text, record) => record.editable ? <Input value={text} onChange={(e) => handleFieldValueChange(e.target.value, record.key)} /> : text,
-        },
-        {
-          title: 'Email',
-          dataIndex: 'email',
-          key: 'email',
-          render: (text, record) => record.editable ? <Input value={text} onChange={(e) => handleFieldValueChange(e.target.value, record.key)} /> : text,
-        },
-        {
-          title: 'Usuario',
-          dataIndex: 'usuario',
-          key: 'usuario',
-          render: (text, record) => record.editable ? <Input value={text} onChange={(e) => handleFieldValueChange(e.target.value, record.key)} /> : text,
-        },
-        {
-          title: 'Contraseña',
-          dataIndex: 'contraseña',
-          key: 'contraseña',
-          render: (text, record) => record.editable ? <Input value={text} onChange={(e) => handleFieldValueChange(e.target.value, record.key)} /> : text,
-        },
-        {
-          title: 'Tipo',
-          dataIndex: 'type',
-          key: 'type',
-          width: '10%',
-          render: (text, record) => record.editable ? (
-            <Select value={text} onChange={(value) => handleFieldValueChange(value, record.key)} style={{width:'100%'}}>
-              <Option value="tipo1">Usuario</Option>
-              <Option value="tipo2">Cliente</Option>
-              <Option value="tipo2">Admin</Option>
-
-            </Select>
-          ) : text,
-        },
-        {
-            title: 'Activo',
-            dataIndex: 'activo',
-            key: 'activo',
-            width: '10%',
-            render: (text, record) => record.editable ? (
-              <Select value={text} onChange={(value) => handleFieldValueChange(value, record.key)} style={{width:'100%'}}>
-                <Option value="activo">Activo</Option>
-                <Option value="inactivo">Inactivo</Option>
-              </Select>
-            ) : (
-              <Tag color={text === 'Activo' ? 'green' : 'red'}>{text}</Tag>
-            ),
-          },
+  const columns = [
+    {
+      title: 'Nombre',
+      dataIndex: 'nombre',
+      key: 'nombre',
+      render: (text, record) => record.editable ? <Input value={text} onChange={(e) => handleFieldValueChange(e.target.value, record.id_usuario, 'nombre')} /> : text,
+    },
+    {
+      title: 'Apellido',
+      dataIndex: 'apellido',
+      key: 'apellido',
+      render: (text, record) => record.editable ? <Input value={text} onChange={(e) => handleFieldValueChange(e.target.value, record.id_usuario, 'apellido')} /> : text,
+    },
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+      render: (text, record) => record.editable ? <Input value={text} onChange={(e) => handleFieldValueChange(e.target.value, record.id_usuario, 'email')} /> : text,
+    },
+    {
+      title: 'Usuario',
+      dataIndex: 'usuario',
+      key: 'usuario',
+      render: (text, record) => record.editable ? <Input value={text} onChange={(e) => handleFieldValueChange(e.target.value, record.id_usuario, 'usuario')} /> : text,
+    },
+    {
+      title: 'Contraseña',
+      dataIndex: 'contraseña',
+      key: 'contraseña',
+      render: (text, record) => record.editable ? <Input value={text} onChange={(e) => handleFieldValueChange(e.target.value, record.id_usuario, 'contraseña')} /> : text,
+    },
+    {
+      title: 'Tipo',
+      dataIndex: 'type',
+      key: 'type',
+      width: '10%',
+      render: (text, record) => record.editable ? (
+        <Select value={text} onChange={(value) => handleFieldValueChange(value, record.id_usuario, 'type')} style={{width:'100%'}}>
+          <Option value="usuario">Usuario</Option>
+          <Option value="cliente">Cliente</Option>
+          <Option value="admin">Admin</Option>
+        </Select>
+      ) : text,
+    },
+    {
+      title: 'Activo',
+      dataIndex: 'activo',
+      key: 'activo',
+      width: '10%',
+      render: (text, record) => record.editable ? (
+        <Select value={text} onChange={(value) => handleFieldValueChange(value, record.id_usuario, 'activo')} style={{width:'100%'}}>
+          <Option value="Activo">Activo</Option>
+          <Option value="Inactivo">Inactivo</Option>
+        </Select>
+      ) : (
+        <Tag color={text === 'Activo' ? 'green' : 'red'}>{text}</Tag>
+      ),
+    },
     {
       title: 'Acción',
       dataIndex: 'action',
@@ -143,11 +117,11 @@ const TablaUsuarios = () => {
         <span>
           {record.editable ? (
             <Tooltip title="Guardar">
-              <Button className='btn-guardar' shape="circle" onClick={() => handleSave(record.key)} icon={<TfiSave />} />
+              <Button className='btn-guardar' shape="circle" onClick={() => handleSave(record.id_usuario)} icon={<SaveOutlined />} />
             </Tooltip>
           ) : (
             <Tooltip title="Editar">
-              <Button type="primary" shape="circle" onClick={() => handleEdit(record.key)} icon={<CiEdit />} />
+              <Button type="primary" shape="circle" onClick={() => handleEdit(record.id_usuario)} icon={<EditOutlined />} />
             </Tooltip>
           )}
         </span>
@@ -164,17 +138,16 @@ const TablaUsuarios = () => {
 
   const handleAdd = () => {
     const newData = {
-        key:count+1,
-        nombre: "-",
-        apellido: "-",
-        email: "-",
-        logueado: false,
-        usuario: "-",
-        contraseña: "-",
-        type: "-",
-        activo: "-",
-        clienteId: "f88a4b0d-b9bd-46a3-a9a7-4bbcd1172b14"
-      }
+      nombre: "-",
+      apellido: "-",
+      email: "-",
+      logueado: false,
+      usuario: "-",
+      contraseña: "-",
+      type: "-",
+      activo: "-",
+      clienteId: "f88a4b0d-b9bd-46a3-a9a7-4bbcd1172b14"
+    }
     setData([...data, newData]);
     setCount(count + 1);
   };
@@ -191,7 +164,7 @@ const TablaUsuarios = () => {
       >
         Agregar Usuario
       </Button>
-      <Table dataSource={data} columns={columns} bordered pagination={false} />
+      <Table dataSource={data} columns={columns} bordered pagination={false} scroll={{ x: 'max-content' }}/>
       <Spin spinning={loading} fullscreen />
     </>
   );

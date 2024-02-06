@@ -165,7 +165,7 @@ const EditableTable = () => {
   return (
     <>
       {contextHolder}
-      <Table dataSource={data} columns={columns} bordered pagination={false} />
+      <Table dataSource={data} columns={columns} bordered pagination={false} scroll={{ x: 'max-content' }} />
       <Spin spinning={loading} fullscreen />
     </>
   );

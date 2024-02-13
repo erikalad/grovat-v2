@@ -129,7 +129,13 @@ const EditableTable = () => {
           );
         } else if (record.fieldName === 'URL del Logo') {
           return (
-            <a href={text} target="_blank" rel="noopener noreferrer">{text}</a>
+            <a href={text} target="_blank" rel="noopener noreferrer" style={{
+              display: 'inline-block',
+              maxWidth: '150px',
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+              textOverflow: 'ellipsis',
+            }}>{text}</a>
           );
         }
         return text;
@@ -165,7 +171,7 @@ const EditableTable = () => {
   return (
     <>
       {contextHolder}
-      <Table dataSource={data} columns={columns} bordered pagination={false} scroll={{ x: 'max-content' }} />
+      <Table dataSource={data} columns={columns} bordered pagination={false} scroll={{ x: 'max-content' }}/>
       <Spin spinning={loading} fullscreen />
     </>
   );

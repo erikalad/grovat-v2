@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BsGraphUp } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { BsUpload } from "react-icons/bs";
@@ -10,9 +10,12 @@ import { FloatButton, Tooltip } from "antd";
 import { BsWhatsapp } from "react-icons/bs";
 import { IoSettingsSharp } from "react-icons/io5";
 import Ajustes from "../Contenedores/Ajustes";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { MdOutlineContactSupport } from "react-icons/md";
 import { MdOutlineMailOutline } from "react-icons/md";
+import { CiLogin } from "react-icons/ci";
+import { logoutUser } from "../Redux/actions";
+import { useNavigate } from "react-router-dom";
 
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -20,6 +23,39 @@ const { Header, Content, Footer, Sider } = Layout;
 export default function MenuDesplegable() {
   const [collapsed, setCollapsed] = useState(true);
   const [page, setPage] = useState("1");
+  const dispatch = useDispatch();
+  const cliente = useSelector((state)=>state.clientes)
+  const navigate = useNavigate();
+
+  useEffect(()=>{
+   console.log(cliente)
+  },[cliente])
+
+  const handleLogout = () => {
+    console.log(cliente.usuarios)
+    // Obtener el valor de 'username' del localStorage
+  const username = localStorage.getItem("username");
+    if(cliente.usuarios){
+      // Inicializar una variable para almacenar el 'id_usuario' encontrado
+      let userId;
+      let email;
+      let user;
+      // Buscar el objeto dentro de cliente.usuarios que tenga el mismo 'usuario' que 'username'
+      cliente.usuarios.forEach((usuario) => {
+        if (usuario.usuario === username) {
+          // Si se encuentra una coincidencia, guardar el 'id_usuario'
+          userId = usuario.id_usuario;
+          email = usuario.email;
+          user = usuario.usuario
+          // Terminar el bucle forEach
+          return;
+        }
+      });
+      console.log(userId, email, user)
+      dispatch(logoutUser(userId, email, user));
+      navigate('/');
+    }
+  };
 
   const username = localStorage.getItem("username");
   const nameEmpresa = useSelector(
@@ -81,6 +117,13 @@ export default function MenuDesplegable() {
           <Menu.Item key="3" icon={<IoSettingsSharp />}>
             <span>Ajustes</span>
           </Menu.Item>
+
+          <Menu.Item key="4" icon={<CiLogin/>} onClick={handleLogout}>
+            {/* <Link to="/"> */}
+              <span>Salir</span>
+            {/* </Link> */}
+          </Menu.Item>
+
         </Menu>
       </Sider>
       <Layout>
@@ -106,9 +149,10 @@ export default function MenuDesplegable() {
               <Datos />
             ) : page === "2" ? (
               <Metricas />
-            ) : (
+            ) : page === "3" ? (
               <Ajustes />
-            )}
+            ): null
+            }
 
             <FloatButton.Group
               trigger="hover"

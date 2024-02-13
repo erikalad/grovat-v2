@@ -14,6 +14,10 @@ import {
   SET_MENSAJES_NEW,
   NOMBRE_CUENTA_BORRAR,
   SET_CUSTOMIZACIONES,
+  FETCH_DATA_SUCCESS,
+  FETCH_DATA_FAILURE,
+  FETCH_DATA_START,
+  LOGOUT_USER
 } from "./actionTypes";
 const storedCualificadosData =
   JSON.parse(localStorage.getItem("cualificadosData")) || [];
@@ -30,21 +34,13 @@ const initialState = {
   mes: "",
   nombreCuenta: [],
   mensajesCualificados: [],
-  usuarios:[{
-    key:1,
-    id_usuario: "2b643f4d-c1f4-4e28-b531-0cca19f638df",
-    nombre: "lourdes",
-    apellido: "molina",
-    email: "lourdes@gmail.com",
-    logueado: false,
-    usuario: "lourdesmolina",
-    contraseña: "sdasd",
-    type: "usuario",
-    activo: "Activo",
-    createdAt: "2024-01-30T00:16:33.741Z",
-    updatedAt: "2024-01-30T00:16:33.741Z",
-    clienteId: "f88a4b0d-b9bd-46a3-a9a7-4bbcd1172b14"
-  }],
+  //clientes
+  clientes: [],
+  loadingClientes: false,
+  errorClientes: null,
+  //usuarios
+  usuarios:[],
+  //customizaciones
   customizaciones:[
     {
       key: '1',
@@ -76,7 +72,9 @@ const initialState = {
       fieldValue: 'Montserrat',
       editable: false,
     },
-  ]
+  ],
+  //funcionalidades:
+  funcionalidades:[]
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -110,7 +108,6 @@ const rootReducer = (state = initialState, action) => {
         };
 
     case SET_USERNAME:
-
       const username = localStorage.getItem("username") || [];
       return { ...state, username: username };
 
@@ -144,6 +141,50 @@ const rootReducer = (state = initialState, action) => {
             item.fieldName === fieldName ? { ...item, fieldValue } : item
           ),
         };
+      
+      //clientes
+      case FETCH_DATA_START:
+      return {
+        ...state,
+        loadingClientes: true,
+        errorClientes: null,
+      };
+      case FETCH_DATA_SUCCESS:
+        console.log("FETCH_DATA_SUCCESS", action.payload);
+      
+        // Transformar las customizaciones al formato deseado
+        const customizacionesTransformadas = action.payload.customizaciones.map((customizacion, index) => ({
+          key: index.toString(),
+          fieldName: 'Nombre de la Empresa',
+          fieldValue: customizacion.nombreEmpresa,
+          editable: false,
+        }));
+      
+        return {
+          ...state,
+          clientes: action.payload,
+          loadingClientes: false,
+          errorClientes: null,
+          usuarios: action.payload.usuarios,
+          // customizaciones: customizacionesTransformadas,
+          // funcionalidades: action.payload.funcionalidades
+        };
+      
+    case FETCH_DATA_FAILURE:
+      return {
+        ...state,
+        errorClientes: action.payload,
+        loadingClientes: false,
+      };
+
+    case LOGOUT_USER:
+      localStorage.removeItem("username");
+      localStorage.removeItem("password");
+      localStorage.removeItem('usuarioLogueado');
+      return{
+        ...state,
+        clientes: []
+      }
 
     default:
       return state;

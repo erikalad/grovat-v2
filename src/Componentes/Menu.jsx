@@ -24,33 +24,18 @@ export default function MenuDesplegable() {
   const [collapsed, setCollapsed] = useState(true);
   const [page, setPage] = useState("1");
   const dispatch = useDispatch();
-  const cliente = useSelector((state)=>state.clientes)
   const navigate = useNavigate();
 
-  useEffect(()=>{
-   console.log(cliente)
-  },[cliente])
-
   const handleLogout = () => {
-    console.log(cliente.usuarios)
     // Obtener el valor de 'username' del localStorage
-  const username = localStorage.getItem("username");
-    if(cliente.usuarios){
+  const userLogeado = JSON.parse(localStorage.getItem("usuarioLogueado"))
+  console.log(userLogeado)
+    if(userLogeado){
       // Inicializar una variable para almacenar el 'id_usuario' encontrado
-      let userId;
-      let email;
-      let user;
-      // Buscar el objeto dentro de cliente.usuarios que tenga el mismo 'usuario' que 'username'
-      cliente.usuarios.forEach((usuario) => {
-        if (usuario.usuario === username) {
-          // Si se encuentra una coincidencia, guardar el 'id_usuario'
-          userId = usuario.id_usuario;
-          email = usuario.email;
-          user = usuario.usuario
-          // Terminar el bucle forEach
-          return;
-        }
-      });
+      let userId = userLogeado.id_usuario
+      let email = userLogeado.email
+      let user = userLogeado.usuario;
+
       console.log(userId, email, user)
       dispatch(logoutUser(userId, email, user));
       navigate('/');

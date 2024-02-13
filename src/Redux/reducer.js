@@ -35,7 +35,7 @@ const initialState = {
   nombreCuenta: [],
   mensajesCualificados: [],
   //clientes
-  clientes: [],
+  clientes: null,
   loadingClientes: false,
   errorClientes: null,
   //usuarios
@@ -150,23 +150,49 @@ const rootReducer = (state = initialState, action) => {
         errorClientes: null,
       };
       case FETCH_DATA_SUCCESS:
-        console.log("FETCH_DATA_SUCCESS", action.payload);
+        console.log("FETCH_DATA_SUCCESS", action.payload)
       
-        // Transformar las customizaciones al formato deseado
-        const customizacionesTransformadas = action.payload.customizaciones.map((customizacion, index) => ({
-          key: index.toString(),
-          fieldName: 'Nombre de la Empresa',
-          fieldValue: customizacion.nombreEmpresa,
-          editable: false,
-        }));
-      
+        const customizacionesTransformadas = [
+          {
+            key: '1',
+            fieldName: 'Nombre de la Empresa',
+            fieldValue: action.payload.customizaciones[0].nombreEmpresa,
+            editable: false,
+          },
+          {
+            key: '2',
+            fieldName: 'Color Principal',
+            fieldValue: action.payload.customizaciones[0].colorPrincipal,
+            editable: false,
+          },
+          {
+            key: '3',
+            fieldName: 'Color Secundario',
+            fieldValue: action.payload.customizaciones[0].colorSecundario,
+            editable: false,
+          },
+          {
+            key: '4',
+            fieldName: 'URL del Logo',
+            fieldValue: action.payload.customizaciones[0].logoImg,
+            editable: false,
+          },
+          {
+            key: '5',
+            fieldName: 'Tipo de Letra',
+            fieldValue: action.payload.customizaciones[0].tipoLetra,
+            editable: false,
+          },
+        ]
+
+        console.log(action.payload.customizaciones[0].colorSecundario)
         return {
           ...state,
           clientes: action.payload,
           loadingClientes: false,
           errorClientes: null,
           usuarios: action.payload.usuarios,
-          // customizaciones: customizacionesTransformadas,
+          customizaciones: customizacionesTransformadas,
           // funcionalidades: action.payload.funcionalidades
         };
       
@@ -183,7 +209,7 @@ const rootReducer = (state = initialState, action) => {
       localStorage.removeItem('usuarioLogueado');
       return{
         ...state,
-        clientes: []
+        clientes: null
       }
 
     default:

@@ -22,6 +22,7 @@ const { Header, Content, Footer, Sider } = Layout;
 
 export default function MenuDesplegable() {
   const [collapsed, setCollapsed] = useState(true);
+  const cliente = useSelector((state)=> state.clientes)
   const [page, setPage] = useState("1");
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -145,20 +146,36 @@ export default function MenuDesplegable() {
               }}
               icon={<MdOutlineContactSupport/>}
             >
+              {cliente?.plan === "empresarial" ? 
               <Tooltip title="Contactanos por WhatsApp" placement="left">
                 <Link to="https://wa.me/qr/Q2YIOQL7UXOPH1" target="_blank">
                   <FloatButton
-                    className="icono1"
                     trigger="click"
                     type="primary"
                     style={{
                       right: 94,
-                      marginBottom:'1rem'
+                      marginBottom: '1rem',
                     }}
                     icon={<BsWhatsapp />}
-                  ></FloatButton>
+                  />
                 </Link>
               </Tooltip>
+
+              :   
+              
+              <Tooltip title="Subi de plan para contactanos por WhatsApp" placement="left">
+                <FloatButton
+                  className="disabled"
+                  trigger="click"
+                  style={{
+                    right: 94,
+                    marginBottom: '1rem',
+                  }}
+                  icon={<BsWhatsapp />}
+                />
+            </Tooltip>
+            }
+
 
               <Tooltip title="Contactanos por mail" placement="left">
                 <Link to="mailto:erikaladner5@gmail.com" target="_blank">

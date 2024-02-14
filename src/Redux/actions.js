@@ -20,7 +20,8 @@ import {
     FETCH_DATA_START,
     FETCH_DATA_END,
     LOGOUT_USER,
-    EDIT_USER
+    EDIT_USER,
+    ADD_USER
   } from './actionTypes';
   
   export const setMensajesData = (mensajes) => ({
@@ -170,6 +171,21 @@ export const editUser = (campos) => {
       }
     } catch (error) {
       console.error("Error para editar:", error);
+    }
+  };
+};
+
+export const addUser = (campos) => {
+  return async (dispatch) => {
+    try {
+      // Realizar la petición POST con Axios
+      const response = await axios.post('https://meicanalitycs.onrender.com/usuario', campos);
+      
+      // Manejar la respuesta si es necesario
+      dispatch({ type: ADD_USER, payload: response.data });
+    } catch (error) {
+      // Manejar errores de la petición
+      console.error('Error al realizar la petición:', error);
     }
   };
 };

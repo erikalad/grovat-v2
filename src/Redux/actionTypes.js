@@ -26,3 +26,4 @@ export const LOGOUT_USER = "LOGOUT_USER"
 
 //usuario
 export const EDIT_USER = "EDIT_USER"
+export const ADD_USER = "ADD_USER"

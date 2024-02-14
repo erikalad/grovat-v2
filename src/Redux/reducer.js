@@ -18,7 +18,8 @@ import {
   FETCH_DATA_FAILURE,
   FETCH_DATA_START,
   LOGOUT_USER,
-  EDIT_USER
+  EDIT_USER,
+  ADD_USER
 } from "./actionTypes";
 const storedCualificadosData =
   JSON.parse(localStorage.getItem("cualificadosData")) || [];
@@ -216,6 +217,12 @@ const rootReducer = (state = initialState, action) => {
       case EDIT_USER:
         localStorage.setItem('usuarioLogueado', JSON.stringify(action.payload.usuario));
         return state
+
+      case ADD_USER:
+        return {
+          ...state,
+          usuarios: [...state.usuarios, action.payload.usuario]
+        };
 
     default:
       return state;

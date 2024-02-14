@@ -3,15 +3,17 @@ import { Table, Input, Button, message, Tooltip, Select, Spin, Tag } from 'antd'
 import { EditOutlined, SaveOutlined } from '@ant-design/icons';
 import './styles.scss';
 import { useSelector, useDispatch } from 'react-redux';
+import { addUser } from '../Redux/actions';
 
 const { Option } = Select;
 
 const TablaUsuarios = () => {
   const cliente = useSelector((state)=> state.clientes)
   const usuarios = useSelector((state) => state.usuarios);
+  const usuariosTipoUsuario = usuarios.filter(user => user.type === 'usuario');
+  const [data, setData] = useState(usuariosTipoUsuario);  
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState(usuarios);
   const [count, setCount] = useState(usuarios.length);
   const dispatch = useDispatch();
 
@@ -40,16 +42,27 @@ const TablaUsuarios = () => {
 
 
   const handleSave = async (key) => {
+    const usuarioGuardado = data.find(item => item.id_usuario === key);
+    
+    // Convertir el valor de 'activo' a booleano
+    const activoBooleano = usuarioGuardado.activo === 'Activo' ? true : false;
+    const usuarioParaGuardar = { ...usuarioGuardado, activo: activoBooleano };
+  
     const updatedData = data.map((item) =>
       item.id_usuario === key ? { ...item, editable: false } : item
     );
   
     setData(updatedData);
     showLoader();
-    setTimeout(() => {
-      success(updatedData, key);
-    }, 1500);
+    
+    try {
+      await dispatch(addUser(usuarioParaGuardar));
+      success();
+    } catch (error) {
+      console.error('Error al guardar el usuario:', error);
+    }
   };
+  
   
 
   const columns = [
@@ -103,11 +116,11 @@ const TablaUsuarios = () => {
       width: '10%',
       render: (text, record) => record.editable ? (
         <Select value={text} onChange={(value) => handleFieldValueChange(value, record.id_usuario, 'activo')} style={{width:'100%'}}>
-          <Option value="Activo">Activo</Option>
-          <Option value="Inactivo">Inactivo</Option>
+          <Option value="true">Activo</Option>
+          <Option value="false">Inactivo</Option>
         </Select>
       ) : (
-        <Tag color={text === 'Activo' ? 'green' : 'red'}>{text}</Tag>
+        <Tag color={text ? 'green' : 'red'}>{text ? 'Activo' : 'Inactivo'}</Tag>
       ),
     },
     {

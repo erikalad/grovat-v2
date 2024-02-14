@@ -29,7 +29,6 @@ export default function MenuDesplegable() {
   const handleLogout = () => {
     // Obtener el valor de 'username' del localStorage
   const userLogeado = JSON.parse(localStorage.getItem("usuarioLogueado"))
-  console.log(userLogeado)
     if(userLogeado){
       // Inicializar una variable para almacenar el 'id_usuario' encontrado
       let userId = userLogeado.id_usuario

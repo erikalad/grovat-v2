@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 const { Option } = Select;
 
 const TablaUsuarios = () => {
+  const cliente = useSelector((state)=> state.clientes)
   const usuarios = useSelector((state) => state.usuarios);
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
@@ -146,7 +147,7 @@ const TablaUsuarios = () => {
       contraseña: "-",
       type: "-",
       activo: "-",
-      clienteId: "f88a4b0d-b9bd-46a3-a9a7-4bbcd1172b14"
+      clienteId: cliente.id_cliente
     }
     setData([...data, newData]);
     setCount(count + 1);

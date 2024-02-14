@@ -23,3 +23,6 @@ export const FETCH_DATA_END = 'FETCH_DATA_END'
 
 //logout
 export const LOGOUT_USER = "LOGOUT_USER"
+
+//usuario
+export const EDIT_USER = "EDIT_USER"

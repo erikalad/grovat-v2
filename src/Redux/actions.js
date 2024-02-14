@@ -19,7 +19,8 @@ import {
     FETCH_DATA_FAILURE,
     FETCH_DATA_START,
     FETCH_DATA_END,
-    LOGOUT_USER
+    LOGOUT_USER,
+    EDIT_USER
   } from './actionTypes';
   
   export const setMensajesData = (mensajes) => ({
@@ -153,5 +154,25 @@ export const logoutUser = (idUsuario, email, user) => {
     }
   };
 };
+
+export const editUser = (campos) => {
+  return async (dispatch) => {
+    try {
+      // Enviar solicitud POST para desloguear al usuario
+      const response = await axios.patch(`https://meicanalitycs.onrender.com/usuario/${campos.id}` ,  campos.userActualizado )
+
+      // Verificar si la solicitud fue exitosa
+      if (response.status === 200) {
+        console.log(response.data)
+        dispatch({ type: EDIT_USER, payload: response.data });
+      } else {
+        console.error("Error al editar:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error para editar:", error);
+    }
+  };
+};
+
 
 

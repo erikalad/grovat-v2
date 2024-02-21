@@ -19,7 +19,8 @@ import {
   FETCH_DATA_START,
   LOGOUT_USER,
   EDIT_USER,
-  ADD_USER
+  ADD_USER,
+  ADD_FUNCIONALIDAD
 } from "./actionTypes";
 const storedCualificadosData =
   JSON.parse(localStorage.getItem("cualificadosData")) || [];
@@ -152,42 +153,43 @@ const rootReducer = (state = initialState, action) => {
         errorClientes: null,
       };
       case FETCH_DATA_SUCCESS:
-        console.log("FETCH_DATA_SUCCESS", action.payload)
+        let customizacionesTransformadas = state.customizaciones; // Mantenemos las customizaciones existentes
+        
+        if (action.payload.customizaciones && action.payload.customizaciones.length > 0) {
+          customizacionesTransformadas = [
+            {
+              key: '1',
+              fieldName: 'Nombre de la Empresa',
+              fieldValue: action.payload.customizaciones[0].nombreEmpresa,
+              editable: false,
+            },
+            {
+              key: '2',
+              fieldName: 'Color Principal',
+              fieldValue: action.payload.customizaciones[0].colorPrincipal,
+              editable: false,
+            },
+            {
+              key: '3',
+              fieldName: 'Color Secundario',
+              fieldValue: action.payload.customizaciones[0].colorSecundario,
+              editable: false,
+            },
+            {
+              key: '4',
+              fieldName: 'URL del Logo',
+              fieldValue: action.payload.customizaciones[0].logoImg,
+              editable: false,
+            },
+            {
+              key: '5',
+              fieldName: 'Tipo de Letra',
+              fieldValue: action.payload.customizaciones[0].tipoLetra,
+              editable: false,
+            },
+          ];
+        }
       
-        const customizacionesTransformadas = [
-          {
-            key: '1',
-            fieldName: 'Nombre de la Empresa',
-            fieldValue: action.payload.customizaciones[0].nombreEmpresa,
-            editable: false,
-          },
-          {
-            key: '2',
-            fieldName: 'Color Principal',
-            fieldValue: action.payload.customizaciones[0].colorPrincipal,
-            editable: false,
-          },
-          {
-            key: '3',
-            fieldName: 'Color Secundario',
-            fieldValue: action.payload.customizaciones[0].colorSecundario,
-            editable: false,
-          },
-          {
-            key: '4',
-            fieldName: 'URL del Logo',
-            fieldValue: action.payload.customizaciones[0].logoImg,
-            editable: false,
-          },
-          {
-            key: '5',
-            fieldName: 'Tipo de Letra',
-            fieldValue: action.payload.customizaciones[0].tipoLetra,
-            editable: false,
-          },
-        ]
-
-        console.log(action.payload.customizaciones[0].colorSecundario)
         return {
           ...state,
           clientes: action.payload,
@@ -195,8 +197,8 @@ const rootReducer = (state = initialState, action) => {
           errorClientes: null,
           usuarios: action.payload.usuarios,
           customizaciones: customizacionesTransformadas,
-          // funcionalidades: action.payload.funcionalidades
-        };
+          funcionalidades: action.payload.funcionalidades
+        };      
       
     case FETCH_DATA_FAILURE:
       return {
@@ -223,6 +225,12 @@ const rootReducer = (state = initialState, action) => {
           ...state,
           usuarios: [...state.usuarios, action.payload.usuario]
         };
+      
+      case ADD_FUNCIONALIDAD:
+        return {
+          ...state,
+          funcionalidades: [...state.funcionalidades, action.payload.funcionalidad]
+        }
 
     default:
       return state;

@@ -21,7 +21,8 @@ import {
     FETCH_DATA_END,
     LOGOUT_USER,
     EDIT_USER,
-    ADD_USER
+    ADD_USER,
+    ADD_FUNCIONALIDAD
   } from './actionTypes';
   
   export const setMensajesData = (mensajes) => ({
@@ -190,5 +191,18 @@ export const addUser = (campos) => {
   };
 };
 
-
+export const postFuncionalidades = (campos) => {
+  return async (dispatch) => {
+    try {
+      // Realizar la petición POST con Axios
+      const response = await axios.post('https://meicanalitycs.onrender.com/funcionalidades', {campos});
+      
+      // Manejar la respuesta si es necesario
+      dispatch({ type: ADD_FUNCIONALIDAD, payload: response.data });
+    } catch (error) {
+      // Manejar errores de la petición
+      console.error('Error al realizar la petición:', error);
+    }
+  };
+};
 

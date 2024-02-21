@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Table, Input, Button, message, Tooltip, Select, Spin, Tag } from 'antd';
+import { Table, Input, Button, message, Tooltip, Select, Spin, Tag, Alert, Modal } from 'antd';
 import { EditOutlined, SaveOutlined } from '@ant-design/icons';
 import './styles.scss';
 import { useSelector, useDispatch } from 'react-redux';
 import { addUser } from '../Redux/actions';
+import { PlusOutlined } from '@ant-design/icons';
+import CargarExcel from './CargarExcel';
 
 const { Option } = Select;
 
@@ -151,35 +153,123 @@ const TablaUsuarios = () => {
   };
 
   const handleAdd = () => {
-    const newData = {
-      nombre: "-",
-      apellido: "-",
-      email: "-",
-      logueado: false,
-      usuario: "-",
-      contraseña: "-",
-      type: "-",
-      activo: "-",
-      clienteId: cliente.id_cliente
-    }
-    setData([...data, newData]);
-    setCount(count + 1);
-  };
+      let maxUsersAllowed = 0;
+      
+      switch (cliente.plan) {
+        case 'emprendedor':
+          maxUsersAllowed = 5;
+          break;
+        case 'startup':
+          maxUsersAllowed = 10;
+          break;
+        case 'empresarial':
+          maxUsersAllowed = 30;
+          break;
+        default:
+          maxUsersAllowed = 0;
+      }
+    
+      // Verificar si se supera el límite de usuarios permitidos
+      if (data.length >= maxUsersAllowed) {
+        message.error(`Se ha alcanzado el límite de usuarios para el plan "${cliente.plan}"`);
+        return;
+      }
+    
+      const newData = {
+        nombre: "-",
+        apellido: "-",
+        email: "-",
+        logueado: false,
+        usuario: "-",
+        contraseña: "-",
+        type: "-",
+        activo: "-",
+        clienteId: cliente.id_cliente
+      }
+      setData([...data, newData]);
+      setCount(count + 1);
+    };
+
+    const handleUpgrade = () => {
+      // Abrir URL externa en una nueva pestaña del navegador
+      window.open('https://www.meicanalitycs.com/planesyprecios', '_blank');
+    };
+
+
 
   return (
     <>
       {contextHolder}
+      
       <Button
         onClick={handleAdd}
         type="primary"
         style={{
           marginBottom: 16,
+          marginRight: 16
         }}
+        icon={<PlusOutlined />} 
       >
         Agregar Usuario
       </Button>
+
+      {/* {cliente.plan === 'emprendedor' && (
+        <CargarExcel/>
+      )} */}
+
+
       <Table dataSource={data} columns={columns} bordered pagination={false} scroll={{ x: 'max-content' }}/>
       <Spin spinning={loading} fullscreen />
+
+      {cliente.plan === 'emprendedor' && data.length >= 5 && (
+        <Alert
+          message="¡Upgrade!"
+          description={`Has alcanzado el límite de usuarios para el plan "Emprendedor".`}
+          type="info"
+          action={
+            <Button size="small" type="primary" onClick={handleUpgrade}>
+              Upgrade
+            </Button>
+          }
+          closable
+          style={{
+            marginTop: 16,
+          }}
+        />
+      )}
+      {cliente.plan === 'startup' && data.length >= 10 && (
+        <Alert
+          message="¡Upgrade!"
+          description={`Has alcanzado el límite de usuarios para el plan "Startup".`}
+          type="info"
+          action={
+            <Button size="small" type="primary" onClick={handleUpgrade}>
+              Upgrade
+            </Button>
+          }
+          closable
+          style={{
+            marginTop: 16,
+          }}
+        />
+      )}
+      {cliente.plan === 'empresarial' && data.length >= 30 && (
+        <Alert
+          message="¡Upgrade!"
+          description={`Has alcanzado el límite de usuarios para el plan "Empresarial".`}
+          type="info"
+          action={
+            <Button size="small" type="primary" onClick={handleUpgrade}>
+              Upgrade
+            </Button>
+          }
+          closable
+          style={{
+            marginTop: 16,
+          }}
+        />
+      )}
+
     </>
   );
 };

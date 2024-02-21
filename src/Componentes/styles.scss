@@ -83,6 +83,19 @@
   cursor: not-allowed;
 }
 
+.date-picker{
+  width: 100%;
+}
+
+.modal-descargarexcel{
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+
+
+
 @media (max-width: 1100px) {
 
 .button-cualificados {

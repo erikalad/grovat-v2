@@ -34,6 +34,7 @@ const LoginForm = () => {
     try {
       // Enviar la acción con dispatch
       await dispatch(fetchData(username, password));
+      console.log(cliente)
             if(cliente.length !== 0){
         // Redirigir al usuario a la página de dashboard
         navigate('/dashboard');

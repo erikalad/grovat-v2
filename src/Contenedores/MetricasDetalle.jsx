@@ -7,8 +7,24 @@ import LineaMensajes from "../Graficos/LineaMensajes";
 import Barra from "../Graficos/Barra";
 import * as XLSX from "xlsx";
 import { DownloadOutlined } from "@ant-design/icons";
+import Estadisticas from "../Graficos/Estadisticas";
+import Progreso from "../Graficos/Progreso";
+import EstadisticasConexiones from "../Graficos/EstadisticasConexiones";
+import ProgresoConexiones from "../Graficos/ProgresoConexiones";
+import EstadisticasMensajes from "../Graficos/EstadisticasMensajes";
+import ProgresoMensajes from "../Graficos/ProgresoMensajes";
 
-const MetricasDetalle = ({ data, filteredColumns, type }) => {
+const MetricasDetalle = ({
+  data,
+  filteredColumns,
+  type,
+  estadisticas,
+  progreso,
+  mesesFiltrados,
+  cantArchivos,
+  invitaciones,
+  conexiones,
+}) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   const showModal = () => {
@@ -20,9 +36,9 @@ const MetricasDetalle = ({ data, filteredColumns, type }) => {
   };
 
   const exportToExcel = () => {
-    const modifiedData = data.map(item => ({
+    const modifiedData = data.map((item) => ({
       ...item,
-      contactado: item.contactado ? 'Contactado' : 'No contactado'
+      contactado: item.contactado ? "Contactado" : "No contactado",
     }));
 
     const ws = XLSX.utils.json_to_sheet(modifiedData);
@@ -70,9 +86,9 @@ const MetricasDetalle = ({ data, filteredColumns, type }) => {
       content: (
         <div>
           Esta visualización corresponde a los mensajes enviados solo desde la
-          cuenta asignada, para identificar las primeras interacciones con nuevas
-          conexiones. Esta información permitirá evaluar cuántas cuentas nuevas
-          se han contactado por día.
+          cuenta asignada, para identificar las primeras interacciones con
+          nuevas conexiones. Esta información permitirá evaluar cuántas cuentas
+          nuevas se han contactado por día.
         </div>
       ),
       onOk() {},
@@ -81,42 +97,87 @@ const MetricasDetalle = ({ data, filteredColumns, type }) => {
 
   return (
     <>
-      <div className="barra-button carta">
+      <div className="container-detalles">
         {type === "invitaciones" ? (
-          <Barra data={data} />
+          <div className="contenedor-estadisticas-barra">
+            <div className="statidistics-progress">
+              <Estadisticas
+                className="statidistics"
+                data={estadisticas}
+                cantArchivos={cantArchivos}
+                type="invitaciones"
+                mesesFiltrados={mesesFiltrados}
+              />
+              <Progreso
+                data={progreso}
+                mesesFiltrados={mesesFiltrados}
+                cantArchivos={cantArchivos}
+              />
+            </div>
+            <div className="barra-button carta">
+              <Barra data={data} />
+            </div>
+          </div>
         ) : type === "conexiones" ? (
-          <Linea data={data} />
+          <div className="contenedor-estadisticas-barra">
+            <div className="statidistics-progress">
+              <EstadisticasConexiones className="statidistics" data={data} />
+              <ProgresoConexiones data={data} invitaciones={invitaciones} />
+            </div>
+            <div className="barra-button carta">
+              <Linea data={data} />
+            </div>
+          </div>
         ) : (
-          <LineaMensajes data={data} />
+          <div className="contenedor-estadisticas-barra">
+            <div className="statidistics-progress">
+              <EstadisticasMensajes
+                className="statidistics"
+                data={data}
+                cantArchivos={cantArchivos}
+                type="mensajes"
+                mesesFiltrados={mesesFiltrados}
+              />
+              <ProgresoMensajes
+                data={data}
+                mesesFiltrados={mesesFiltrados}
+                cantArchivos={cantArchivos}
+                conexiones={conexiones}
+              />
+            </div>
+            <div className="barra-button carta">
+              <LineaMensajes data={data} />
+            </div>
+          </div>
         )}
         <div>
-        <Tooltip title="Ver detalle de los datos">
-          <Button
-            onClick={showModal}
-            shape="circle"
-            icon={<BsTable />}
-            style={{ marginRight: "1rem", marginTop: "1rem" }}
-          ></Button>
-        </Tooltip>
-        <Tooltip title="Importante">
-          {type === "invitaciones" ? (
-            <Button onClick={info} shape="circle" icon={<BsInfo />} />
-          ) : type === "conexiones" ? (
-            <Button onClick={infoCon} shape="circle" icon={<BsInfo />} />
-          ) : (
-            <Button onClick={infoMen} shape="circle" icon={<BsInfo />} />
-          )}
-        </Tooltip>
-        {type === "conexiones" && (
-        <Tooltip title="Exportar a Excel">
+          <Tooltip title="Ver detalle de los datos">
             <Button
-              onClick={exportToExcel}
+              onClick={showModal}
               shape="circle"
-              icon={<DownloadOutlined />}
-              style={{ marginLeft: "1rem", marginTop: "1rem" }}
-            />
+              icon={<BsTable />}
+              style={{ marginRight: "1rem" }}
+            ></Button>
           </Tooltip>
-        )}
+          <Tooltip title="Importante">
+            {type === "invitaciones" ? (
+              <Button onClick={info} shape="circle" icon={<BsInfo />} />
+            ) : type === "conexiones" ? (
+              <Button onClick={infoCon} shape="circle" icon={<BsInfo />} />
+            ) : (
+              <Button onClick={infoMen} shape="circle" icon={<BsInfo />} />
+            )}
+          </Tooltip>
+          {type === "conexiones" && (
+            <Tooltip title="Exportar a Excel">
+              <Button
+                onClick={exportToExcel}
+                shape="circle"
+                icon={<DownloadOutlined />}
+                style={{ marginLeft: "1rem" }}
+              />
+            </Tooltip>
+          )}
         </div>
       </div>
       <Modal

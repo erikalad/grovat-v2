@@ -1,49 +1,52 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Form, Input,message } from "antd";
+import { Button, Form, Input, message } from "antd";
+import { fetchData } from "../Redux/actions";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
   const formRef = useRef(null);
   const [messageApi, contextHolder] = message.useMessage();
-  const users = [
-    { username: "lourdesaraoz", password: "grovat2024!" },
-    { username: "lucasdeleon", password: "grovat2024!" },
-    { username: "tomasmarcilese", password: "grovat2024!"},
-    { username: "beehr", password: "grovat2024!"},
-    { username: "mercately", password: "grovat2024!"},
-    { username: 'carlosterzano', password:  "grovat2024!"},
-    { username: "admin", password: "1234" },
-  ];
+  const dispatch = useDispatch();
+  const errorAxios = useSelector((state)=>state.errorClientes);
+  const loadingAxios = useSelector((state)=>state.loadingClientes);
+  const cliente = useSelector((state)=> state.clientes)
+  const navigate = useNavigate();
+  // useEffect para manejar errores de axios y mostrar mensajes de error
+  useEffect(() => {
+    console.log(cliente)
+    if (errorAxios) {
+      messageApi.error(errorAxios);
+    }
+  }, [errorAxios]);
 
-  const error = (errorMessage) => {
-    messageApi.open({
-      type: 'error',
-      content: errorMessage,
-    });
-  };
+  // useEffect para manejar el estado de loadingAxios
+  useEffect(() => {
+    if (loadingAxios) {
+      messageApi.loading("Iniciando sesión..."); // Mensaje de carga mientras se está iniciando sesión
+    } 
+  }, [loadingAxios]);
 
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
     const { username, password } = values;
-
-    const validUser = users.find(
-      (user) => user.username === username && user.password === password
-    );
-
-    if (validUser) {
-      localStorage.setItem("username", username);
-      localStorage.setItem("password", password);
-
-      window.location.href = "/dashboard";
-
-    } else {
-      error("Credenciales incorrectas")
-      formRef.current.resetFields();
+    // Realizar la solicitud fetch utilizando fetchData
+    try {
+      // Enviar la acción con dispatch
+      await dispatch(fetchData(username, password));
+      console.log(cliente)
+            if(cliente.length !== 0){
+        // Redirigir al usuario a la página de dashboard
+        navigate('/dashboard');
+       }
+    } catch (e) {
+      // Mostrar mensaje de error
+      message.error(errorAxios || "Error al iniciar sesión");
     }
   };
-
   return (
     <Form
-    ref={formRef}
+      ref={formRef}
       name="normal_login"
       className="login-form"
       initialValues={{
@@ -87,6 +90,7 @@ const LoginForm = () => {
           type="primary"
           htmlType="submit"
           className="login-form-button boton-login"
+          disabled={loadingAxios}
         >
           INGRESAR
         </Button>

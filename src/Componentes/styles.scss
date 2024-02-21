@@ -69,3 +69,66 @@
   margin-top: 1rem;
 }
 
+.transfer-modal{
+  height: 500px,
+}
+
+.ant-transfer-list {
+  width: 400px !important;
+}
+
+.disabled{
+  background-color: #ccc;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.date-picker{
+  width: 100%;
+}
+
+.modal-descargarexcel{
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+
+
+
+@media (max-width: 1100px) {
+
+.button-cualificados {
+  margin-left: 0rem;
+}
+
+.nav {
+max-width: 300px;
+}
+
+.user {
+  margin-top: 0.75rem;
+  margin-left: 1.5rem;
+}
+
+.ant-transfer{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.ant-picker-panels{
+  display: inline-flex;
+    flex-wrap: wrap;
+    direction: ltr;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.ant-transfer-list {
+  width: 300px !important;
+  height: 500px,
+}
+
+}
+

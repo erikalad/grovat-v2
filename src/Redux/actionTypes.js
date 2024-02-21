@@ -14,3 +14,19 @@ export const NOMBRE_CUENTA = 'NOMBRE_CUENTA'
 export const SET_MENSAJES_NEW = 'SET_MENSAJES_NEW'
 export const NOMBRE_CUENTA_BORRAR = "NOMBRE_CUENTA_BORRAR";
 export const SET_CUSTOMIZACIONES = 'SET_CUSTOMIZACIONES'
+
+// get clientes
+export const FETCH_DATA_START = 'FETCH_DATA_START'
+export const FETCH_DATA_SUCCESS = 'FETCH_DATA_SUCCESS'
+export const FETCH_DATA_FAILURE = 'FETCH_DATA_FAILURE'
+export const FETCH_DATA_END = 'FETCH_DATA_END'
+
+//logout
+export const LOGOUT_USER = "LOGOUT_USER"
+
+//usuario
+export const EDIT_USER = "EDIT_USER"
+export const ADD_USER = "ADD_USER"
+
+//funcionalidades
+export const ADD_FUNCIONALIDAD = "ADD_FUNCIONALIDAD"

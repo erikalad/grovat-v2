@@ -81,6 +81,7 @@ export default function Filtros({ onFilterByDate, data }) {
           <RangePicker disabled locale={locale} className="rangepicker"/>
         ) : (
           <RangePicker
+            style={{ maxWidth: '100%', overflowX: 'auto' }}
             onChange={handleDateChange}
             locale={locale}
             defaultValue={[firstDayOfMonth, today]}

@@ -82,10 +82,7 @@ export default function TransferCualificados({ data }) {
         dataSource={mockData}
         showSearch
         pagination
-        listStyle={{
-          width: 400,
-          height: 500,
-        }}
+        className='transfer-modal'
         operations={['Agregar', 'Quitar']}
         targetKeys={targetKeys}
         onChange={handleChange}

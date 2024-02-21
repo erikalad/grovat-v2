@@ -1,27 +1,46 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BsGraphUp } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { BsUpload } from "react-icons/bs";
 import { Layout, Menu, theme } from "antd";
 import Metricas from "./../Contenedores/Metricas";
 import Datos from "./Datos";
-// import logo from "./../imagenes/grovat.jpeg";
 import "./styles.scss";
-import { RiMenuSearchLine } from "react-icons/ri";
 import { FloatButton, Tooltip } from "antd";
 import { BsWhatsapp } from "react-icons/bs";
 import { IoSettingsSharp } from "react-icons/io5";
 import Ajustes from "../Contenedores/Ajustes";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { MdOutlineContactSupport } from "react-icons/md";
 import { MdOutlineMailOutline } from "react-icons/md";
+import { CiLogin } from "react-icons/ci";
+import { logoutUser } from "../Redux/actions";
+import { useNavigate } from "react-router-dom";
 
 
 const { Header, Content, Footer, Sider } = Layout;
 
 export default function MenuDesplegable() {
   const [collapsed, setCollapsed] = useState(true);
+  const cliente = useSelector((state)=> state.clientes)
   const [page, setPage] = useState("1");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Obtener el valor de 'username' del localStorage
+  const userLogeado = JSON.parse(localStorage.getItem("usuarioLogueado"))
+    if(userLogeado){
+      // Inicializar una variable para almacenar el 'id_usuario' encontrado
+      let userId = userLogeado.id_usuario
+      let email = userLogeado.email
+      let user = userLogeado.usuario;
+
+      console.log(userId, email, user)
+      dispatch(logoutUser(userId, email, user));
+      navigate('/');
+    }
+  };
 
   const username = localStorage.getItem("username");
   const nameEmpresa = useSelector(
@@ -83,6 +102,13 @@ export default function MenuDesplegable() {
           <Menu.Item key="3" icon={<IoSettingsSharp />}>
             <span>Ajustes</span>
           </Menu.Item>
+
+          <Menu.Item key="4" icon={<CiLogin/>} onClick={handleLogout}>
+            {/* <Link to="/"> */}
+              <span>Salir</span>
+            {/* </Link> */}
+          </Menu.Item>
+
         </Menu>
       </Sider>
       <Layout>
@@ -108,9 +134,10 @@ export default function MenuDesplegable() {
               <Datos />
             ) : page === "2" ? (
               <Metricas />
-            ) : (
+            ) : page === "3" ? (
               <Ajustes />
-            )}
+            ): null
+            }
 
             <FloatButton.Group
               trigger="hover"
@@ -119,20 +146,36 @@ export default function MenuDesplegable() {
               }}
               icon={<MdOutlineContactSupport/>}
             >
+              {cliente?.plan === "empresarial" ? 
               <Tooltip title="Contactanos por WhatsApp" placement="left">
                 <Link to="https://wa.me/qr/Q2YIOQL7UXOPH1" target="_blank">
                   <FloatButton
-                    className="icono1"
                     trigger="click"
                     type="primary"
                     style={{
                       right: 94,
-                      marginBottom:'1rem'
+                      marginBottom: '1rem',
                     }}
                     icon={<BsWhatsapp />}
-                  ></FloatButton>
+                  />
                 </Link>
               </Tooltip>
+
+              :   
+              
+              <Tooltip title="Subi de plan para contactanos por WhatsApp" placement="left">
+                <FloatButton
+                  className="disabled"
+                  trigger="click"
+                  style={{
+                    right: 94,
+                    marginBottom: '1rem',
+                  }}
+                  icon={<BsWhatsapp />}
+                />
+            </Tooltip>
+            }
+
 
               <Tooltip title="Contactanos por mail" placement="left">
                 <Link to="mailto:erikaladner5@gmail.com" target="_blank">
@@ -156,7 +199,7 @@ export default function MenuDesplegable() {
             textAlign: "center",
           }}
         >
-          Grovat ©2024
+          {nameEmpresa} ©2024
         </Footer>
       </Layout>
     </Layout>

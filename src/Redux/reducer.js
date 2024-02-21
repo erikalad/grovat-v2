@@ -14,6 +14,13 @@ import {
   SET_MENSAJES_NEW,
   NOMBRE_CUENTA_BORRAR,
   SET_CUSTOMIZACIONES,
+  FETCH_DATA_SUCCESS,
+  FETCH_DATA_FAILURE,
+  FETCH_DATA_START,
+  LOGOUT_USER,
+  EDIT_USER,
+  ADD_USER,
+  ADD_FUNCIONALIDAD
 } from "./actionTypes";
 const storedCualificadosData =
   JSON.parse(localStorage.getItem("cualificadosData")) || [];
@@ -30,6 +37,13 @@ const initialState = {
   mes: "",
   nombreCuenta: [],
   mensajesCualificados: [],
+  //clientes
+  clientes: null,
+  loadingClientes: false,
+  errorClientes: null,
+  //usuarios
+  usuarios:[],
+  //customizaciones
   customizaciones:[
     {
       key: '1',
@@ -40,13 +54,13 @@ const initialState = {
     {
       key: '2',
       fieldName: 'Color Principal',
-      fieldValue: '#343041',
+      fieldValue: '#05061b',
       editable: false,
     },
     {
       key: '3',
       fieldName: 'Color Secundario',
-      fieldValue: '#C7AE6A',
+      fieldValue: '#ac9978',
       editable: false,
     },
     {
@@ -61,7 +75,9 @@ const initialState = {
       fieldValue: 'Montserrat',
       editable: false,
     },
-  ]
+  ],
+  //funcionalidades:
+  funcionalidades:[]
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -95,7 +111,6 @@ const rootReducer = (state = initialState, action) => {
         };
 
     case SET_USERNAME:
-
       const username = localStorage.getItem("username") || [];
       return { ...state, username: username };
 
@@ -129,6 +144,93 @@ const rootReducer = (state = initialState, action) => {
             item.fieldName === fieldName ? { ...item, fieldValue } : item
           ),
         };
+      
+      //clientes
+      case FETCH_DATA_START:
+      return {
+        ...state,
+        loadingClientes: true,
+        errorClientes: null,
+      };
+      case FETCH_DATA_SUCCESS:
+        let customizacionesTransformadas = state.customizaciones; // Mantenemos las customizaciones existentes
+        
+        if (action.payload.customizaciones && action.payload.customizaciones.length > 0) {
+          customizacionesTransformadas = [
+            {
+              key: '1',
+              fieldName: 'Nombre de la Empresa',
+              fieldValue: action.payload.customizaciones[0].nombreEmpresa,
+              editable: false,
+            },
+            {
+              key: '2',
+              fieldName: 'Color Principal',
+              fieldValue: action.payload.customizaciones[0].colorPrincipal,
+              editable: false,
+            },
+            {
+              key: '3',
+              fieldName: 'Color Secundario',
+              fieldValue: action.payload.customizaciones[0].colorSecundario,
+              editable: false,
+            },
+            {
+              key: '4',
+              fieldName: 'URL del Logo',
+              fieldValue: action.payload.customizaciones[0].logoImg,
+              editable: false,
+            },
+            {
+              key: '5',
+              fieldName: 'Tipo de Letra',
+              fieldValue: action.payload.customizaciones[0].tipoLetra,
+              editable: false,
+            },
+          ];
+        }
+      
+        return {
+          ...state,
+          clientes: action.payload,
+          loadingClientes: false,
+          errorClientes: null,
+          usuarios: action.payload.usuarios,
+          customizaciones: customizacionesTransformadas,
+          funcionalidades: action.payload.funcionalidades
+        };      
+      
+    case FETCH_DATA_FAILURE:
+      return {
+        ...state,
+        errorClientes: action.payload,
+        loadingClientes: false,
+      };
+
+    case LOGOUT_USER:
+      localStorage.removeItem("username");
+      localStorage.removeItem("password");
+      localStorage.removeItem('usuarioLogueado');
+      return{
+        ...state,
+        clientes: null
+      }
+
+      case EDIT_USER:
+        localStorage.setItem('usuarioLogueado', JSON.stringify(action.payload.usuario));
+        return state
+
+      case ADD_USER:
+        return {
+          ...state,
+          usuarios: [...state.usuarios, action.payload.usuario]
+        };
+      
+      case ADD_FUNCIONALIDAD:
+        return {
+          ...state,
+          funcionalidades: [...state.funcionalidades, action.payload.funcionalidad]
+        }
 
     default:
       return state;

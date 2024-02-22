@@ -155,7 +155,7 @@ const TablaUsuarios = () => {
   const handleAdd = () => {
       let maxUsersAllowed = 0;
       
-      switch (cliente.plan) {
+      switch (cliente?.plan) {
         case 'emprendedor':
           maxUsersAllowed = 5;
           break;
@@ -184,7 +184,7 @@ const TablaUsuarios = () => {
         contraseña: "-",
         type: "-",
         activo: "-",
-        clienteId: cliente.id_cliente
+        clienteId: cliente?.id_cliente
       }
       setData([...data, newData]);
       setCount(count + 1);
@@ -221,7 +221,7 @@ const TablaUsuarios = () => {
       <Table dataSource={data} columns={columns} bordered pagination={false} scroll={{ x: 'max-content' }}/>
       <Spin spinning={loading} fullscreen />
 
-      {cliente.plan === 'emprendedor' && data.length >= 5 && (
+      {cliente?.plan === 'emprendedor' && data.length >= 5 && (
         <Alert
           message="¡Upgrade!"
           description={`Has alcanzado el límite de usuarios para el plan "Emprendedor".`}
@@ -237,7 +237,7 @@ const TablaUsuarios = () => {
           }}
         />
       )}
-      {cliente.plan === 'startup' && data.length >= 10 && (
+      {cliente?.plan === 'startup' && data.length >= 10 && (
         <Alert
           message="¡Upgrade!"
           description={`Has alcanzado el límite de usuarios para el plan "Startup".`}
@@ -253,7 +253,7 @@ const TablaUsuarios = () => {
           }}
         />
       )}
-      {cliente.plan === 'empresarial' && data.length >= 30 && (
+      {cliente?.plan === 'empresarial' && data.length >= 30 && (
         <Alert
           message="¡Upgrade!"
           description={`Has alcanzado el límite de usuarios para el plan "Empresarial".`}

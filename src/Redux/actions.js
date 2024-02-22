@@ -104,9 +104,7 @@ export const fetchData = (usuario, contraseña) => {
       const userLogueado = localStorage.getItem("username", usuario);
       const contraLogueada = localStorage.getItem("password", contraseña);
 
-      console.log(usuarioLogueadoString && usuario === userLogueado && contraseña === contraLogueada)
       if (usuarioLogueadoString && usuario === userLogueado && contraseña === contraLogueada) {
-        console.log("entre?")
         // Si hay un usuario logueado, extraer el clienteId
         const usuarioLogueado = JSON.parse(usuarioLogueadoString);
         const clienteId = usuarioLogueado.clienteId;
@@ -116,11 +114,9 @@ export const fetchData = (usuario, contraseña) => {
       } else {
       
       response = await axios.post('https://meicanalitycs.onrender.com/login', { usuario, contraseña });
-      console.log(response.data)
       
       // Filtrar el array de usuarios para encontrar el usuario con el que se ha iniciado sesión
       const usuarioLogueado = response.data.usuarios.find(user => user.usuario === usuario);
-      console.log(usuarioLogueado)
       
       // Guardar únicamente el usuario encontrado en el local storage
       localStorage.setItem('usuarioLogueado', JSON.stringify(usuarioLogueado));
@@ -146,7 +142,6 @@ export const logoutUser = (idUsuario, email, user) => {
 
       // Verificar si la solicitud fue exitosa
       if (response.status === 200) {
-        console.log(response.data)
         dispatch({ type: LOGOUT_USER });
       } else {
         console.error("Error al desloguear al usuario:", response.statusText);
@@ -165,7 +160,6 @@ export const editUser = (campos) => {
 
       // Verificar si la solicitud fue exitosa
       if (response.status === 200) {
-        console.log(response.data)
         dispatch({ type: EDIT_USER, payload: response.data });
       } else {
         console.error("Error al editar:", response.statusText);

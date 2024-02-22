@@ -36,7 +36,6 @@ export default function MenuDesplegable() {
       let email = userLogeado.email
       let user = userLogeado.usuario;
 
-      console.log(userId, email, user)
       dispatch(logoutUser(userId, email, user));
       navigate('/');
     }

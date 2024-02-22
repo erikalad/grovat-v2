@@ -15,7 +15,6 @@ const LoginForm = () => {
   const navigate = useNavigate();
   // useEffect para manejar errores de axios y mostrar mensajes de error
   useEffect(() => {
-    console.log(cliente)
     if (errorAxios) {
       messageApi.error(errorAxios);
     }
@@ -34,7 +33,6 @@ const LoginForm = () => {
     try {
       // Enviar la acción con dispatch
       await dispatch(fetchData(username, password));
-      console.log(cliente)
             if(cliente.length !== 0){
         // Redirigir al usuario a la página de dashboard
         navigate('/dashboard');

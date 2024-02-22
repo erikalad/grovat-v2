@@ -74,7 +74,7 @@ const TablaFuncionalidades = () => {
       key: 'fechaSolicitud',
     },
       // Agregar la columna "Gratis" solo si el plan del cliente es "empresarial"
-      cliente.plan === 'empresarial' && {
+      cliente?.plan === 'empresarial' && {
         title: 'Gratis',
         dataIndex: 'gratis',
         key: 'gratis',
@@ -111,7 +111,7 @@ const TablaFuncionalidades = () => {
         Solicitar Funcionalidad
       </Button>
       
-      {cliente.funcionalidades && cliente.funcionalidades.length > 0 ? (
+      {cliente?.funcionalidades && cliente?.funcionalidades.length > 0 ? (
         <Table columns={columns} dataSource={data} pagination={false} bordered scroll={{ x: 'max-content' }} />
       ) : (
         <Alert message="No hay funcionalidades solicitadas" type="info" />
@@ -130,7 +130,7 @@ const TablaFuncionalidades = () => {
         extra={
           <Space>
             <Button onClick={onClose}>Cancelar</Button>
-            {cliente.plan !== "empresarial" ?
+            {cliente?.plan !== "empresarial" ?
                <Button onClick={() => form.submit()} type="primary" disabled>
                 Enviar
                </Button>
@@ -142,7 +142,7 @@ const TablaFuncionalidades = () => {
           </Space>
         }
       >
-        <Form form={form} layout="vertical" requiredMark onFinish={onFinish} disabled={cliente.plan !== "empresarial"}>
+        <Form form={form} layout="vertical" requiredMark onFinish={onFinish} disabled={cliente?.plan !== "empresarial"}>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
@@ -216,7 +216,7 @@ const TablaFuncionalidades = () => {
           </Row>
         </Form>
 
-      {cliente.plan === "emprendedor" &&
+      {cliente?.plan === "emprendedor" &&
       <Alert
       message="Información importante"
       description="Solo pueden obtener una nueva funcionalidad los Planes Startup o Empresariales, recordá que el Plan Empresarial tiene una funcionalidad gratis incluida! Comunicate con nosotros para obtener un descuento en el Plan Empresarial!"

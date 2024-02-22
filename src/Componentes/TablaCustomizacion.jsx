@@ -20,7 +20,6 @@ const { Option } = Select;
 const EditableTable = () => {
   const customizaciones = useSelector((state) => state.customizaciones);
   const cliente = useSelector((state) => state.clientes);
-  console.log(cliente);
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(customizaciones);
@@ -218,7 +217,7 @@ const EditableTable = () => {
                 icon={<TfiSave />}
               />
             </Tooltip>
-          ) : cliente.plan === "emprendedor" ? (
+          ) : cliente?.plan === "emprendedor" ? (
             <Tooltip title="Subir de plan para poder editar" disabled>
               <Button
                 type="primary"

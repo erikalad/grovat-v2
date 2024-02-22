@@ -5,12 +5,28 @@ import Menu from "./Componentes/Menu"
 import Login from "./Contenedores/Login";
 import esES from 'antd/es/locale/es_ES'; // Importar el paquete de idioma español
 import { ConfigProvider } from "antd";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchData } from "./Redux/actions";
 
 function App() {
   const colorPrincipal = useSelector(state => state.customizaciones.find(item => item.fieldName === 'Color Principal')?.fieldValue);
   const colorSecundario = useSelector(state => state.customizaciones.find(item => item.fieldName === 'Color Secundario')?.fieldValue);
   const font = useSelector(state => state.customizaciones.find(item => item.fieldName === 'Tipo de Letra')?.fieldValue);
+  const cliente = useSelector(state => state.clientes)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    // Asumiendo que cliente es un array, verifica si está vacío
+    if (cliente === null) {
+      const username = localStorage.getItem("username");
+      const password = localStorage.getItem("password");
+      // Asegúrate de que tanto username como password existen antes de llamar a fetchData
+      if (username && password) {
+        dispatch(fetchData(username, password))
+      }
+    }
+  }, [cliente]);
+
 
   useEffect(() => {
 

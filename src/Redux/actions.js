@@ -22,7 +22,8 @@ import {
     LOGOUT_USER,
     EDIT_USER,
     ADD_USER,
-    ADD_FUNCIONALIDAD
+    ADD_FUNCIONALIDAD,
+    SET_SEMANAS
   } from './actionTypes';
   
   export const setMensajesData = (mensajes) => ({
@@ -90,6 +91,12 @@ import {
 export const setCustomizaciones = (fieldName, fieldValue) => ({
   type: SET_CUSTOMIZACIONES,
   payload: { fieldName, fieldValue },
+});
+
+
+export const setCantSemanas = (semanas) => ({
+  type: SET_SEMANAS,
+  payload: semanas,
 });
 
 export const fetchData = (usuario, contraseña) => {

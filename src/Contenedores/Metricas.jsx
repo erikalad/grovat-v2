@@ -45,6 +45,7 @@ export default function Metricas() {
 
   const dispatch = useDispatch();
 
+
   useEffect(() => {
     // Iterar sobre cada elemento en datosFiltradosMes
     datosFiltradosMes.forEach((itemFiltrado) => {
@@ -79,6 +80,8 @@ export default function Metricas() {
     });
   }, [storedCualificadosData]);
 
+
+  
   const obtenerMesesFiltrados = () => {
     const meses = datosFiltrados.reduce((acc, item) => {
       const [_, month] = item.Fecha.split("/").map(Number);

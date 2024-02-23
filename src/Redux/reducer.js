@@ -20,7 +20,8 @@ import {
   LOGOUT_USER,
   EDIT_USER,
   ADD_USER,
-  ADD_FUNCIONALIDAD
+  ADD_FUNCIONALIDAD,
+  SET_SEMANAS
 } from "./actionTypes";
 const storedCualificadosData =
   JSON.parse(localStorage.getItem("cualificadosData")) || [];
@@ -37,6 +38,7 @@ const initialState = {
   mes: "",
   nombreCuenta: [],
   mensajesCualificados: [],
+  semanas: 0,
   //clientes
   clientes: null,
   loadingClientes: false,
@@ -135,6 +137,12 @@ const rootReducer = (state = initialState, action) => {
         ...state,
         invitacionesData: action.payload,
       };
+    
+      case SET_SEMANAS:
+        return {
+          ...state,
+          semanas : action.payload
+        }
 
       case SET_CUSTOMIZACIONES:
         const { fieldName, fieldValue } = action.payload;

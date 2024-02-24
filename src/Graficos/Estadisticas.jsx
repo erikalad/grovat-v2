@@ -1,10 +1,12 @@
 import React from "react";
 import { Card, Statistic } from "antd";
 import "./styles.css";
+import { useSelector } from "react-redux";
 
 const Estadisticas = ({ data, cantArchivos,mesesFiltrados }) => {
   const cantidadElementos = data.length;
-  const valorBase = 800;
+  const semanas = useSelector(state=>state.semanas)
+  const valorBase = semanas * 200;
   const mesesSeparados = mesesFiltrados?.split(',').map(mes => mes.trim());
   const totalObjetivo = valorBase * cantArchivos * mesesSeparados?.length;
 

@@ -11,7 +11,8 @@ import {
     TRANSFER_OK,
     SET_MES,
     NOMBRE_CUENTA,
-    SET_MENSAJES_NEW
+    SET_MENSAJES_NEW,
+    SET_SEMANAS
   } from './actionTypes';
   
   export const setMensajesData = (mensajes) => ({
@@ -70,4 +71,9 @@ import {
   export const actualizarPosicionesAction = (invitaciones) => ({
     type: ACTUALIZAR_POSICIONES,
     payload: invitaciones,
+  });
+
+  export const setCantSemanas = (semanas) => ({
+    type: SET_SEMANAS,
+    payload: semanas,
   });

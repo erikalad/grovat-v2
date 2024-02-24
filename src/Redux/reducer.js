@@ -12,6 +12,7 @@ import {
   SET_MES,
   NOMBRE_CUENTA,
   SET_MENSAJES_NEW,
+  SET_SEMANAS,
 } from "./actionTypes";
 const storedCualificadosData =
   JSON.parse(localStorage.getItem("cualificadosData")) || [];
@@ -27,7 +28,8 @@ const initialState = {
   transfer: true,
   mes: "",
   nombreCuenta: [],
-  mensajesCualificados: []
+  mensajesCualificados: [],
+  semanas:0
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -76,6 +78,12 @@ const rootReducer = (state = initialState, action) => {
         ...state,
         invitacionesData: action.payload,
       };
+
+      case SET_SEMANAS:
+        return {
+          ...state,
+          semanas : action.payload
+        }
 
     default:
       return state;

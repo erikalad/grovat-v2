@@ -12,3 +12,4 @@ export const TRANSFER_OK = 'TRANSFER_OK';
 export const SET_MES = 'SET_MES';
 export const NOMBRE_CUENTA = 'NOMBRE_CUENTA'
 export const SET_MENSAJES_NEW = 'SET_MENSAJES_NEW'
+export const SET_SEMANAS = "SET_SEMANAS"

@@ -20,7 +20,9 @@ export default function MenuDesplegable() {
     mercately: 'Mercately',
     tomasmarcilese: 'Tomás',
     beehr: 'Beehr',
-    carlosterzano: 'Carlos'
+    carlosterzano: 'Carlos',
+    solgruat: 'Sol',
+    juanflorit: 'Juan'
   };
 
   const formattedUsername = usernameMappings[username] || username;

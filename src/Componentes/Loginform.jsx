@@ -13,6 +13,8 @@ const LoginForm = () => {
     { username: "mercately", password: "grovat2024!"},
     { username: 'carlosterzano', password:  "grovat2024!"},
     { username: "admin", password: "1234" },
+    { username: "solgruat", password: "grovat2024!" },
+    { username: "juanflorit", password: "grovat2024!" },
   ];
 
   const error = (errorMessage) => {

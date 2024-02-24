@@ -10,6 +10,9 @@ import { DownloadOutlined } from "@ant-design/icons";
 
 const MetricasDetalle = ({ data, filteredColumns, type }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const cualificadosData = JSON.parse(localStorage.getItem('cualificadosData')) || [];
+
+  console.log(data)
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -20,16 +23,39 @@ const MetricasDetalle = ({ data, filteredColumns, type }) => {
   };
 
   const exportToExcel = () => {
-    const modifiedData = data.map(item => ({
-      ...item,
-      contactado: item.contactado ? 'Contactado' : 'No contactado'
-    }));
+    const cualificadosData = JSON.parse(localStorage.getItem('cualificadosData')) || [];
+
+    // Ordenar los datos de más antiguos a más nuevos
+    const sortedData = data.sort((a, b) => {
+        const dateA = a['Connected On'].split('/').reverse().join();
+        const dateB = b['Connected On'].split('/').reverse().join();
+        return new Date(dateA) - new Date(dateB);
+    });
+
+    // Modificar los datos: concatenar nombres, ajustar 'contactado', y verificar si es cualificado (si cualificadosData no está vacío)
+    const modifiedData = sortedData.map(({ 'First Name': firstName, 'Last Name': lastName, ...item }) => {
+        const fullName = `${firstName} ${lastName}`;
+        let modifiedItem = {
+            Name: fullName,
+            ...item,
+            contactado: item.contactado ? 'Contactado' : 'No contactado',
+        };
+        
+        // Añadir la propiedad "Cualificado" solo si cualificadosData no está vacío
+        if (cualificadosData.length > 0) {
+            const isCualificado = !!cualificadosData.find(cualificado => cualificado.name === fullName)?.cualificados;
+            modifiedItem.Cualificado = isCualificado ? 'Cualificado' : 'No Cualificado';
+        }
+
+        return modifiedItem;
+    });
 
     const ws = XLSX.utils.json_to_sheet(modifiedData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Conexiones");
     XLSX.writeFile(wb, `export_${type}.xlsx`);
-  };
+};
+
 
   const info = () => {
     Modal.info({

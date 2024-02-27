@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { UploadOutlined } from "@ant-design/icons";
-import { Button, Upload, Alert, Space, Tooltip, message } from "antd";
+import { Button, Upload, Alert, Space, Tooltip, message, Input, Modal } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { actualizarPosicionesAction, setConexionesData, setInvitacionesData, setMensajesData, setNameCuenta } from "../Redux/actions";
@@ -13,7 +13,8 @@ export default function Datos() {
   const [showSuccessMessageCon, setShowSuccessMessageCon] = useState(false);
   const [showSuccessMessageMes, setShowSuccessMessageMes] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const [nombreCuentaInput, setNombreCuentaInput] = useState("");
   const nombreCuenta = useSelector((state)=> state.nombreCuenta)
   const invitacionesData = useSelector((state) => state.invitacionesData);
   const conexionesData = useSelector((state) => state.conexionesData);
@@ -39,6 +40,26 @@ export default function Datos() {
       dispatch(actualizarPosicionesAction(invitacionesData));
     }
   }
+
+
+  const handleMenuClick = () => {
+    if (invitacionesData.length === 0 && nombreCuenta.length === 0 ) {
+      setModalVisible(true);
+    }
+  };
+
+  const handleModalOk = () => {
+    dispatch(setNameCuenta(nombreCuentaInput))
+      messageApi.open({
+        type: "success",
+        content: "El nombre de la cuenta se cargó correctamente",
+      });
+    setModalVisible(false);
+  };
+
+  const handleModalCancel = () => {
+    setModalVisible(false);
+  };
   
   
   useEffect(() => {
@@ -78,8 +99,7 @@ export default function Datos() {
     if (archivo === "conexionesData") {
 
       const newData = conexionesData.filter((item) => item.id !== id);
-        dispatch(setConexionesData(newData));
-
+      dispatch(setConexionesData(newData));
       setShowSuccessMessageCon(true);
   
       // Borrar el localStorage de "puestos" cuando se elimina el archivo de conexiones
@@ -240,6 +260,8 @@ export default function Datos() {
             type: "success",
             content: `El archivo "${nombreArchivo}" se subió correctamente`,
           });
+
+          handleMenuClick()
         })
         .catch((error) => {
           console.error("Error al cargar el archivo CSV de conexiones:", error);
@@ -467,6 +489,24 @@ export default function Datos() {
           return null;
         })}
       </Space>
+
+
+      <Modal
+        title="Ingrese el nombre de la cuenta"
+        open={modalVisible}
+        onOk={handleModalOk}
+        onCancel={handleModalCancel}
+      >
+        <div>
+          Notamos que no subiste archivo de Invitaciones, nos indicarias el nombre de la cuenta para poder continuar?
+        </div>
+        <br/>
+        <Input
+          placeholder="Nombre de la cuenta"
+          value={nombreCuentaInput}
+          onChange={(e) => setNombreCuentaInput(e.target.value)}
+        />
+      </Modal>
 
 
     </div>

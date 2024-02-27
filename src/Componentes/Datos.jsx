@@ -506,6 +506,9 @@ export default function Datos() {
           value={nombreCuentaInput}
           onChange={(e) => setNombreCuentaInput(e.target.value)}
         />
+      <br/> 
+      <br/> 
+        <Alert message="El nombre tiene que ser tal cual se encuentra en la página de LinkedIn, copiá y pegalo" type="info" />
       </Modal>
 
 

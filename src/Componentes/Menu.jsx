@@ -1,18 +1,27 @@
 import React, { useState } from "react";
 import { BsGraphUp } from "react-icons/bs";
 import { BsUpload } from "react-icons/bs";
-import { Layout, Menu, theme } from "antd";
+import { Input, Layout, Menu, Modal, theme } from "antd";
 import Metricas from "./../Contenedores/Metricas";
 import Datos from "./Datos";
 import logo from "./../imagenes/grovat.jpeg";
 import "./styles.css";
+import { useDispatch, useSelector } from "react-redux";
+import { setNameCuenta } from "../Redux/actions";
 
 const { Header, Content, Footer, Sider } = Layout;
 
 export default function MenuDesplegable() {
-  const [collapsed, setCollapsed] = useState(false);
+  const invitacionesData = useSelector(state=> state.invitacionesData)
+  const nombreCuenta = useSelector(state=>state.nombreCuenta)
+  const mensajesData = useSelector(state=>state.mensajesData)
+  const conexionesData = useSelector(state=>state.conexionesData)
+  const [modalVisible, setModalVisible] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
+  const [nombreCuentaInput, setNombreCuentaInput] = useState("");
   const [page, setPage] = useState("1");
   const username = localStorage.getItem('username');
+  const dispatch = useDispatch()
 
   const usernameMappings = {
     lourdesaraoz: 'Lourdes',
@@ -32,7 +41,20 @@ export default function MenuDesplegable() {
   } = theme.useToken();
 
   const handleMenuClick = (item) => {
-    setPage(item.key);
+    if (item.key === "2" && invitacionesData.length === 0 && nombreCuenta.length === 0  && (mensajesData.length > 0 || conexionesData.length > 0) ) {
+      setModalVisible(true);
+    } else {
+      setPage(item.key);
+    }
+  };
+
+  const handleModalOk = () => {
+    dispatch(setNameCuenta(nombreCuentaInput))
+    setModalVisible(false);
+  };
+
+  const handleModalCancel = () => {
+    setModalVisible(false);
   };
 
   return (
@@ -94,6 +116,20 @@ export default function MenuDesplegable() {
           Grovat ©2024
         </Footer>
       </Layout>
+
+      <Modal
+        title="Ingrese el nombre de la cuenta"
+        open={modalVisible}
+        onOk={handleModalOk}
+        onCancel={handleModalCancel}
+      >
+        <Input
+          placeholder="Nombre de la cuenta"
+          value={nombreCuentaInput}
+          onChange={(e) => setNombreCuentaInput(e.target.value)}
+        />
+      </Modal>
+
     </Layout>
   );
 }

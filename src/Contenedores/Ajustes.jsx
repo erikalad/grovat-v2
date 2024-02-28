@@ -4,33 +4,42 @@ import TablaCustomizacion from './../Componentes/TablaCustomizacion';
 import TablaUsuarios from '../Componentes/TablaUsuarios';
 import TablaPerfil from '../Componentes/TablaPerfil';
 import TablaFuncionalidades from '../Componentes/TablaFuncionalidades';
+import TablaFuncionalidadesAdmin from '../Componentes/TablaFuncionalidadesAdmin';
+import { useDispatch } from 'react-redux';
+import { getFuncionalidades } from '../Redux/actions';
 
 const { TabPane } = Tabs;
 
 const Ajustes = () => {
   const [usuarioLogueado, setUsuarioLogueado] = useState(JSON.parse(localStorage.getItem("usuarioLogueado")));
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    const interval = setInterval(() => {
       const usuarioActual = JSON.parse(localStorage.getItem("usuarioLogueado"));
       if (usuarioActual?.type !== usuarioLogueado?.type) {
         setUsuarioLogueado(usuarioActual);
       }
-    }, 1000); // Verifica cada segundo
-
-    return () => clearInterval(interval); // Limpieza al desmontar
+      if(usuarioActual?.type === "admin"){
+        dispatch(getFuncionalidades())
+      }
   }, [usuarioLogueado]);
 
   return (
     <Tabs type="card">
-      {usuarioLogueado?.type === "cliente" ?
+      {usuarioLogueado?.type === "cliente" || usuarioLogueado?.type === "admin" ?
       <>
         <TabPane tab="Customización" key="customizacion">
           <TablaCustomizacion />
         </TabPane>
+        {usuarioLogueado?.type === "admin" ?
         <TabPane tab="Funcionalidades" key="funcionalidades">
-          <TablaFuncionalidades/>
+          <TablaFuncionalidadesAdmin/>
         </TabPane>
+        :
+        <TabPane tab="Funcionalidades" key="funcionalidades">
+        <TablaFuncionalidades/>
+      </TabPane>
+        }
         <TabPane tab="Usuarios" key="usuarios">
           <TablaUsuarios/>
         </TabPane>

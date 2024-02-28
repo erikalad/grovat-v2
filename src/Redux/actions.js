@@ -23,7 +23,9 @@ import {
     EDIT_USER,
     ADD_USER,
     ADD_FUNCIONALIDAD,
-    SET_SEMANAS
+    SET_SEMANAS,
+    GET_FUNCIONALIDADES,
+    PATCH_FUNCIONALIDAD
   } from './actionTypes';
   
   export const setMensajesData = (mensajes) => ({
@@ -207,3 +209,27 @@ export const postFuncionalidades = (campos) => {
   };
 };
 
+
+export const getFuncionalidades = () => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get('https://meicanalitycs.onrender.com/funcionalidades');
+      dispatch({ type: GET_FUNCIONALIDADES, payload: response.data });
+    } catch (error) {
+      console.error('Error al realizar la petición:', error);
+    }
+  };
+};
+
+export const patchFuncionalidades = (campos, id) => {
+  return async (dispatch) => {
+    try {
+      console.log(campos, id)
+      const response = await axios.patch('https://meicanalitycs.onrender.com/funcionalidades/' + id, {campos});
+      console.log(response)
+      dispatch({ type: PATCH_FUNCIONALIDAD, payload: response.data });
+    } catch (error) {
+      console.error('Error al realizar la petición:', error);
+    }
+  };
+};

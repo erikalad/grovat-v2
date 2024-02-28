@@ -53,7 +53,7 @@ const TablaFuncionalidades = () => {
     } else if (!funcionalidad.fechaFin) {
       return <Tag color="yellow">En proceso</Tag>;
     } else {
-      return <Tag color="green">Realizado</Tag>;
+      return <Tag color="green">Finalizado</Tag>;
     }
   };
 

@@ -21,7 +21,9 @@ import {
   EDIT_USER,
   ADD_USER,
   ADD_FUNCIONALIDAD,
-  SET_SEMANAS
+  SET_SEMANAS,
+  GET_FUNCIONALIDADES,
+  PATCH_FUNCIONALIDAD
 } from "./actionTypes";
 const storedCualificadosData =
   JSON.parse(localStorage.getItem("cualificadosData")) || [];
@@ -239,6 +241,22 @@ const rootReducer = (state = initialState, action) => {
           ...state,
           funcionalidades: [...state.funcionalidades, action.payload.funcionalidad]
         }
+
+        case GET_FUNCIONALIDADES:
+          return{
+            ...state,
+            funcionalidades: action.payload
+          }
+          case PATCH_FUNCIONALIDAD:
+            return {
+              ...state,
+              funcionalidades: state.funcionalidades.map(funcionalidad => {
+                if (funcionalidad.id_funcionalidades === action.payload.id_funcionalidades) {
+                  return action.payload;
+                }
+                return funcionalidad;
+              })
+            };
 
     default:
       return state;

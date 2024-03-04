@@ -12,8 +12,6 @@ const MetricasDetalle = ({ data, filteredColumns, type }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const cualificadosData = JSON.parse(localStorage.getItem('cualificadosData')) || [];
 
-  console.log(data)
-
   const showModal = () => {
     setIsModalOpen(true);
   };

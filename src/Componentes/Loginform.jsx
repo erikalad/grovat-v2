@@ -7,6 +7,7 @@ const LoginForm = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const users = [
     { username: "lourdesaraoz", password: "grovat2024!" },
+    { username: "leanvidela", password: "grovat2024!"},
     { username: "lucasdeleon", password: "grovat2024!" },
     { username: "tomasmarcilese", password: "grovat2024!"},
     { username: "beehr", password: "grovat2024!"},

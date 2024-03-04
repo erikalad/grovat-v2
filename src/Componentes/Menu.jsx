@@ -22,7 +22,8 @@ export default function MenuDesplegable() {
     beehr: 'Beehr',
     carlosterzano: 'Carlos',
     solgruat: 'Sol',
-    juanflorit: 'Juan'
+    juanflorit: 'Juan',
+    leanvidela: 'Leandro'
   };
 
   const handleMenuClick = (item) => {

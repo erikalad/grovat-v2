@@ -4,10 +4,10 @@ import { useSelector } from 'react-redux';
 
 
 
-const Progreso = ({ data, mesesFiltrados, cantArchivos }) => {
+const Progreso = ({ data, cantArchivos }) => {
   
-  const mesesSeparados = mesesFiltrados?.split(',').map(mes => mes.trim());
-  const totalObjetivo = 800 * (mesesSeparados?.length || 0) * cantArchivos; // Manejar el caso en que mesesSeparados sea undefined
+  const semanas = useSelector(state=>state.semanas)
+  const totalObjetivo = (200 * semanas) * cantArchivos; // Manejar el caso en que mesesSeparados sea undefined
   const porcentaje = isFinite(totalObjetivo) ? Math.min((data.length / totalObjetivo) * 100, 100).toFixed(0) : 0;
   const colorPrincipal = useSelector(state => state.customizaciones.find(item => item.fieldName === 'Color Principal')?.fieldValue);
   const colorSecundario = useSelector(state => state.customizaciones.find(item => item.fieldName === 'Color Secundario')?.fieldValue);

@@ -6,7 +6,7 @@ import Login from "./Contenedores/Login";
 import esES from 'antd/es/locale/es_ES'; // Importar el paquete de idioma español
 import { ConfigProvider } from "antd";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchData } from "./Redux/actions";
+import { fetchData, getClientes } from "./Redux/actions";
 
 function App() {
   const colorPrincipal = useSelector(state => state.customizaciones.find(item => item.fieldName === 'Color Principal')?.fieldValue);
@@ -25,6 +25,7 @@ function App() {
         dispatch(fetchData(username, password))
       }
     }
+    dispatch(getClientes())
   }, [cliente]);
 
 

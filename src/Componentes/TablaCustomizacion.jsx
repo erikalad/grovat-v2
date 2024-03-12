@@ -13,7 +13,7 @@ import { CiEdit } from "react-icons/ci";
 import { TfiSave } from "react-icons/tfi";
 import "./styles.scss";
 import { useSelector, useDispatch } from "react-redux";
-import { setCustomizaciones } from "../Redux/actions";
+import { postCustomizaciones, setCustomizaciones } from "../Redux/actions";
 
 const { Option } = Select;
 
@@ -52,15 +52,46 @@ const EditableTable = () => {
 
   const handleSave = async (key) => {
     const updatedData = data.map((item) =>
-      item.key === key ? { ...item, editable: false } : item
-    );
+    item.key === key ? { ...item, editable: false } : item
+  );
 
-    setData(updatedData);
-    showLoader();
+  setData(updatedData);
+  showLoader();
+  setTimeout(() => {
+    success(updatedData, key);
+  }, 1500);
+    
+    // Crear un objeto de customizaciones basado en `updatedData`
+    const customizationsToSend = updatedData.reduce((acc, curr) => {
+      switch (curr.fieldName) {
+        case "Nombre de la Empresa":
+          acc.nombreEmpresa = curr.fieldValue;
+          break;
+        case "Color Principal":
+          acc.colorPrincipal = curr.fieldValue;
+          break;
+        case "Color Secundario":
+          acc.colorSecundario = curr.fieldValue;
+          break;
+        case "Tipo de Letra":
+          acc.tipoLetra = curr.fieldValue;
+          break;
+        case "URL del Logo":
+          acc.logoImg = curr.fieldValue;
+          break;
+        default:
+          break;
+      }
+      return acc;
+    }, {});
+  
+    // Asegúrate de agregar el clienteId desde el estado de Redux o cualquier otra fuente válida
+    customizationsToSend.clienteId = cliente.id_cliente; // Asegúrate de tener el `id` correcto del cliente aquí
+  
+    // Ahora dispatcha la acción con el objeto completo
     setTimeout(() => {
-      success(updatedData, key);
-    }, 1500);
-
+      dispatch(postCustomizaciones(customizationsToSend)); // Asumiendo que postCustomizaciones puede manejar este objeto directamente
+    }, 2000);
     setTimeout(() => {
       const editedItem = updatedData.find((item) => item.key === key);
       if (editedItem) {
@@ -70,6 +101,7 @@ const EditableTable = () => {
       }
     }, 2000);
   };
+  
 
   const handleColorChange = (color, key) => {
     const hexColor = color?.toHexString();
@@ -211,7 +243,7 @@ const EditableTable = () => {
           {record.editable ? (
             <Tooltip title="Guardar">
               <Button
-                className="btn-guardar"
+                className="btn-guardar btn-action"
                 shape="circle"
                 onClick={() => handleSave(record.key)}
                 icon={<TfiSave />}
@@ -220,6 +252,7 @@ const EditableTable = () => {
           ) : cliente?.plan === "emprendedor" ? (
             <Tooltip title="Subir de plan para poder editar" disabled>
               <Button
+                className="btn-action"
                 type="primary"
                 shape="circle"
                 icon={<CiEdit />}
@@ -229,6 +262,7 @@ const EditableTable = () => {
           ) : (
             <Tooltip title="Editar">
               <Button
+               className="btn-action"
                 type="primary"
                 shape="circle"
                 onClick={() => handleEdit(record.key)}

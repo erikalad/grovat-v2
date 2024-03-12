@@ -25,7 +25,11 @@ import {
     ADD_FUNCIONALIDAD,
     SET_SEMANAS,
     GET_FUNCIONALIDADES,
-    PATCH_FUNCIONALIDAD
+    PATCH_FUNCIONALIDAD,
+    POST_CUSTOMIZACIONES,
+    GET_CLIENTES,
+    POST_CLIENTE,
+    PATCH_CLIENTES
   } from './actionTypes';
   
   export const setMensajesData = (mensajes) => ({
@@ -100,6 +104,8 @@ export const setCantSemanas = (semanas) => ({
   type: SET_SEMANAS,
   payload: semanas,
 });
+
+
 
 export const fetchData = (usuario, contraseña) => {
   return async (dispatch) => {
@@ -209,6 +215,20 @@ export const postFuncionalidades = (campos) => {
   };
 };
 
+export const postCustomizaciones = (campos) => {
+  return async (dispatch) => {
+    try {
+      // Realizar la petición POST con Axios
+      const response = await axios.post('https://meicanalitycs.onrender.com/customizaciones', campos);
+      
+      // Manejar la respuesta si es necesario
+      dispatch({ type: POST_CUSTOMIZACIONES, payload: response.data });
+    } catch (error) {
+      // Manejar errores de la petición
+      console.error('Error al realizar la petición:', error);
+    }
+  };
+};
 
 export const getFuncionalidades = () => {
   return async (dispatch) => {
@@ -221,13 +241,49 @@ export const getFuncionalidades = () => {
   };
 };
 
+export const getClientes = () => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get('https://meicanalitycs.onrender.com/clientes');
+      dispatch({ type: GET_CLIENTES, payload: response.data });
+    } catch (error) {
+      console.error('Error al realizar la petición:', error);
+    }
+  };
+};
+
+export const postCliente = (campos) => {
+  return async (dispatch) => {
+    try {
+      // Realizar la petición POST con Axios
+      const response = await axios.post('https://meicanalitycs.onrender.com/cliente', campos);
+      
+      // Manejar la respuesta si es necesario
+      dispatch({ type: POST_CLIENTE, payload: response });
+    } catch (error) {
+      // Manejar errores de la petición
+      console.error('Error al realizar la petición:', error);
+    }
+  };
+};
+
 export const patchFuncionalidades = (campos, id) => {
   return async (dispatch) => {
     try {
-      console.log(campos, id)
       const response = await axios.patch('https://meicanalitycs.onrender.com/funcionalidades/' + id, {campos});
-      console.log(response)
       dispatch({ type: PATCH_FUNCIONALIDAD, payload: response.data });
+    } catch (error) {
+      console.error('Error al realizar la petición:', error);
+    }
+  };
+};
+
+export const patchCliente = (campos, id) => {
+  console.log(campos, id)
+  return async (dispatch) => {
+    try {
+      const response = await axios.patch('https://meicanalitycs.onrender.com/cliente/' + id, campos);
+      dispatch({ type: PATCH_CLIENTES, payload: response.data });
     } catch (error) {
       console.error('Error al realizar la petición:', error);
     }

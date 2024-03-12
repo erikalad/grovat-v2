@@ -7,6 +7,7 @@ import TablaFuncionalidades from '../Componentes/TablaFuncionalidades';
 import TablaFuncionalidadesAdmin from '../Componentes/TablaFuncionalidadesAdmin';
 import { useDispatch } from 'react-redux';
 import { getFuncionalidades } from '../Redux/actions';
+import TablaClientes from '../Componentes/TablaClientes';
 
 const { TabPane } = Tabs;
 
@@ -32,9 +33,14 @@ const Ajustes = () => {
           <TablaCustomizacion />
         </TabPane>
         {usuarioLogueado?.type === "admin" ?
+        <>
         <TabPane tab="Funcionalidades" key="funcionalidades">
           <TablaFuncionalidadesAdmin/>
         </TabPane>
+           <TabPane tab="Clientes" key="clientes">
+           <TablaClientes/>
+         </TabPane>
+         </>
         :
         <TabPane tab="Funcionalidades" key="funcionalidades">
         <TablaFuncionalidades/>
@@ -49,6 +55,7 @@ const Ajustes = () => {
       <TabPane tab="Perfil" key="perfil">
         <TablaPerfil/>
       </TabPane>
+   
     </Tabs>
   );
 };

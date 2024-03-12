@@ -177,7 +177,7 @@ export default function MenuDesplegable() {
 
 
               <Tooltip title="Contactanos por mail" placement="left">
-                <Link to="mailto:erikaladner5@gmail.com" target="_blank">
+                <Link to="mailto:meicanalitycs@gmail.com" target="_blank">
                   <FloatButton
                     className="icono2"
                     trigger="click"

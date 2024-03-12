@@ -23,7 +23,9 @@ import {
   ADD_FUNCIONALIDAD,
   SET_SEMANAS,
   GET_FUNCIONALIDADES,
-  PATCH_FUNCIONALIDAD
+  PATCH_FUNCIONALIDAD,
+  GET_CLIENTES,
+  POST_CLIENTE
 } from "./actionTypes";
 const storedCualificadosData =
   JSON.parse(localStorage.getItem("cualificadosData")) || [];
@@ -43,6 +45,8 @@ const initialState = {
   semanas: 0,
   //clientes
   clientes: null,
+  allClientes: [],
+  msjCliente: null,
   loadingClientes: false,
   errorClientes: null,
   //usuarios
@@ -216,6 +220,19 @@ const rootReducer = (state = initialState, action) => {
         errorClientes: action.payload,
         loadingClientes: false,
       };
+
+    case GET_CLIENTES:
+      return {
+        ...state,
+        allClientes: action.payload
+      }
+
+      case POST_CLIENTE:
+        return {
+          ...state, 
+          msjCliente: action.payload.mensaje,
+          allClientes: [...state.allClientes, action.payload.data]
+        }
 
     case LOGOUT_USER:
       localStorage.removeItem("username");

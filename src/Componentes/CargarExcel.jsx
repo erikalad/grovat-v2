@@ -156,7 +156,6 @@ const TablaUsuarios = () => {
     setColumns(updatedColumns);
     const allValidated = excelData.every((record) => validateRow(record));
     setShowCargarButton(allValidated);
-    console.log(excelData)
   }, [validated]);
 
   const handleEdit = (key) => {

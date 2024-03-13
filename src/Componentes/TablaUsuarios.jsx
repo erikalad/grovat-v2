@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { Table, Input, Button, message, Tooltip, Select, Spin, Tag, Alert, Modal } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Drawer, Form, Input, Select, Button, message, Tooltip, Table, Spin, Alert, Tag } from 'antd';
 import { EditOutlined, SaveOutlined } from '@ant-design/icons';
 import './styles.scss';
 import { useSelector, useDispatch } from 'react-redux';
-import { addUser } from '../Redux/actions';
+import { addUser, editUser, editUsuarioCliente, fetchData } from '../Redux/actions';
 import { PlusOutlined } from '@ant-design/icons';
-import CargarExcel from './CargarExcel';
+// import CargarExcel from './CargarExcel';
 
 const { Option } = Select;
 
@@ -18,6 +18,35 @@ const TablaUsuarios = () => {
   const [loading, setLoading] = useState(false);
   const [count, setCount] = useState(usuarios.length);
   const dispatch = useDispatch();
+
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [newUserData, setNewUserData] = useState({
+    nombre: '',
+    apellido: '',
+    email: '',
+    usuario: '',
+    contraseña: '',
+    type: 'usuario', // Asumiendo un valor predeterminado, ajusta según sea necesario
+    activo: true, // Asumiendo predeterminadamente activo
+    clienteId: cliente?.id_cliente,
+    logueado: false
+  });
+
+  const handleNewUserChange = (e) => {
+    const { name, value } = e.target;
+    setNewUserData({ ...newUserData, [name]: value });
+  };
+
+  const showDrawer = () => {
+    setDrawerVisible(true);
+  };
+  
+  const onClose = () => {
+    setDrawerVisible(false);
+  };
+
+ 
+
 
   const success = () => {
     messageApi.open({
@@ -45,9 +74,10 @@ const TablaUsuarios = () => {
 
   const handleSave = async (key) => {
     const usuarioGuardado = data.find(item => item.id_usuario === key);
+    console.log(usuarioGuardado)
     
     // Convertir el valor de 'activo' a booleano
-    const activoBooleano = usuarioGuardado.activo === 'Activo' ? true : false;
+    const activoBooleano = usuarioGuardado.activo === 'true' ? true : false;
     const usuarioParaGuardar = { ...usuarioGuardado, activo: activoBooleano };
   
     const updatedData = data.map((item) =>
@@ -56,9 +86,9 @@ const TablaUsuarios = () => {
   
     setData(updatedData);
     showLoader();
-    
+    console.log(usuarioParaGuardar)
     try {
-      await dispatch(addUser(usuarioParaGuardar));
+      await dispatch(editUsuarioCliente(usuarioParaGuardar));
       success();
     } catch (error) {
       console.error('Error al guardar el usuario:', error);
@@ -103,13 +133,6 @@ const TablaUsuarios = () => {
       dataIndex: 'type',
       key: 'type',
       width: '10%',
-      render: (text, record) => record.editable ? (
-        <Select value={text} onChange={(value) => handleFieldValueChange(value, record.id_usuario, 'type')} style={{width:'100%'}}>
-          <Option value="usuario">Usuario</Option>
-          <Option value="cliente">Cliente</Option>
-          <Option value="admin">Admin</Option>
-        </Select>
-      ) : text,
     },
     {
       title: 'Activo',
@@ -153,9 +176,10 @@ const TablaUsuarios = () => {
   };
 
   const handleAdd = () => {
-      let maxUsersAllowed = 0;
+    showDrawer();
+         let maxUsersAllowed = 0;
       
-      switch (cliente.plan) {
+      switch (cliente?.plan) {
         case 'emprendedor':
           maxUsersAllowed = 5;
           break;
@@ -174,27 +198,34 @@ const TablaUsuarios = () => {
         message.error(`Se ha alcanzado el límite de usuarios para el plan "${cliente.plan}"`);
         return;
       }
-    
-      const newData = {
-        nombre: "-",
-        apellido: "-",
-        email: "-",
-        logueado: false,
-        usuario: "-",
-        contraseña: "-",
-        type: "-",
-        activo: "-",
-        clienteId: cliente.id_cliente
-      }
-      setData([...data, newData]);
+
       setCount(count + 1);
-    };
+  };
+
 
     const handleUpgrade = () => {
       // Abrir URL externa en una nueva pestaña del navegador
       window.open('https://www.meicanalitycs.com/planesyprecios', '_blank');
     };
 
+    const handleSaveNewUser = async () => {
+      // Aquí deberías agregar la lógica para guardar el nuevo usuario, por ejemplo:
+      // Una llamada a una API o agregar el usuario al estado y luego cerrar el drawer
+      try {
+        // Simula guardar el usuario
+        await dispatch(addUser(newUserData));
+        success(); // Muestra un mensaje de éxito
+        onClose(); // Cierra el drawer
+      const username = localStorage.getItem("username");
+      const password = localStorage.getItem("password");
+      // Asegúrate de que tanto username como password existen antes de llamar a fetchData
+      if (username && password) {
+        dispatch(fetchData(username, password))
+      }
+      } catch (error) {
+        console.error('Error al guardar el usuario:', error);
+      }
+    };
 
 
   return (
@@ -221,7 +252,7 @@ const TablaUsuarios = () => {
       <Table dataSource={data} columns={columns} bordered pagination={false} scroll={{ x: 'max-content' }}/>
       <Spin spinning={loading} fullscreen />
 
-      {cliente.plan === 'emprendedor' && data.length >= 5 && (
+      {cliente?.plan === 'emprendedor' && data.length >= 5 && (
         <Alert
           message="¡Upgrade!"
           description={`Has alcanzado el límite de usuarios para el plan "Emprendedor".`}
@@ -237,7 +268,7 @@ const TablaUsuarios = () => {
           }}
         />
       )}
-      {cliente.plan === 'startup' && data.length >= 10 && (
+      {cliente?.plan === 'startup' && data.length >= 10 && (
         <Alert
           message="¡Upgrade!"
           description={`Has alcanzado el límite de usuarios para el plan "Startup".`}
@@ -253,7 +284,7 @@ const TablaUsuarios = () => {
           }}
         />
       )}
-      {cliente.plan === 'empresarial' && data.length >= 30 && (
+      {cliente?.plan === 'empresarial' && data.length >= 30 && (
         <Alert
           message="¡Upgrade!"
           description={`Has alcanzado el límite de usuarios para el plan "Empresarial".`}
@@ -270,7 +301,53 @@ const TablaUsuarios = () => {
         />
       )}
 
+<Drawer
+  title="Agregar nuevo usuario"
+  width={720}
+  onClose={onClose}
+  open={drawerVisible}
+  bodyStyle={{ paddingBottom: 80 }}
+  footer={
+    <div style={{ textAlign: 'right', }}>
+      <Button onClick={onClose} style={{ marginRight: 8 }}>
+        Cancelar
+      </Button>
+      <Button onClick={handleSaveNewUser} type="primary">
+        Guardar
+      </Button>
+    </div>
+  }
+>
+<Form layout="vertical" hideRequiredMark>
+    <Form.Item name="nombre" label="Nombre">
+      <Input placeholder="Ingrese el nombre" name="nombre" onChange={handleNewUserChange} />
+    </Form.Item>
+    <Form.Item name="apellido" label="Apellido">
+      <Input placeholder="Ingrese el apellido" name="apellido" onChange={handleNewUserChange} />
+      </Form.Item>
+      <Form.Item name="email" label="Email">
+      <Input placeholder="Ingrese el email" name="email" onChange={handleNewUserChange} />
+    </Form.Item>
+<Form.Item name="usuario" label="Usuario">
+  <Input placeholder="Ingrese el usuario" name="usuario" onChange={handleNewUserChange} />
+</Form.Item>
+<Form.Item name="contraseña" label="Contraseña">
+  <Input.Password placeholder="Ingrese la contraseña" name="contraseña" onChange={handleNewUserChange} />
+</Form.Item>
+<Form.Item name="activo" label="Activo" valuePropName="checked">
+  <Select defaultValue={true} onChange={value => setNewUserData({ ...newUserData, activo: value === "true" })}>
+    <Option value="true">Activo</Option>
+    <Option value="false">Inactivo</Option>
+  </Select>
+</Form.Item>
+</Form>
+
+</Drawer>
+
+
     </>
+
+    
   );
 };
 

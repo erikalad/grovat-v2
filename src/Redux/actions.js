@@ -22,7 +22,15 @@ import {
     LOGOUT_USER,
     EDIT_USER,
     ADD_USER,
-    ADD_FUNCIONALIDAD
+    ADD_FUNCIONALIDAD,
+    SET_SEMANAS,
+    GET_FUNCIONALIDADES,
+    PATCH_FUNCIONALIDAD,
+    POST_CUSTOMIZACIONES,
+    GET_CLIENTES,
+    POST_CLIENTE,
+    PATCH_CLIENTES,
+    EDIT_USUARIO
   } from './actionTypes';
   
   export const setMensajesData = (mensajes) => ({
@@ -92,6 +100,14 @@ export const setCustomizaciones = (fieldName, fieldValue) => ({
   payload: { fieldName, fieldValue },
 });
 
+
+export const setCantSemanas = (semanas) => ({
+  type: SET_SEMANAS,
+  payload: semanas,
+});
+
+
+
 export const fetchData = (usuario, contraseña) => {
   return async (dispatch) => {
     try {
@@ -104,9 +120,7 @@ export const fetchData = (usuario, contraseña) => {
       const userLogueado = localStorage.getItem("username", usuario);
       const contraLogueada = localStorage.getItem("password", contraseña);
 
-      console.log(usuarioLogueadoString && usuario === userLogueado && contraseña === contraLogueada)
       if (usuarioLogueadoString && usuario === userLogueado && contraseña === contraLogueada) {
-        console.log("entre?")
         // Si hay un usuario logueado, extraer el clienteId
         const usuarioLogueado = JSON.parse(usuarioLogueadoString);
         const clienteId = usuarioLogueado.clienteId;
@@ -116,11 +130,9 @@ export const fetchData = (usuario, contraseña) => {
       } else {
       
       response = await axios.post('https://meicanalitycs.onrender.com/login', { usuario, contraseña });
-      console.log(response.data)
       
       // Filtrar el array de usuarios para encontrar el usuario con el que se ha iniciado sesión
       const usuarioLogueado = response.data.usuarios.find(user => user.usuario === usuario);
-      console.log(usuarioLogueado)
       
       // Guardar únicamente el usuario encontrado en el local storage
       localStorage.setItem('usuarioLogueado', JSON.stringify(usuarioLogueado));
@@ -146,7 +158,6 @@ export const logoutUser = (idUsuario, email, user) => {
 
       // Verificar si la solicitud fue exitosa
       if (response.status === 200) {
-        console.log(response.data)
         dispatch({ type: LOGOUT_USER });
       } else {
         console.error("Error al desloguear al usuario:", response.statusText);
@@ -165,8 +176,25 @@ export const editUser = (campos) => {
 
       // Verificar si la solicitud fue exitosa
       if (response.status === 200) {
-        console.log(response.data)
         dispatch({ type: EDIT_USER, payload: response.data });
+      } else {
+        console.error("Error al editar:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error para editar:", error);
+    }
+  };
+};
+
+export const editUsuarioCliente = (campos) => {
+  return async (dispatch) => {
+    try {
+      // Enviar solicitud POST para desloguear al usuario
+      const response = await axios.patch(`https://meicanalitycs.onrender.com/usuario/${campos.id_usuario}` ,  campos )
+      console.log(response)
+      // Verificar si la solicitud fue exitosa
+      if (response.status === 200) {
+        dispatch({ type: EDIT_USUARIO, payload: response.data.usuario });
       } else {
         console.error("Error al editar:", response.statusText);
       }
@@ -206,3 +234,77 @@ export const postFuncionalidades = (campos) => {
   };
 };
 
+export const postCustomizaciones = (campos) => {
+  return async (dispatch) => {
+    try {
+      // Realizar la petición POST con Axios
+      const response = await axios.post('https://meicanalitycs.onrender.com/customizaciones', campos);
+      
+      // Manejar la respuesta si es necesario
+      dispatch({ type: POST_CUSTOMIZACIONES, payload: response.data });
+    } catch (error) {
+      // Manejar errores de la petición
+      console.error('Error al realizar la petición:', error);
+    }
+  };
+};
+
+export const getFuncionalidades = () => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get('https://meicanalitycs.onrender.com/funcionalidades');
+      dispatch({ type: GET_FUNCIONALIDADES, payload: response.data });
+    } catch (error) {
+      console.error('Error al realizar la petición:', error);
+    }
+  };
+};
+
+export const getClientes = () => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get('https://meicanalitycs.onrender.com/clientes');
+      dispatch({ type: GET_CLIENTES, payload: response.data });
+    } catch (error) {
+      console.error('Error al realizar la petición:', error);
+    }
+  };
+};
+
+export const postCliente = (campos) => {
+  return async (dispatch) => {
+    try {
+      // Realizar la petición POST con Axios
+      const response = await axios.post('https://meicanalitycs.onrender.com/cliente', campos);
+      
+      // Manejar la respuesta si es necesario
+      dispatch({ type: POST_CLIENTE, payload: response });
+    } catch (error) {
+      // Manejar errores de la petición
+      console.error('Error al realizar la petición:', error);
+    }
+  };
+};
+
+export const patchFuncionalidades = (campos, id) => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.patch('https://meicanalitycs.onrender.com/funcionalidades/' + id, {campos});
+      dispatch({ type: PATCH_FUNCIONALIDAD, payload: response.data });
+    } catch (error) {
+      console.error('Error al realizar la petición:', error);
+    }
+  };
+};
+
+export const patchCliente = (campos, id) => {
+  console.log(campos, id)
+  return async (dispatch) => {
+    try {
+      const response = await axios.patch('https://meicanalitycs.onrender.com/cliente/' + id, campos);
+      dispatch({ type: PATCH_CLIENTES, payload: response.data });
+    } catch (error) {
+      console.error('Error al realizar la petición:', error);
+    }
+  };
+};

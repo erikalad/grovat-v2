@@ -23,20 +23,19 @@ const { Header, Content, Footer, Sider } = Layout;
 export default function MenuDesplegable() {
   const [collapsed, setCollapsed] = useState(true);
   const cliente = useSelector((state)=> state.clientes)
+  const userLogeado = JSON.parse(localStorage.getItem("usuarioLogueado"))
   const [page, setPage] = useState("1");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogout = () => {
     // Obtener el valor de 'username' del localStorage
-  const userLogeado = JSON.parse(localStorage.getItem("usuarioLogueado"))
     if(userLogeado){
       // Inicializar una variable para almacenar el 'id_usuario' encontrado
       let userId = userLogeado.id_usuario
       let email = userLogeado.email
       let user = userLogeado.usuario;
 
-      console.log(userId, email, user)
       dispatch(logoutUser(userId, email, user));
       navigate('/');
     }
@@ -82,7 +81,7 @@ export default function MenuDesplegable() {
       >
         <div className="nav">
           <div className="user">
-            Bienvenid@ {nameEmpresa} / {formattedUsername}
+            Bienvenid@ {nameEmpresa} / {userLogeado.nombre}
           </div>
         </div>
         <Menu
@@ -178,7 +177,7 @@ export default function MenuDesplegable() {
 
 
               <Tooltip title="Contactanos por mail" placement="left">
-                <Link to="mailto:erikaladner5@gmail.com" target="_blank">
+                <Link to="mailto:meicanalitycs@gmail.com" target="_blank">
                   <FloatButton
                     className="icono2"
                     trigger="click"

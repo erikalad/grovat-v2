@@ -11,6 +11,7 @@ export default function Barra({ data }) {
   const colorPrincipal = useSelector(state => state.customizaciones.find(item => item.fieldName === 'Color Principal')?.fieldValue);
   const colorSecundario = useSelector(state => state.customizaciones.find(item => item.fieldName === 'Color Secundario')?.fieldValue);
 
+
   useEffect(() => {
 
     if (!data || data.length === 0 || !storedCualificadosData) {
@@ -60,8 +61,12 @@ export default function Barra({ data }) {
 
     const datosGrafico = Object.values(conteoPorFecha);
 
-     // Ordena los datos de más antiguo a más reciente
-     const sortedDatosGrafico = datosGrafico.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+    // Ordena los datos de más antiguo a más reciente
+      const sortedDatosGrafico = datosGrafico.sort((a, b) => {
+        const dateA = new Date(a.fecha);
+        const dateB = new Date(b.fecha);
+        return dateA - dateB;
+      });
 
     setGraficoData(sortedDatosGrafico);
 

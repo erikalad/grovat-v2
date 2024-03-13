@@ -46,8 +46,12 @@ export default function Linea({ data }) {
       return acc;
     }, []);
 
-    // Ordena los datos de más antiguo a más reciente
-    const sortedChartData = chartData.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+     // Ordena los datos de más antiguo a más reciente
+     const sortedChartData = chartData.sort((a, b) => {
+      const dateA = new Date(a.fecha);
+      const dateB = new Date(b.fecha);
+      return dateA - dateB;
+    });
 
     // Convierte los datos en un formato compatible con el gráfico de línea
     const formattedChartData = sortedChartData.flatMap((item) => [

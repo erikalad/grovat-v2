@@ -20,7 +20,13 @@ import {
   LOGOUT_USER,
   EDIT_USER,
   ADD_USER,
-  ADD_FUNCIONALIDAD
+  ADD_FUNCIONALIDAD,
+  SET_SEMANAS,
+  GET_FUNCIONALIDADES,
+  PATCH_FUNCIONALIDAD,
+  GET_CLIENTES,
+  POST_CLIENTE,
+  EDIT_USUARIO
 } from "./actionTypes";
 const storedCualificadosData =
   JSON.parse(localStorage.getItem("cualificadosData")) || [];
@@ -37,8 +43,11 @@ const initialState = {
   mes: "",
   nombreCuenta: [],
   mensajesCualificados: [],
+  semanas: 0,
   //clientes
   clientes: null,
+  allClientes: [],
+  msjCliente: null,
   loadingClientes: false,
   errorClientes: null,
   //usuarios
@@ -135,6 +144,12 @@ const rootReducer = (state = initialState, action) => {
         ...state,
         invitacionesData: action.payload,
       };
+    
+      case SET_SEMANAS:
+        return {
+          ...state,
+          semanas : action.payload
+        }
 
       case SET_CUSTOMIZACIONES:
         const { fieldName, fieldValue } = action.payload;
@@ -207,6 +222,19 @@ const rootReducer = (state = initialState, action) => {
         loadingClientes: false,
       };
 
+    case GET_CLIENTES:
+      return {
+        ...state,
+        allClientes: action.payload
+      }
+
+      case POST_CLIENTE:
+        return {
+          ...state, 
+          msjCliente: action.payload.mensaje,
+          allClientes: [...state.allClientes, action.payload.data]
+        }
+
     case LOGOUT_USER:
       localStorage.removeItem("username");
       localStorage.removeItem("password");
@@ -220,6 +248,24 @@ const rootReducer = (state = initialState, action) => {
         localStorage.setItem('usuarioLogueado', JSON.stringify(action.payload.usuario));
         return state
 
+        case EDIT_USUARIO:
+          // Encuentra el índice del usuario en el arreglo
+          const index = state.usuarios.findIndex(usuario => usuario.id === action.payload.id_usuario);
+        
+          if (index !== -1) {
+            // Actualiza el usuario en el arreglo utilizando el índice
+            const usuariosActualizados = [...state.usuarios];
+            usuariosActualizados[index] = {...usuariosActualizados[index], ...action.payload};
+        
+            return {
+              ...state,
+              usuarios: usuariosActualizados,
+            };
+          }
+        
+          return state; // Si no se encontró el usuario, retorna el estado actual sin cambios
+        
+
       case ADD_USER:
         return {
           ...state,
@@ -231,6 +277,22 @@ const rootReducer = (state = initialState, action) => {
           ...state,
           funcionalidades: [...state.funcionalidades, action.payload.funcionalidad]
         }
+
+        case GET_FUNCIONALIDADES:
+          return{
+            ...state,
+            funcionalidades: action.payload
+          }
+          case PATCH_FUNCIONALIDAD:
+            return {
+              ...state,
+              funcionalidades: state.funcionalidades.map(funcionalidad => {
+                if (funcionalidad.id_funcionalidades === action.payload.id_funcionalidades) {
+                  return action.payload;
+                }
+                return funcionalidad;
+              })
+            };
 
     default:
       return state;

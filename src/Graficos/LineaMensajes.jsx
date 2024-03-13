@@ -43,9 +43,34 @@ export default function LineaMensajes({ data }) {
       cantidad: qualifiedMessagesByDate[fecha],
     }));
 
-    // Ordena los mensajes de más antiguo a más reciente
-    const sortedTotalMessagesChartData = totalMessagesChartData.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
-    const sortedQualifiedMessagesChartData = qualifiedMessagesChartData.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+// Ordena los mensajes de más antiguo a más reciente
+const sortedTotalMessagesChartData = totalMessagesChartData.sort((a, b) => {
+  const dateA = new Date(
+    parseInt(a.fecha.substring(6, 10)),
+    parseInt(a.fecha.substring(3, 5)) - 1,
+    parseInt(a.fecha.substring(0, 2))
+  );
+  const dateB = new Date(
+    parseInt(b.fecha.substring(6, 10)),
+    parseInt(b.fecha.substring(3, 5)) - 1,
+    parseInt(b.fecha.substring(0, 2))
+  );
+  return dateA - dateB;
+});
+
+const sortedQualifiedMessagesChartData = qualifiedMessagesChartData.sort((a, b) => {
+  const dateA = new Date(
+    parseInt(a.fecha.substring(6, 10)),
+    parseInt(a.fecha.substring(3, 5)) - 1,
+    parseInt(a.fecha.substring(0, 2))
+  );
+  const dateB = new Date(
+    parseInt(b.fecha.substring(6, 10)),
+    parseInt(b.fecha.substring(3, 5)) - 1,
+    parseInt(b.fecha.substring(0, 2))
+  );
+  return dateA - dateB;
+});
 
     setLineChartData([sortedTotalMessagesChartData, sortedQualifiedMessagesChartData]);
   };

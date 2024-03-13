@@ -12,8 +12,7 @@ const { Option } = Select;
 const TablaUsuarios = () => {
   const cliente = useSelector((state)=> state.clientes)
   const usuarios = useSelector((state) => state.usuarios);
-  const usuariosTipoUsuario = usuarios.filter(user => user.type === 'usuario');
-  const [data, setData] = useState(usuariosTipoUsuario);  
+  const [data, setData] = useState(usuarios);  
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
   const [count, setCount] = useState(usuarios.length);

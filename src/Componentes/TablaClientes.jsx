@@ -325,7 +325,7 @@ const emailColumnSearchIcon = (filtered, dataIndex) => (
         type="primary"
         onClick={() => setDrawerAbierto(true)}
         icon={<PlusOutlined />}
-        style={{ marginBottom: 16 }}
+        style={{ marginTop: 16 }}
       >
         Crear Usuario
       </Button>

@@ -74,7 +74,6 @@ const TablaUsuarios = () => {
 
   const handleSave = async (key) => {
     const usuarioGuardado = data.find(item => item.id_usuario === key);
-    console.log(usuarioGuardado)
     
     // Convertir el valor de 'activo' a booleano
     const activoBooleano = usuarioGuardado.activo === 'true' ? true : false;
@@ -86,7 +85,6 @@ const TablaUsuarios = () => {
   
     setData(updatedData);
     showLoader();
-    console.log(usuarioParaGuardar)
     try {
       await dispatch(editUsuarioCliente(usuarioParaGuardar));
       success();

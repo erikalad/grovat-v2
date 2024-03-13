@@ -191,7 +191,6 @@ export const editUsuarioCliente = (campos) => {
     try {
       // Enviar solicitud POST para desloguear al usuario
       const response = await axios.patch(`https://meicanalitycs.onrender.com/usuario/${campos.id_usuario}` ,  campos )
-      console.log(response)
       // Verificar si la solicitud fue exitosa
       if (response.status === 200) {
         dispatch({ type: EDIT_USUARIO, payload: response.data.usuario });
@@ -298,7 +297,6 @@ export const patchFuncionalidades = (campos, id) => {
 };
 
 export const patchCliente = (campos, id) => {
-  console.log(campos, id)
   return async (dispatch) => {
     try {
       const response = await axios.patch('https://meicanalitycs.onrender.com/cliente/' + id, campos);

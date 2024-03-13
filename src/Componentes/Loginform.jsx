@@ -8,12 +8,14 @@ import { useNavigate } from "react-router-dom";
 const LoginForm = () => {
   const formRef = useRef(null);
   const [messageApi, contextHolder] = message.useMessage();
+  const username = localStorage.getItem("username");
   const dispatch = useDispatch();
   const errorAxios = useSelector((state)=>state.errorClientes);
   const loadingAxios = useSelector((state)=>state.loadingClientes);
-  const cliente = useSelector((state)=> state.clientes)
+  // const cliente = useSelector((state)=> state.clientes)
   const navigate = useNavigate();
   // useEffect para manejar errores de axios y mostrar mensajes de error
+
   useEffect(() => {
     if (errorAxios) {
       messageApi.error(errorAxios);
@@ -30,17 +32,14 @@ const LoginForm = () => {
   const onFinish = async (values) => {
     const { username, password } = values;
     // Realizar la solicitud fetch utilizando fetchData
-    try {
+
       // Enviar la acción con dispatch
       await dispatch(fetchData(username, password));
-            if(cliente.length !== 0){
+       if(username){
         // Redirigir al usuario a la página de dashboard
         navigate('/dashboard');
        }
-    } catch (e) {
-      // Mostrar mensaje de error
-      message.error(errorAxios || "Error al iniciar sesión");
-    }
+    
   };
   return (
     <Form

@@ -24,6 +24,7 @@ import { FaCheck } from "react-icons/fa6";
 import { IoCloseSharp } from "react-icons/io5";
 import moment from 'moment';
 import 'moment/locale/es'; // Importa el idioma que desees usar (en este caso, español)
+import FormularioUsuario from "./FormularioUsuario";
 
 
 
@@ -40,6 +41,8 @@ const TablaClientes = () => {
   const [editedClientId, setEditedClientId] = useState(null);
   const [searchText, setSearchText] = useState(""); // Definir el estado para el texto de búsqueda
   const [searchedColumn, setSearchedColumn] = useState(""); // Definir el estado para la columna de búsqueda
+  const [drawerAbierto, setDrawerAbierto] = useState(false);
+
 
   const success = (msj) => {
     messageApi.open({
@@ -306,7 +309,6 @@ const emailColumnSearchIcon = (filtered, dataIndex) => (
         key: "type",
       },
     ];
-
     const userData = record.usuarios.map((usuario) => ({
       key: usuario.id_usuario,
       nombre: usuario.nombre || "-",
@@ -316,7 +318,25 @@ const emailColumnSearchIcon = (filtered, dataIndex) => (
     }));
 
     return (
+      <div>
       <Table columns={userColumns} dataSource={userData} pagination={false} />
+      <div>
+      <Button
+        type="primary"
+        onClick={() => setDrawerAbierto(true)}
+        icon={<PlusOutlined />}
+        style={{ marginBottom: 16 }}
+      >
+        Crear Usuario
+      </Button>
+      {console.log(drawerAbierto)}
+      {drawerAbierto && (
+        <div className="drawer">
+          <FormularioUsuario  cerrarDrawer={() => setDrawerAbierto(false)} drawerAbierto={drawerAbierto} clienteId={record.key}/>
+        </div>
+      )}
+    </div>
+    </div>
     );
   };
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Drawer, Form, Input, Select, Button, message, Tooltip, Table, Spin, Alert, Tag } from 'antd';
 import { EditOutlined, SaveOutlined } from '@ant-design/icons';
 import './styles.scss';

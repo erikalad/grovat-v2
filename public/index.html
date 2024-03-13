@@ -1,35 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/logo.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo.png" />
-    <script type="text/javascript" src="https://unpkg.com/@ant-design/plots@latest/dist/plots.min.js"></script>
-    <script type="text/javascript" src="https://unpkg.com/@ant-design/flowchart@latest/dist/flowchart.min.js"></script>
-    <script type="text/javascript" src="https://unpkg.com/@ant-design/maps@latest/dist/maps.min.js"></script>
-    <script type="text/javascript" src="https://unpkg.com/@ant-design/graphs@latest/dist/graphs.min.js"></script>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Amatic+SC&family=Dancing+Script&family=Gloria+Hallelujah&family=Grape+Nuts&family=Mate&family=Montserrat+Alternates&family=Playfair+Display&family=Roboto&family=Shadows+Into+Light&display=swap" rel="stylesheet">
-<script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
-<script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
-<script type="text/javascript" src="https://unpkg.com/@ant-design/plots@latest/dist/plots.min.js"></script>
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <title>MeIC Analitycs</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="%PUBLIC_URL%/logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo.png" />
+  <script type="text/javascript" src="https://unpkg.com/@ant-design/plots@latest/dist/plots.min.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/@ant-design/flowchart@latest/dist/flowchart.min.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/@ant-design/maps@latest/dist/maps.min.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/@ant-design/graphs@latest/dist/graphs.min.js"></script>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Amatic+SC&family=Dancing+Script&family=Gloria+Hallelujah&family=Grape+Nuts&family=Mate&family=Montserrat+Alternates&family=Playfair+Display&family=Roboto&family=Shadows+Into+Light&display=swap" rel="stylesheet">
+  <script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/@ant-design/plots@latest/dist/plots.min.js"></script>
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  <title id="pageTitle">MeIC Analitycs</title>
+</head>
+<body>
+  <div id="root"></div>
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+  <script>
+    function updateFromLocalStorage() {
+      // Obtener los valores del localStorage
+      const pageTitle = localStorage.getItem('pageTitle');
+      const logoUrl = localStorage.getItem('logoUrl');
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
-  </body>
+      // Actualizar el título de la página si hay un valor en localStorage
+      if (pageTitle) {
+        document.getElementById('pageTitle').textContent = pageTitle;
+      }
+
+      // Actualizar el enlace de la imagen del logo si hay un valor en localStorage
+      if (logoUrl) {
+        const logoElement = document.querySelector('link[rel="icon"]');
+        logoElement.href = logoUrl;
+        const appleTouchIconElement = document.querySelector('link[rel="apple-touch-icon"]');
+        appleTouchIconElement.href = logoUrl;
+      }
+    }
+
+    // Llama a la función para actualizar desde el localStorage después de un retraso
+    setTimeout(updateFromLocalStorage, 2000); // Cambia el valor del retraso según tus necesidades
+  </script>
+</body>
 </html>

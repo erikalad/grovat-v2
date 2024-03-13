@@ -12,8 +12,15 @@ function App() {
   const colorPrincipal = useSelector(state => state.customizaciones.find(item => item.fieldName === 'Color Principal')?.fieldValue);
   const colorSecundario = useSelector(state => state.customizaciones.find(item => item.fieldName === 'Color Secundario')?.fieldValue);
   const font = useSelector(state => state.customizaciones.find(item => item.fieldName === 'Tipo de Letra')?.fieldValue);
+  const logo = useSelector(state => state.customizaciones.find(item => item.fieldName === 'URL del Logo')?.fieldValue);
+  const nombreEmpresa = useSelector(state => state.customizaciones.find(item => item.fieldName === 'Nombre de la Empresa')?.fieldValue);
   const cliente = useSelector(state => state.clientes)
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    localStorage.setItem('logoUrl', logo);
+    localStorage.setItem('pageTitle', nombreEmpresa);
+  }, [logo, nombreEmpresa]);
 
   useEffect(() => {
     // Asumiendo que cliente es un array, verifica si está vacío

@@ -662,6 +662,7 @@ export default function Metricas() {
       </Divider>
       <div className="container-metricdetail">
         <MetricasDetalle
+          
           data={datosFiltrados}
           filteredColumns={filteredColumns}
           type="invitaciones"
@@ -671,12 +672,14 @@ export default function Metricas() {
           progreso={datosFiltrados}
         />
         <MetricasDetalle
+        
           data={datosFiltradoCon}
           filteredColumns={columnsConexionesFiltered}
           type="conexiones"
           invitaciones={datosFiltrados}
         />
         <MetricasDetalle
+        
           data={datosFiltradosMes}
           filteredColumns={filteredColumnsMes}
           type="mensajes"

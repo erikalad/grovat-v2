@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import "./App.scss";
 import Menu from "./Componentes/Menu"
@@ -29,6 +29,7 @@ function App() {
   }, [cliente]);
 
 
+
   useEffect(() => {
 
       document.documentElement.style.setProperty('--color-principal', colorPrincipal);
@@ -53,7 +54,7 @@ function App() {
           path="/dashboard"
           element={
             <ProtectedRoute
-              element={<Menu />}
+              element={<Menu/>}
             />
           }
         />

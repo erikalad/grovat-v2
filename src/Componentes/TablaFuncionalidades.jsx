@@ -73,13 +73,17 @@ const TablaFuncionalidades = () => {
       dataIndex: 'fechaSolicitud',
       key: 'fechaSolicitud',
     },
-      // Agregar la columna "Gratis" solo si el plan del cliente es "empresarial"
-      cliente?.plan === 'empresarial' && {
-        title: 'Gratis',
-        dataIndex: 'gratis',
-        key: 'gratis',
-        render: (gratis) => (gratis ? <Tag color="green">Gratis</Tag> : <Tag color="red">No Gratis</Tag>),
-      },
+    // Agregar la columna "Gratis" solo si el plan del cliente es "empresarial"
+    ...(cliente?.plan === 'empresarial'
+      ? [
+          {
+            title: 'Gratis',
+            dataIndex: 'gratis',
+            key: 'gratis',
+            render: (gratis) => (gratis ? <Tag color="green">Gratis</Tag> : <Tag color="red">No Gratis</Tag>),
+          },
+        ]
+      : []),
     {
       title: 'Status',
       dataIndex: 'status',
@@ -92,6 +96,7 @@ const TablaFuncionalidades = () => {
       key: 'descripcion',
     },
   ];
+  
 
   const data = cliente?.funcionalidades.map((funcionalidad) => ({
     key: funcionalidad.id_funcionalidades,

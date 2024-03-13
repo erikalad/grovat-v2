@@ -29,8 +29,9 @@ export const PATCH_CLIENTES = 'PATCH_CLIENTES'
 export const LOGOUT_USER = "LOGOUT_USER"
 
 //usuario
-export const EDIT_USER = "EDIT_USER"
+export const EDIT_USER = "EDIT_USER" // usuario perfil
 export const ADD_USER = "ADD_USER"
+export const EDIT_USUARIO = 'EDIT_USUARIO' //usuario de cada cliente
 
 //funcionalidades
 export const ADD_FUNCIONALIDAD = "ADD_FUNCIONALIDAD"

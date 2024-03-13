@@ -25,7 +25,8 @@ import {
   GET_FUNCIONALIDADES,
   PATCH_FUNCIONALIDAD,
   GET_CLIENTES,
-  POST_CLIENTE
+  POST_CLIENTE,
+  EDIT_USUARIO
 } from "./actionTypes";
 const storedCualificadosData =
   JSON.parse(localStorage.getItem("cualificadosData")) || [];
@@ -246,6 +247,24 @@ const rootReducer = (state = initialState, action) => {
       case EDIT_USER:
         localStorage.setItem('usuarioLogueado', JSON.stringify(action.payload.usuario));
         return state
+
+        case EDIT_USUARIO:
+          // Encuentra el índice del usuario en el arreglo
+          const index = state.usuarios.findIndex(usuario => usuario.id === action.payload.id_usuario);
+        
+          if (index !== -1) {
+            // Actualiza el usuario en el arreglo utilizando el índice
+            const usuariosActualizados = [...state.usuarios];
+            usuariosActualizados[index] = {...usuariosActualizados[index], ...action.payload};
+        
+            return {
+              ...state,
+              usuarios: usuariosActualizados,
+            };
+          }
+        
+          return state; // Si no se encontró el usuario, retorna el estado actual sin cambios
+        
 
       case ADD_USER:
         return {

@@ -29,7 +29,8 @@ import {
     POST_CUSTOMIZACIONES,
     GET_CLIENTES,
     POST_CLIENTE,
-    PATCH_CLIENTES
+    PATCH_CLIENTES,
+    EDIT_USUARIO
   } from './actionTypes';
   
   export const setMensajesData = (mensajes) => ({
@@ -176,6 +177,24 @@ export const editUser = (campos) => {
       // Verificar si la solicitud fue exitosa
       if (response.status === 200) {
         dispatch({ type: EDIT_USER, payload: response.data });
+      } else {
+        console.error("Error al editar:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error para editar:", error);
+    }
+  };
+};
+
+export const editUsuarioCliente = (campos) => {
+  return async (dispatch) => {
+    try {
+      // Enviar solicitud POST para desloguear al usuario
+      const response = await axios.patch(`https://meicanalitycs.onrender.com/usuario/${campos.id_usuario}` ,  campos )
+      console.log(response)
+      // Verificar si la solicitud fue exitosa
+      if (response.status === 200) {
+        dispatch({ type: EDIT_USUARIO, payload: response.data.usuario });
       } else {
         console.error("Error al editar:", response.statusText);
       }

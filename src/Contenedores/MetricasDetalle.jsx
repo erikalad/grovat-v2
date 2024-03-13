@@ -132,6 +132,7 @@ const MetricasDetalle = ({
           <div className="contenedor-estadisticas-barra">
             <div className="statidistics-progress">
               <EstadisticasMensajes
+              
                 className="statidistics"
                 data={data}
                 cantArchivos={cantArchivos}
@@ -139,6 +140,7 @@ const MetricasDetalle = ({
                 mesesFiltrados={mesesFiltrados}
               />
               <ProgresoMensajes
+              
                 data={data}
                 mesesFiltrados={mesesFiltrados}
                 cantArchivos={cantArchivos}
@@ -195,6 +197,7 @@ const MetricasDetalle = ({
       >
         <div className="tabla">
           <Table
+          
             columns={filteredColumns}
             dataSource={data}
             scroll={{ y: 400 }}

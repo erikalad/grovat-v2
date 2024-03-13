@@ -11,6 +11,7 @@ export default function Barra({ data }) {
   const colorPrincipal = useSelector(state => state.customizaciones.find(item => item.fieldName === 'Color Principal')?.fieldValue);
   const colorSecundario = useSelector(state => state.customizaciones.find(item => item.fieldName === 'Color Secundario')?.fieldValue);
 
+
   useEffect(() => {
 
     if (!data || data.length === 0 || !storedCualificadosData) {

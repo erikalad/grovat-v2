@@ -36,16 +36,42 @@ const MetricasDetalle = ({
   };
 
   const exportToExcel = () => {
-    const modifiedData = data.map((item) => ({
-      ...item,
-      contactado: item.contactado ? "Contactado" : "No contactado",
-    }));
+    const cualificadosData = JSON.parse(localStorage.getItem('cualificadosData')) || [];
+
+    // Ordenar los datos de más antiguos a más nuevos
+    const sortedData = data.sort((a, b) => {
+        const dateA = a['Connected On'].split('/').reverse().join();
+        const dateB = b['Connected On'].split('/').reverse().join();
+        return new Date(dateA) - new Date(dateB);
+    });
+
+    // Modificar los datos: concatenar nombres, ajustar 'contactado', y verificar si es cualificado (si cualificadosData no está vacío)
+    const modifiedData = sortedData.map(({ 'First Name': firstName, 'Last Name': lastName, ...item }) => {
+        const fullName = `${firstName} ${lastName}`;
+        let modifiedItem = {
+            Name: fullName,
+            ...item,
+            contactado: item.contactado ? 'Contactado' : 'No contactado',
+        };
+        
+        // Añadir la propiedad "Cualificado" solo si cualificadosData no está vacío
+        if (cualificadosData.length > 0) {
+            const isCualificado = !!cualificadosData.find(cualificado => cualificado.name === fullName)?.cualificados;
+            modifiedItem.Cualificado = isCualificado ? 'Cualificado' : 'No Cualificado';
+        }
+
+        return modifiedItem;
+    });
 
     const ws = XLSX.utils.json_to_sheet(modifiedData);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Conexiones");
-    XLSX.writeFile(wb, `export_${type}.xlsx`);
-  };
+    const today = new Date();
+    const filename = `export_${type}_${today.getFullYear()}-${(today.getMonth() + 1)
+      .toString()
+      .padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}.xlsx`;
+    XLSX.writeFile(wb, filename);
+};
 
   const info = () => {
     Modal.info({

@@ -341,7 +341,6 @@ const emailColumnSearchIcon = (filtered, dataIndex) => (
       >
         Crear Usuario
       </Button>
-      {console.log(drawerAbierto)}
       {drawerAbierto && (
         <div className="drawer">
           <FormularioUsuario  cerrarDrawer={() => setDrawerAbierto(false)} drawerAbierto={drawerAbierto} clienteId={record.key}/>

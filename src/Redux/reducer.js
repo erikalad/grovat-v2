@@ -26,13 +26,15 @@ import {
   PATCH_FUNCIONALIDAD,
   GET_CLIENTES,
   POST_CLIENTE,
-  EDIT_USUARIO
+  EDIT_USUARIO,
+  SET_CONEXIONES_ALL
 } from "./actionTypes";
 const storedCualificadosData =
   JSON.parse(localStorage.getItem("cualificadosData")) || [];
 
 const initialState = {
   mensajesData: [],
+  conexionesAll: [],
   cualificadosData: storedCualificadosData,
   username: [],
   puestos: { cualificados: [], noCualificados: [] },
@@ -97,6 +99,11 @@ const rootReducer = (state = initialState, action) => {
       case SET_MENSAJES_NEW:
         return { ...state, mensajesCualificados: action.payload };
       
+        case SET_CONEXIONES_ALL:
+          return {
+            ...state,
+            conexionesAll: action.payload
+          }
     case TRANSFER_OK:
       return { ...state, transfer: !state.transfer };
     case SET_MES:

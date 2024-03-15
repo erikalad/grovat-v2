@@ -22,6 +22,7 @@ export default function Metricas() {
   const archivosMensajes = mensajesString ? mensajesString : [];
   const cantMens = archivosMensajes.length;
   const storedCualificadosData = useSelector((state) => state.cualificadosData);
+  const conexionesAll = useSelector((state) => state.conexionesAll);
 
   const datosConcatenados = archivos.flatMap((archivo) => archivo.datos);
   const datosConcatenadosConexiones = archivosConexiones.flatMap(
@@ -35,12 +36,29 @@ export default function Metricas() {
   const dataCon = { datos: datosConcatenadosConexiones };
   const dataMes = { datos: datosConcatenadosMensajes };
 
+  // Iterar sobre los elementos de data y agregar la fecha de conexión
+  const dataConFechaConexion = dataMes?.datos.map((mensaje) => {
+    // Buscar el nombre completo en conexionesAll
+    const contacto = conexionesAll.find(
+      (contacto) => contacto.nombreCompleto === mensaje.TO
+    );
+    // Si se encuentra el contacto, agregar la fecha de conexión al objeto
+    if (contacto) {
+      return {
+        ...mensaje,
+        fechaConexion: contacto.fechaConexion
+      };
+    } else {
+      return mensaje; // Si no se encuentra el contacto, mantener el objeto sin cambios
+    }
+  });
+
   const [datosFiltrados, setDatosFiltrados] = useState(data.datos || []);
   const [datosFiltradoCon, setDatosFiltradosCon] = useState(
     dataCon.datos || []
   );
   const [datosFiltradosMes, setDatosFiltradosMes] = useState(
-    dataMes.datos || []
+    dataConFechaConexion || []
   );
 
   const dispatch = useDispatch();
@@ -137,7 +155,7 @@ export default function Metricas() {
     const fechaActual = new Date();
     const mesActual = fechaActual.getMonth() + 1;
 
-    const datosMesYAnioActual = dataMes?.datos.filter((item) => {
+    const datosMesYAnioActual = dataConFechaConexion.filter((item) => {
       if (item && item.DATE.DATE) {
         const [day, month, year] = item.DATE.DATE.split("/").map(Number);
         return month === mesActual && year === 2024; // Filtrar por el año 2024
@@ -155,7 +173,7 @@ export default function Metricas() {
     if (Object.keys(dataCon).length !== 0) {
       filterByMonthConexiones();
     }
-    if (Object.keys(dataMes).length !== 0) {
+    if (Object.keys(dataConFechaConexion).length !== 0) {
       filterByMonthMensajes();
     }
   }, []);
@@ -179,7 +197,7 @@ export default function Metricas() {
     if (!selectedDates || selectedDates.length !== 2) {
       setDatosFiltrados(data?.datos || []);
       setDatosFiltradosCon(dataCon?.datos || []); // Agregar el setDatosFiltradosCon aquí
-      setDatosFiltradosMes(dataMes?.datos || []); // Agregar el setDatosFiltradosMes aquí
+      setDatosFiltradosMes(dataConFechaConexion || []); // Agregar el setDatosFiltradosMes aquí
     } else {
       const [startDay, startMonth, startYear] = selectedDates[0]
         .split("/")
@@ -225,7 +243,7 @@ export default function Metricas() {
       setDatosFiltradosCon(filteredDataCon || []);
 
       // Filtrar dataMes
-      const filteredDataMes = dataMes?.datos.filter((item) => {
+      const filteredDataMes = dataConFechaConexion.filter((item) => {
         if (item && item.DATE && item.DATE.DATE) {
           const [day, month, year] = item.DATE.DATE.split("/").map(Number);
           const itemDate = new Date(year, month - 1, day);
@@ -233,6 +251,7 @@ export default function Metricas() {
         }
         return false;
       });
+
       setDatosFiltradosMes(filteredDataMes || []);
     }
   };
@@ -255,8 +274,8 @@ export default function Metricas() {
 
   // Obtener la primera entrada de la tercera tabla
   const primerEntradaMes =
-    dataMes && dataMes.datos && dataMes.datos.length > 0
-      ? dataMes.datos[0]
+  dataConFechaConexion && dataConFechaConexion.length > 0
+      ? dataConFechaConexion[0]
       : {};
 
   const allowedColumns = ["From", "Fecha", "Hora"];
@@ -396,174 +415,206 @@ export default function Metricas() {
   });
 
   // Configuración de columnas para la primera tabla
-  const columns = Object.keys(primerEntrada).map((clave, index) => {
-    const uniqueValues = Array.from(
-      new Set(data.datos.map((item) => item[clave]))
-    ).filter(Boolean);
+const columns = Object.keys(primerEntrada).map((clave, index) => {
+  const uniqueValues = Array.from(
+    new Set(data.datos.map((item) => item[clave]))
+  ).filter(Boolean);
 
-    const filters = allowedColumns.includes(clave)
-      ? uniqueValues.map((value) => ({ text: value, value: value }))
-      : null;
+  const filters = allowedColumns.includes(clave)
+    ? uniqueValues.map((value) => ({ text: value, value: value }))
+    : null;
 
-    // Agregar propiedades de búsqueda solo a las columnas "From" y "To"
-    const searchProps =
-      clave === "From" || clave === "To" ? getColumnSearchProps(clave) : {};
+  // Agregar propiedades de búsqueda solo a las columnas "From" y "To"
+  const searchProps =
+    clave === "From" || clave === "To" ? getColumnSearchProps(clave) : {};
 
-    return {
-      title: clave,
-      dataIndex: clave,
-      key: `columna_${index}`,
-      filters: filters,
-      onFilter: allowedColumns.includes(clave)
-        ? (value, record) => record[clave] === value
-        : null,
-      sorter: (a, b) => {
-        const aValue = a[clave] ? a[clave].length : 0;
-        const bValue = b[clave] ? b[clave].length : 0;
-        return aValue - bValue;
-      },
-      sortDirections: ["descend"],
-      ...searchProps, // Agregar propiedades de búsqueda
-    };
-  });
+  // Cambios en los encabezados
+  const headerMappings = {
+    From: "Cuenta",
+    To: "Enviado",
+    position: "Posición",
+  };
 
-  // Columnas excluidas para la primera tabla
-  const excludedColumns = [
-    "Direction",
-    "Message",
-    "inviterProfileUrl",
-    "inviteeProfileUrl",
-  ];
+  const title = headerMappings[clave] || clave;
 
-  // Filtrar columnas de la primera tabla
-  const filteredColumns = columns.filter(
-    (column) => !excludedColumns.includes(column.title)
-  );
+  return {
+    title: title,
+    dataIndex: clave,
+    key: `columna_${index}`,
+    filters: filters,
+    onFilter: allowedColumns.includes(clave)
+      ? (value, record) => record[clave] === value
+      : null,
+    sorter: (a, b) => {
+      const aValue = a[clave] ? a[clave].length : 0;
+      const bValue = b[clave] ? b[clave].length : 0;
+      return aValue - bValue;
+    },
+    sortDirections: ["descend"],
+    ...searchProps, // Agregar propiedades de búsqueda
+  };
+});
+
+// Columnas excluidas para la primera tabla
+const excludedColumns = [
+  "Direction",
+  "Message",
+  "inviterProfileUrl",
+  "inviteeProfileUrl",
+];
+
+// Filtrar columnas de la primera tabla
+const filteredColumns = columns.filter(
+  (column) => !excludedColumns.includes(column.title)
+);
+
 
   // Definir columnas permitidas para la segunda tabla
-  const allowedColumnsMes = [
-    "FROM",
-    "CONTENT",
-    "TO",
-    "position",
-    "cualificados",
-  ];
+const allowedColumnsMes = [
+  "FROM",
+  "CONTENT",
+  "TO",
+  "position",
+  "cualificados",
+  "fechaConexion", // Cambié el nombre de la columna aquí
+];
 
-  // Configurar columnas para la segunda tabla
-  const columnsMes = Object.keys(primerEntradaMes).map((clave, index) => {
-    const uniqueValues = Array.from(
-      new Set(dataMes.datos.map((item) => item[clave]))
-    ).filter(Boolean);
+const columnsMes = Object.keys(primerEntradaMes).map((clave, index) => {
+  const uniqueValues = Array.from(
+    new Set(dataMes.datos.map((item) => item[clave]))
+  ).filter(Boolean);
 
-    const filters = allowedColumnsMes.includes(clave)
-      ? uniqueValues.map((value) => ({ text: value, value: value }))
-      : null;
+  const filters = allowedColumnsMes.includes(clave)
+    ? uniqueValues.map((value) => ({ text: value, value: value }))
+    : null;
 
-    // Agregar propiedades de búsqueda solo a las columnas "Name" y "Position"
-    const searchProps =
-      clave === "FROM" || clave === "TO" || clave === "CONTENT"
-        ? getColumnSearchProps(clave)
-        : {};
+  // Agregar propiedades de búsqueda solo a las columnas "Name" y "Position"
+  const searchProps =
+    clave === "FROM" || clave === "TO" || clave === "CONTENT"
+      ? getColumnSearchProps(clave)
+      : {};
 
-    if (clave === "cualificados") {
-      const cualificadosFilterOptions = [
-        { text: "Cualificado", value: true },
-        { text: "No Cualificado", value: false },
-        { text: "Sin Especificar", value: null },
-      ];
-
-      return {
-        title: clave,
-        dataIndex: clave,
-        key: `columna_${index}`,
-        filters: cualificadosFilterOptions,
-        onFilter: allowedColumnsMes.includes(clave)
-          ? (value, record) => {
-              if (value === null) {
-                return record[clave] === null || record[clave] === undefined;
-              } else {
-                return record[clave] === value;
-              }
-            }
-          : null,
-        render: (text, record) => {
-          return record.cualificados === true ? (
-            <Tag color="green">Cualificado</Tag>
-          ) : record.cualificados === false ? (
-            <Tag color="red">No Cualificado</Tag>
-          ) : (
-            <Tag color="blue">Sin Especificar</Tag>
-          );
-        },
-        ...searchProps, // Agregar propiedades de búsqueda
-      };
-    }
-
-    if (clave === "CONTENT") {
-      return {
-        title: "Mensaje",
-        dataIndex: clave,
-        key: `columna_${index}`,
-        width: 300,
-        filters: filters,
-        onFilter: allowedColumnsMes.includes(clave)
-          ? (value, record) => record[clave] === value
-          : null,
-        ...searchProps, // Agregar propiedades de búsqueda
-      };
-    }
-
-    if (clave === "DATE") {
-      return {
-        title: "Día",
-        dataIndex: clave,
-        key: `columna_${index}`,
-        filters: filters,
-        onFilter: allowedColumnsMes.includes(clave)
-          ? (value, record) => record[clave].DATE === value
-          : null,
-        render: (text, record) => record[clave].DATE,
-        sorter: (a, b) => {
-          const aValue = a[clave] ? new Date(a[clave].DATE).getTime() : 0;
-          const bValue = b[clave] ? new Date(b[clave].DATE).getTime() : 0;
-          return aValue - bValue;
-        },
-        sortDirections: ["descend"],
-      };
-    }
+  if (clave === "cualificados") {
+    const cualificadosFilterOptions = [
+      { text: "Cualificado", value: true },
+      { text: "No Cualificado", value: false },
+      { text: "Sin Especificar", value: null },
+    ];
 
     return {
-      title: clave,
+      title: "Cualificados",
       dataIndex: clave,
       key: `columna_${index}`,
+      filters: cualificadosFilterOptions,
+      onFilter: allowedColumnsMes.includes(clave)
+        ? (value, record) => {
+            if (value === null) {
+              return record[clave] === null || record[clave] === undefined;
+            } else {
+              return record[clave] === value;
+            }
+          }
+        : null,
+      render: (text, record) => {
+        return record.cualificados === true ? (
+          <Tag color="green">Cualificado</Tag>
+        ) : record.cualificados === false ? (
+          <Tag color="red">No Cualificado</Tag>
+        ) : (
+          <Tag color="blue">Sin Especificar</Tag>
+        );
+      },
+      ...searchProps, // Agregar propiedades de búsqueda
+    };
+  }
+
+  if (clave === "CONTENT") {
+    return {
+      title: "Mensaje",
+      dataIndex: clave,
+      key: `columna_${index}`,
+      width: 300,
       filters: filters,
       onFilter: allowedColumnsMes.includes(clave)
         ? (value, record) => record[clave] === value
         : null,
+      ...searchProps, // Agregar propiedades de búsqueda
+    };
+  }
+
+  if (clave === "DATE") {
+    return {
+      title: "Día",
+      dataIndex: clave,
+      key: `columna_${index}`,
+      filters: filters,
+      onFilter: allowedColumnsMes.includes(clave)
+        ? (value, record) => record[clave].DATE === value
+        : null,
+      render: (text, record) => record[clave].DATE,
       sorter: (a, b) => {
-        const aValue = a[clave] ? a[clave].length : 0;
-        const bValue = b[clave] ? b[clave].length : 0;
+        const aValue = a[clave] ? new Date(a[clave].DATE).getTime() : 0;
+        const bValue = b[clave] ? new Date(b[clave].DATE).getTime() : 0;
         return aValue - bValue;
       },
       sortDirections: ["descend"],
-      ...searchProps, // Agregar propiedades de búsqueda
     };
-  });
+  }
 
-  // Columnas excluidas para la segunda tabla
-  const excludedColumnsMes = [
-    "CONVERSATION ID",
-    "CONVERSATION TITLE",
-    "FOLDER",
-    "RECIPIENT PROFILE URLS",
-    "SENDER PROFILE URL",
-    "SUBJECT",
-  ];
+  if (clave === "fechaConexion") {
+    return {
+      title: "Conexion",
+      dataIndex: clave,
+      key: `columna_${index}`,
+    };
+  }
+  
+  
+  
 
-  // Filtrar columnas de la segunda tabla
-  const filteredColumnsMes = columnsMes.filter(
-    (column) => !excludedColumnsMes.includes(column.title)
-  );
+  // Cambios en los encabezados
+  const headerMappings = {
+    FROM: "Cuenta",
+    TO: "Enviado",
+    position: "Posición",
+    cualificados: "Cualificados",
+  };
+
+  const title = headerMappings[clave] || clave;
+
+  return {
+    title: title,
+    dataIndex: clave,
+    key: `columna_${index}`,
+    filters: filters,
+    onFilter: allowedColumnsMes.includes(clave)
+      ? (value, record) => record[clave] === value
+      : null,
+    sorter: (a, b) => {
+      const aValue = a[clave] ? a[clave].length : 0;
+      const bValue = b[clave] ? b[clave].length : 0;
+      return aValue - bValue;
+    },
+    sortDirections: ["descend"],
+    ...searchProps, // Agregar propiedades de búsqueda
+  };
+});
+
+// Columnas excluidas para la segunda tabla
+const excludedColumnsMes = [
+  "CONVERSATION ID",
+  "CONVERSATION TITLE",
+  "FOLDER",
+  "RECIPIENT PROFILE URLS",
+  "SENDER PROFILE URL",
+  "SUBJECT",
+];
+
+// Filtrar columnas de la segunda tabla
+const filteredColumnsMes = columnsMes.filter(
+  (column) => !excludedColumnsMes.includes(column.title)
+);
+
 
   // Configurar columnas para la tercera tabla
   const columnsConexiones = Object.keys(primerEntradaCon).map(

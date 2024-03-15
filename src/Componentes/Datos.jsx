@@ -3,7 +3,7 @@ import { UploadOutlined } from "@ant-design/icons";
 import { Button, Upload, Alert, Space, Tooltip, message, Modal, Input } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { actualizarPosicionesAction, deleteNameCuenta, setConexionesData, setInvitacionesData, setMensajesData, setNameCuenta } from "../Redux/actions";
+import { actualizarPosicionesAction, deleteNameCuenta, setAllConexiones, setConexionesData, setInvitacionesData, setMensajesData, setNameCuenta } from "../Redux/actions";
 import './styles.scss'
 
 export default function Datos() {
@@ -322,9 +322,15 @@ export default function Datos() {
         });
         return;
       }
-  
           const datosFinales = [...conexionesData, nuevoArchivo];
   
+           // Mapear los datos para crear el nuevo array de objetos
+          const nuevoArray = datos.map((contacto) => ({
+            nombreCompleto: `${contacto["First Name"]} ${contacto["Last Name"]}`,
+            fechaConexion: contacto["Connected On"]
+          }));
+
+          dispatch(setAllConexiones(nuevoArray)) //guardo todos los nombres y la fecha de conexion para poder saberlo dsd mensajes
           dispatch(setConexionesData(datosFinales));
 
           messageApi.open({

@@ -304,6 +304,16 @@ const emailColumnSearchIcon = (filtered, dataIndex) => (
         key: "email",
       },
       {
+        title: "Usuario",
+        dataIndex: "usuario",
+        key: "usuario",
+      },
+      {
+        title: "Contraseña",
+        dataIndex: "contraseña",
+        key: "contraseña",
+      },
+      {
         title: "Tipo",
         dataIndex: "type",
         key: "type",
@@ -314,6 +324,8 @@ const emailColumnSearchIcon = (filtered, dataIndex) => (
       nombre: usuario.nombre || "-",
       apellido: usuario.apellido || "-",
       email: usuario.email || "-",
+      usuario: usuario.usuario || "-",
+      contraseña: usuario.contraseña || "-",
       type: usuario.type || "-",
     }));
 

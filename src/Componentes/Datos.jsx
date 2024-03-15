@@ -4,6 +4,7 @@ import { Button, Upload, Alert, Space, Tooltip, message } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { actualizarPosicionesAction, deleteNameCuenta, setConexionesData, setInvitacionesData, setMensajesData, setNameCuenta } from "../Redux/actions";
+import './styles.scss'
 
 export default function Datos() {
   const Papa = require("papaparse");
@@ -431,17 +432,19 @@ export default function Datos() {
   
   return (
     <div>
-
-
+      {/* Subir CSV Invitaciones */}
       <Upload
         action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
         listType="picture"
         beforeUpload={() => false}
         onChange={handleFileUpload}
+        accept=".csv"
+        className="upload-btn"
       >
         <Button icon={<UploadOutlined />} className="btn-subir">Subir CSV Invitaciones</Button>
       </Upload>
-
+  
+      {/* Espacio para mostrar archivos subidos */}
       <Space
         direction="vertical"
         style={{
@@ -451,41 +454,44 @@ export default function Datos() {
         }}
       >
         {contextHolder}
-
+  
         {Array.from({ length: numArchivosCargados }, (_, index) => {
-  const archivo = invitacionesData[index];
-
-  if (archivo) {
-    return (
-      <Alert
-        key={archivo.id}
-        message={archivo.nombre}
-        type="success"
-        closable
-        afterClose={() => handleCloseAlert(archivo.id,"invitacionesData")}
-        closeIcon={
-          <Tooltip title="Borrar archivo">
-            <DeleteOutlined />
-          </Tooltip>
-        }
-      />
-    );
-  }
-
-  return null;
-})}
+          const archivo = invitacionesData[index];
+  
+          if (archivo) {
+            return (
+              <Alert
+                key={archivo.id}
+                message={archivo.nombre}
+                type="success"
+                closable
+                afterClose={() => handleCloseAlert(archivo.id, "invitacionesData")}
+                closeIcon={
+                  <Tooltip title="Borrar archivo">
+                    <DeleteOutlined />
+                  </Tooltip>
+                }
+              />
+            );
+          }
+  
+          return null;
+        })}
       </Space>
-
+  
+      {/* Subir CSV Conexiones */}
       <Upload
         action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
         listType="picture"
         beforeUpload={() => false}
         onChange={handleFileUploadConexiones}
+        accept=".csv"
+        className="upload-btn"
       >
         <Button icon={<UploadOutlined />} className="btn-subir">Subir CSV Conexiones</Button>
       </Upload>
-
-
+  
+      {/* Espacio para mostrar archivos subidos */}
       <Space
         direction="vertical"
         style={{
@@ -495,10 +501,10 @@ export default function Datos() {
         }}
       >
         {contextHolder}
-
+  
         {Array.from({ length: conexionesNumArchivosCargados }, (_, index) => {
           const archivo = conexionesData[index];
-
+  
           if (archivo) {
             return (
               <Alert
@@ -506,7 +512,7 @@ export default function Datos() {
                 message={archivo.nombre}
                 type="success"
                 closable
-                afterClose={() => handleCloseAlert(archivo.id,"conexionesData")}
+                afterClose={() => handleCloseAlert(archivo.id, "conexionesData")}
                 closeIcon={
                   <Tooltip title="Borrar archivo">
                     <DeleteOutlined />
@@ -515,21 +521,24 @@ export default function Datos() {
               />
             );
           }
-
+  
           return null;
         })}
       </Space>
-
+  
+      {/* Subir CSV Mensajes */}
       <Upload
         action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
         listType="picture"
         beforeUpload={() => false}
         onChange={handleFileUploadMensajes}
+        accept=".csv"
+        className="upload-btn"
       >
         <Button icon={<UploadOutlined />} className="btn-subir">Subir CSV Mensajes</Button>
       </Upload>
-
-
+  
+      {/* Espacio para mostrar archivos subidos */}
       <Space
         direction="vertical"
         style={{
@@ -539,10 +548,10 @@ export default function Datos() {
         }}
       >
         {contextHolder}
-
+  
         {Array.from({ length: mensajesnumArchivosCargados }, (_, index) => {
           const archivo = mensajesData[index];
-
+  
           if (archivo) {
             return (
               <Alert
@@ -550,7 +559,7 @@ export default function Datos() {
                 message={archivo.nombre}
                 type="success"
                 closable
-                afterClose={() => handleCloseAlert(archivo.id,"mensajesData")}
+                afterClose={() => handleCloseAlert(archivo.id, "mensajesData")}
                 closeIcon={
                   <Tooltip title="Borrar archivo">
                     <DeleteOutlined />
@@ -559,12 +568,10 @@ export default function Datos() {
               />
             );
           }
-
+  
           return null;
         })}
       </Space>
-
-
     </div>
   );
 }

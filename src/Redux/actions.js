@@ -31,7 +31,8 @@ import {
     POST_CLIENTE,
     PATCH_CLIENTES,
     EDIT_USUARIO,
-    SET_CONEXIONES_ALL
+    SET_CONEXIONES_ALL,
+    SET_FECHAS_FILTROS
   } from './actionTypes';
   
   export const setMensajesData = (mensajes) => ({
@@ -42,6 +43,11 @@ import {
   export const setAllConexiones = (conexiones) => ({
     type: SET_CONEXIONES_ALL,
     payload: conexiones,
+  });
+
+  export const setFechasFiltros = (fechas) => ({
+    type: SET_FECHAS_FILTROS,
+    payload: fechas,
   });
 
   export const setMensajesDataNew = (mensajes) => ({

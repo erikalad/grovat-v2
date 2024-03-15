@@ -27,7 +27,8 @@ import {
   GET_CLIENTES,
   POST_CLIENTE,
   EDIT_USUARIO,
-  SET_CONEXIONES_ALL
+  SET_CONEXIONES_ALL,
+  SET_FECHAS_FILTROS
 } from "./actionTypes";
 const storedCualificadosData =
   JSON.parse(localStorage.getItem("cualificadosData")) || [];
@@ -88,7 +89,8 @@ const initialState = {
     },
   ],
   //funcionalidades:
-  funcionalidades:[]
+  funcionalidades:[],
+  fechasfiltros: []
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -104,6 +106,11 @@ const rootReducer = (state = initialState, action) => {
             ...state,
             conexionesAll: action.payload
           }
+    case SET_FECHAS_FILTROS:
+      return {
+        ...state,
+        fechasfiltros: action.payload
+      }
     case TRANSFER_OK:
       return { ...state, transfer: !state.transfer };
     case SET_MES:

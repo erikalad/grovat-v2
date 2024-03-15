@@ -6,7 +6,7 @@ import 'dayjs/locale/es';
 import './styles.scss'
 import TransferCualificados from "./Transfer";
 import { useDispatch, useSelector } from "react-redux";
-import { setCantSemanas, setMes, transferOk } from "../Redux/actions";
+import { setCantSemanas, setFechasFiltros, setMes, transferOk } from "../Redux/actions";
 
 const { Panel } = Collapse;
 const { RangePicker } = DatePicker;
@@ -20,8 +20,15 @@ export default function Filtros({ onFilterByDate, data }) {
   const nombreCuenta = useSelector((state)=> state.nombreCuenta)
   const [cuentas, setCuentas] = useState(nombreCuenta)
   const [weeks, setWeeks] = useState(0); // Estado para almacenar la cantidad de semanas
-
   const dispatch = useDispatch()
+  dayjs.locale('es'); 
+  const firstDayOfMonth = dayjs().startOf('month');
+  const today = dayjs();
+  const nombreDelMes = firstDayOfMonth.format('MMMM');
+
+  useEffect(()=>{
+    dispatch(setFechasFiltros([firstDayOfMonth, today]))
+  },[])
 
   const handleOk = () => {
     setIsModalOpen(false);
@@ -36,10 +43,7 @@ export default function Filtros({ onFilterByDate, data }) {
     setIsModalOpen(false);
   };
 
-  dayjs.locale('es'); 
-  const firstDayOfMonth = dayjs().startOf('month');
-  const today = dayjs();
-  const nombreDelMes = firstDayOfMonth.format('MMMM');
+
 
   dispatch(setMes(nombreDelMes));
 
@@ -48,13 +52,13 @@ export default function Filtros({ onFilterByDate, data }) {
       const [year, month, day] = date.split("-").map((item) => item.slice(-2));
       return `${day}/${month}/${year}`;
     });
-
     // Calcula la cantidad de semanas y actualiza el estado
     const weeks = calculateWeeks(formattedDates[0], formattedDates[1]);
     setWeeks(weeks);
 
     // No realizamos el filtrado aquí
     // Llamamos a la función onFilterByDate para comunicar los cambios
+    dispatch(setFechasFiltros(formattedDates))
     onFilterByDate(formattedDates);
   };
 

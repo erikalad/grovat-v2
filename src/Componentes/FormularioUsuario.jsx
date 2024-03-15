@@ -32,7 +32,6 @@ function FormularioUsuario({ clienteId, cerrarDrawer, drawerAbierto }) {
         // Para los Selects de Ant Design, `value` será el valor seleccionado.
         if (option) {
           const { name } = option;
-          console.log(name) // Asegúrate de que tus Selects pasen un 'name' en el objeto option.
           setNewUserData({ ...newUserData, [name]: value });
         } else {
           const { name, value: inputValue } = value.target;
@@ -42,7 +41,6 @@ function FormularioUsuario({ clienteId, cerrarDrawer, drawerAbierto }) {
 
 
   const handleSaveNewUser = async () => {
-    console.log(newUserData)
     // Aquí deberías agregar la lógica para guardar el nuevo usuario, por ejemplo:
     // Una llamada a una API o agregar el usuario al estado y luego cerrar el drawer
     try {

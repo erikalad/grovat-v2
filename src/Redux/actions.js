@@ -30,12 +30,18 @@ import {
     GET_CLIENTES,
     POST_CLIENTE,
     PATCH_CLIENTES,
-    EDIT_USUARIO
+    EDIT_USUARIO,
+    SET_CONEXIONES_ALL
   } from './actionTypes';
   
   export const setMensajesData = (mensajes) => ({
     type: SET_MENSAJES_DATA,
     payload: mensajes,
+  });
+
+  export const setAllConexiones = (conexiones) => ({
+    type: SET_CONEXIONES_ALL,
+    payload: conexiones,
   });
 
   export const setMensajesDataNew = (mensajes) => ({

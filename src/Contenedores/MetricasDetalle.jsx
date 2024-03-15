@@ -27,6 +27,7 @@ const MetricasDetalle = ({
 }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
+  console.log(data)
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -34,6 +35,34 @@ const MetricasDetalle = ({
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+
+  function exportExcelMessage() {
+    const modifiedData = data.map(message => {
+        const rowData = {
+            Cuenta: message.FROM,
+            Enviado: message.TO,
+            Día: message.DATE.DATE,
+            Mensaje: message.CONTENT,
+            FechaConexion: message.fechaConexion
+        };
+        // Verifica si hay datos de cualificados antes de agregar la columna
+        if (message.cualificados !== undefined && message.cualificados !== null) {
+            rowData.Cualificado = message.cualificados ? 'Cualificado' : 'No Cualificado';
+        }
+        return rowData;
+    });
+
+    const ws = XLSX.utils.json_to_sheet(modifiedData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Mensajes");
+    const today = new Date();
+    const filename = `export_${type}_${today.getFullYear()}-${(today.getMonth() + 1)
+        .toString()
+        .padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}.xlsx`;
+    XLSX.writeFile(wb, filename);
+}
+
+
 
   const exportToExcel = () => {
     const cualificadosData = JSON.parse(localStorage.getItem('cualificadosData')) || [];
@@ -196,16 +225,24 @@ const MetricasDetalle = ({
               <Button onClick={infoMen} shape="circle" icon={<BsInfo />} />
             )}
           </Tooltip>
-          {type === "conexiones" && (
-            <Tooltip title="Exportar a Excel">
-              <Button
-                onClick={exportToExcel}
-                shape="circle"
-                icon={<DownloadOutlined />}
-                style={{ marginLeft: "1rem" }}
-              />
+          <Tooltip title="Exportar a Excel">
+                {type === "conexiones" && (
+                    <Button
+                        onClick={exportToExcel}
+                        shape="circle"
+                        icon={<DownloadOutlined />}
+                        style={{ marginLeft: "1rem" }}
+                    />
+                )}
+                {type === "mensajes" && (
+                    <Button
+                        onClick={exportExcelMessage}
+                        shape="circle"
+                        icon={<DownloadOutlined />}
+                        style={{ marginLeft: "1rem" }}
+                    />
+                )}
             </Tooltip>
-          )}
         </div>
       </div>
       <Modal

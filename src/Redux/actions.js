@@ -234,7 +234,7 @@ export const postFuncionalidades = (campos) => {
   return async (dispatch) => {
     try {
       // Realizar la petición POST con Axios
-      const response = await axios.post('https://meicanalitycs.onrender.com/funcionalidades', {campos});
+      const response = await axios.post('https://meicanalitycs.onrender.com/funcionalidades', campos);
       
       // Manejar la respuesta si es necesario
       dispatch({ type: ADD_FUNCIONALIDAD, payload: response.data });
@@ -300,7 +300,7 @@ export const postCliente = (campos) => {
 export const patchFuncionalidades = (campos, id) => {
   return async (dispatch) => {
     try {
-      const response = await axios.patch('https://meicanalitycs.onrender.com/funcionalidades/' + id, {campos});
+      const response = await axios.patch('https://meicanalitycs.onrender.com/funcionalidades/' + id, campos);
       dispatch({ type: PATCH_FUNCIONALIDAD, payload: response.data });
     } catch (error) {
       console.error('Error al realizar la petición:', error);

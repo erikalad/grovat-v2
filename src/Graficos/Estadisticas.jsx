@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 const Estadisticas = ({ data, cantArchivos }) => {
   const cantidadElementos = data.length;
   const semanas = useSelector(state=>state.semanas)
+  console.log(semanas)
   const valorBase = semanas * 200;
   const totalObjetivo = valorBase * cantArchivos
 

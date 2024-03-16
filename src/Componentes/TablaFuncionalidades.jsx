@@ -1,19 +1,22 @@
 // Importa useState y Select
 import React, { useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Col, DatePicker, Drawer, Form, Input, Row, Select, Space, Table, Tag, Alert } from 'antd';
+import { Button, Col, DatePicker, Drawer, Form, Input, Row, Select, Space, Table, Tag, Alert, message, Spin } from 'antd';
 import dayjs from 'dayjs';
 import './styles.scss';
 import { useDispatch, useSelector } from 'react-redux';
-import { postFuncionalidades } from '../Redux/actions';
+import { getClientes, postFuncionalidades } from '../Redux/actions';
 
 const { Option } = Select;
 const TablaFuncionalidades = () => {
   const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [form] = Form.useForm(); // Usar el hook useForm para acceder a las funciones del formulario
   const cliente = useSelector((state)=> state.clientes)
   const dispatch = useDispatch();
   const dateFormat = 'DD-MM-YYYY'; 
+  const [messageApi, contextHolder] = message.useMessage();
+
   const showDrawer = () => {
     setOpen(true);
   };
@@ -21,17 +24,22 @@ const TablaFuncionalidades = () => {
     setOpen(false);
   };
 
+  const success = (msj) => {
+    messageApi.open({
+      type: "success",
+      content: msj,
+    });
+  };
+
   const disabledDate = (current) => {
     // Deshabilita los días anteriores a hoy
     return current && current < dayjs().startOf('day');
   };
 
-  const onFinish = (values) => {
-  
-    // Formatear la fecha de solicitud a formato YYYY-MM-DD
+  const onFinish = async (values) => {
+    setIsLoading(true); // Activar el spinner de pantalla completa al enviar la funcionalidad
+
     const fechaSolicitud = values.dateTime.format('YYYY-MM-DD');
-  
-    // Crear el objeto con los datos formateados
     const data = {
       clienteId: cliente.id_cliente,
       nombre: values.name,
@@ -39,21 +47,31 @@ const TablaFuncionalidades = () => {
       descripcion: values.description,
       prioridad: values.priority,
     };
-  
-  
-    // Llamar a la acción postFuncionalidad con los datos formateados
-    dispatch(postFuncionalidades(data));
-  
-    form.resetFields(); // Limpiar los campos del formulario después de enviar
+
+    try {
+      setOpen(false);
+      await dispatch(postFuncionalidades(data));
+      await dispatch(getClientes());
+      success(`Funcionalidad enviada con éxito`);
+      form.resetFields();
+    } catch (error) {
+      message.error("Error al enviar la funcionalidad");
+    } finally {
+      setIsLoading(false); // Desactivar el spinner de pantalla completa después de enviar la funcionalidad
+    }
   };
 
   const getStatusTag = (funcionalidad) => {
-    if (!funcionalidad.fechaInicio) {
+    const { fechaInicio, fechaFin } = funcionalidad.status;
+  
+    if (!fechaInicio && !fechaFin) {
       return <Tag color="grey">Pendiente</Tag>;
-    } else if (!funcionalidad.fechaFin) {
+    } else if (fechaInicio && !fechaFin) {
       return <Tag color="yellow">En proceso</Tag>;
-    } else {
+    } else if (fechaInicio && fechaFin) {
       return <Tag color="green">Finalizado</Tag>;
+    } else {
+      return <Tag color="default">Estado desconocido</Tag>;
     }
   };
 
@@ -110,12 +128,12 @@ const TablaFuncionalidades = () => {
   
   return (
     <>
-      <Button type="primary" onClick={showDrawer} icon={<PlusOutlined />}   style={{
-          marginBottom: 16,
-        }}>
+      <Button type="primary" onClick={showDrawer} icon={<PlusOutlined />} style={{ marginBottom: 16 }}>
         Solicitar Funcionalidad
       </Button>
-      
+
+      {isLoading && <Spin size="large" />} {/* Mostrar el spinner de pantalla completa mientras se envía la funcionalidad */}
+
       {cliente?.funcionalidades && cliente?.funcionalidades.length > 0 ? (
         <Table columns={columns} dataSource={data} pagination={false} bordered scroll={{ x: 'max-content' }} />
       ) : (
@@ -231,7 +249,7 @@ const TablaFuncionalidades = () => {
    }
 
    
-
+{contextHolder}
       </Drawer>
     </>
   );

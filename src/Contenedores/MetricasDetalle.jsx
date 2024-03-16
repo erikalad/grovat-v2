@@ -27,7 +27,6 @@ const MetricasDetalle = ({
 }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
-  console.log(data)
   const showModal = () => {
     setIsModalOpen(true);
   };

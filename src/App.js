@@ -28,7 +28,7 @@ function App() {
       }
     }
     dispatch(getClientes())
-  }, [cliente]);
+  }, []);
 
   useEffect(() => {
     document.documentElement.style.setProperty('--color-principal', colorPrincipal);

@@ -31,7 +31,8 @@ import {
     POST_CLIENTE,
     PATCH_CLIENTES,
     EDIT_USUARIO,
-    SET_CONEXIONES_ALL
+    SET_CONEXIONES_ALL,
+    SET_FECHAS_FILTROS
   } from './actionTypes';
   
   export const setMensajesData = (mensajes) => ({
@@ -42,6 +43,11 @@ import {
   export const setAllConexiones = (conexiones) => ({
     type: SET_CONEXIONES_ALL,
     payload: conexiones,
+  });
+
+  export const setFechasFiltros = (fechas) => ({
+    type: SET_FECHAS_FILTROS,
+    payload: fechas,
   });
 
   export const setMensajesDataNew = (mensajes) => ({
@@ -228,7 +234,7 @@ export const postFuncionalidades = (campos) => {
   return async (dispatch) => {
     try {
       // Realizar la petición POST con Axios
-      const response = await axios.post('https://meicanalitycs.onrender.com/funcionalidades', {campos});
+      const response = await axios.post('https://meicanalitycs.onrender.com/funcionalidades', campos);
       
       // Manejar la respuesta si es necesario
       dispatch({ type: ADD_FUNCIONALIDAD, payload: response.data });
@@ -294,7 +300,7 @@ export const postCliente = (campos) => {
 export const patchFuncionalidades = (campos, id) => {
   return async (dispatch) => {
     try {
-      const response = await axios.patch('https://meicanalitycs.onrender.com/funcionalidades/' + id, {campos});
+      const response = await axios.patch('https://meicanalitycs.onrender.com/funcionalidades/' + id, campos);
       dispatch({ type: PATCH_FUNCIONALIDAD, payload: response.data });
     } catch (error) {
       console.error('Error al realizar la petición:', error);

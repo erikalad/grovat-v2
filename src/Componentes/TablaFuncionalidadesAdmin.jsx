@@ -39,7 +39,6 @@ const TablaFuncionalidadesAdmin = () => {
     const handleChange = (nuevoStatus) => {
       handleStatusChange(funcionalidad.funcionalidadId, nuevoStatus, funcionalidad.status);
     };
-
     const defaultValue = !funcionalidad.fechaInicio && !funcionalidad.fechaFin ? "Pendiente" : (funcionalidad.fechaInicio && !funcionalidad.fechaFin ? "En proceso" : "Finalizado");
     return (
       <Select defaultValue={defaultValue} onChange={handleChange} style={{ width: "100%" }}>
@@ -117,7 +116,7 @@ const TablaFuncionalidadesAdmin = () => {
         key: funcionalidad.id_funcionalidades,
         clienteId: clienteId,
         fechaInicio: funcionalidad.fechaInicio,
-        fechaFin: funcionalidad.fechafin,
+        fechaFin: funcionalidad.fechaFin,
         funcionalidadId: funcionalidad.id_funcionalidades,
         nombre: funcionalidad.nombre || '-',
         prioridad: funcionalidad.prioridad || '-',

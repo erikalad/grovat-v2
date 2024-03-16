@@ -27,6 +27,8 @@ export default function Filtros({ onFilterByDate, data }) {
   const nombreDelMes = firstDayOfMonth.format('MMMM');
 
   useEffect(()=>{
+    const weeks = calculateWeeks([firstDayOfMonth, today])
+    dispatch(setCantSemanas(weeks))
     dispatch(setFechasFiltros([firstDayOfMonth, today]))
   },[])
 

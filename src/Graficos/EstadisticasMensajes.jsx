@@ -8,27 +8,29 @@ import isBetween from 'dayjs/plugin/isBetween';
 import { IoIosInformationCircleOutline } from "react-icons/io";
 dayjs.extend(isBetween);
 
+
 function EstadisticasMensajes({ data }) {
   const cantidadMensajes = data.length;
   const fechasfiltros = useSelector(state => state.fechasfiltros);
   const [mensajesEnRango, setMensajesEnRango] = useState([]);
 
-  useEffect(() => {
-    // Parsear fechas de filtro
-    const fechaInicio = dayjs(fechasfiltros[0], 'DD/MM/YYYY');
-    const fechaFin = dayjs(fechasfiltros[1], 'DD/MM/YYYY');
 
-    // Filtrar mensajes dentro del rango de fechas
+useEffect(() => {
+    // Asegúrate de especificar el formato exacto de tus fechas, incluido el año de dos dígitos
+    const fechaInicio = dayjs(fechasfiltros[0], 'DD/MM/YY');
+    const fechaFin = dayjs(fechasfiltros[1], 'DD/MM/YY');
+    
+
     const filtrados = data.filter(item => {
-      if (!item.fechaConexion) {
-        return false;
-      }
+      if (!item.fechaConexion) return false;
+      // También aquí asegúrate de que el formato coincide con cómo esperas que vengan las fechas
       const fechaConexion = dayjs(item.fechaConexion, 'DD/MM/YYYY');
       return fechaConexion.isBetween(fechaInicio, fechaFin, null, '[]');
     });
 
     setMensajesEnRango(filtrados);
-  }, [fechasfiltros, data]); // Escuchar cambios tanto en las fechas como en los datos de entrada
+}, [fechasfiltros, data]);
+
 
   const cantidadMensajesEnRango = mensajesEnRango.length;
 

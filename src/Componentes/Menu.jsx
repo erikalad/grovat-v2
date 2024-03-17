@@ -16,6 +16,7 @@ import { MdOutlineMailOutline } from "react-icons/md";
 import { CiLogin } from "react-icons/ci";
 import { logoutUser } from "../Redux/actions";
 import { useNavigate } from "react-router-dom";
+import TabsMetricas from "../Contenedores/ContenedorMetricas";
 
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -132,7 +133,7 @@ export default function MenuDesplegable() {
             {page === "1" ? (
               <Datos />
             ) : page === "2" ? (
-              <Metricas />
+              <TabsMetricas/>
             ) : page === "3" ? (
               <Ajustes />
             ): null

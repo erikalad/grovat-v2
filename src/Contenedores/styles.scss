@@ -31,7 +31,7 @@ box-shadow: 2px 4px 5px -2px rgba(182, 182, 182, 0.75);
 -moz-box-shadow: 2px 4px 5px -2px rgba(182, 182, 182, 0.75);
   padding: 1rem;
   margin-bottom: 1rem;
-} 
+}  
 
 .contenedor-estadisticas-barra {
   display: flex;
@@ -135,4 +135,11 @@ background-color: #25272E;
     font-weight: 200;
     color:rgb(0, 0, 0);
     margin-bottom: 1rem;
+}
+
+.tags-seguimientos{
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: center;
 }

@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { Button, Collapse, DatePicker, Modal, Tag } from "antd";
+import { Button, Card, DatePicker, Modal, Tag } from "antd";
 import locale from "antd/lib/date-picker/locale/es_ES";
 import dayjs from 'dayjs';
 import 'dayjs/locale/es'; 
@@ -8,7 +8,6 @@ import TransferCualificados from "./Transfer";
 import { useDispatch, useSelector } from "react-redux";
 import { setCantSemanas, setFechasFiltros, setMes, transferOk } from "../Redux/actions";
 
-const { Panel } = Collapse;
 const { RangePicker } = DatePicker;
 
 export default function Filtros({ onFilterByDate, data }) {
@@ -111,8 +110,8 @@ export default function Filtros({ onFilterByDate, data }) {
 
   return (
     <Fragment>
-      <Collapse accordion defaultActiveKey={1}>
-        <Panel header="Filtros" key="1">
+        <Card>
+        <div>Filtros</div>
           <p>Selecciona un rango de fechas:</p>
           {Object.keys(data).length === 0 ? (
             <RangePicker disabled locale={locale} className="rangepicker"/>
@@ -143,8 +142,7 @@ export default function Filtros({ onFilterByDate, data }) {
               ))}
             </div>
           )}
-        </Panel>
-      </Collapse>
+          </Card>
 
       <Modal
         title="Puestos cualificados"

@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { Button, Collapse, DatePicker, Modal, Tag } from "antd";
+import { Button, Card, DatePicker, Modal, Tag, Tooltip } from "antd";
 import locale from "antd/lib/date-picker/locale/es_ES";
 import dayjs from 'dayjs';
 import 'dayjs/locale/es'; 
@@ -7,8 +7,8 @@ import './styles.scss'
 import TransferCualificados from "./Transfer";
 import { useDispatch, useSelector } from "react-redux";
 import { setCantSemanas, setFechasFiltros, setMes, transferOk } from "../Redux/actions";
+import { CiEdit } from "react-icons/ci";
 
-const { Panel } = Collapse;
 const { RangePicker } = DatePicker;
 
 export default function Filtros({ onFilterByDate, data }) {
@@ -27,8 +27,7 @@ export default function Filtros({ onFilterByDate, data }) {
   const nombreDelMes = firstDayOfMonth.format('MMMM');
 
   useEffect(()=>{
-    const weeks = calculateWeeks([firstDayOfMonth, today])
-    dispatch(setCantSemanas(weeks))
+    calculateWeeks(firstDayOfMonth, today)
     dispatch(setFechasFiltros([firstDayOfMonth, today]))
   },[])
 
@@ -70,7 +69,6 @@ export default function Filtros({ onFilterByDate, data }) {
         // Asegurarse de que las fechas estén en el formato correcto antes de pasarlas a dayjs
         const start = dayjs(startDate, 'DD/MM/YY');
         const end = dayjs(endDate, 'DD/MM/YY');
-        
         if (!start.isValid() || !end.isValid()) {
             throw new Error("Las fechas proporcionadas no son válidas.");
         }
@@ -109,10 +107,11 @@ export default function Filtros({ onFilterByDate, data }) {
     setCuentas(nombreCuenta)
   },[nombreCuenta])
 
+
   return (
     <Fragment>
-      <Collapse accordion defaultActiveKey={1}>
-        <Panel header="Filtros" key="1">
+      <Card>
+          <div>Filtros</div>
           <p>Selecciona un rango de fechas:</p>
           {Object.keys(data).length === 0 ? (
             <RangePicker disabled locale={locale} className="rangepicker"/>
@@ -125,6 +124,12 @@ export default function Filtros({ onFilterByDate, data }) {
             />
           )}
           <Button className="button-cualificados" onClick={showModal}>Puestos cualificados</Button>
+          {/* {!data.length > 0 ?
+          <Tooltip title="Sube datos para poder generar una reportería">
+          <Button icon={<CiEdit />} disabled >Reportería</Button>
+          </Tooltip>
+        : <Button icon={<CiEdit />} >Reportería</Button>  
+        } */}
 
           {/* Mostrar la cantidad de semanas */}
           {weeks > 0 && (
@@ -143,9 +148,10 @@ export default function Filtros({ onFilterByDate, data }) {
               ))}
             </div>
           )}
-        </Panel>
-      </Collapse>
 
+    
+
+  </Card>
       <Modal
         title="Puestos cualificados"
         open={isModalOpen}
@@ -158,6 +164,7 @@ export default function Filtros({ onFilterByDate, data }) {
           <TransferCualificados data={prepareDataForTransfer()}/>
         </div>
       </Modal>
+
     </Fragment>
   );
 }

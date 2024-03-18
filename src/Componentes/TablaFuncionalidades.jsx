@@ -140,6 +140,16 @@ const TablaFuncionalidades = () => {
         <Alert message="No hay funcionalidades solicitadas" type="info" />
       )}
 
+      {cliente?.plan !== "emprendedor" &&
+          <Alert
+            message="Te escuchamos"
+            description={`¿Pensas que le falta algo a la aplicación que puede potenciar tu analítica? Llena la solicitud de nueva funcionalidad. Recuerda que el precio para la nueva funcionalidad en el Plan ${cliente?.plan} es a partir de ${cliente?.plan === "startup" ? '300 USD' : '100 USD'}.`}
+            type="info"
+            showIcon
+            style={{marginTop:"1rem"}}
+          />
+        }
+
       <Drawer
         title="Nueva funcionalidad"
         width={720}
@@ -248,6 +258,15 @@ const TablaFuncionalidades = () => {
     />
    }
 
+      {cliente?.plan !== "emprendedor" &&
+          <Alert
+            message="Importante"
+            description="Te vamos a estar contactando por correo electrónico una vez que mandes el formulario, para pedirte mas información de la funcionalidad si es necesario y evaluar la solicitud. Por favor verificá que en tu Perfil tengas el correo electrónico actualizado, sino indicar en la descripción a que correo electrónico comunicarnos. Muchas gracias."
+            type="info"
+            showIcon
+            style={{marginTop:"1rem"}}
+          />
+        }
    
 {contextHolder}
       </Drawer>

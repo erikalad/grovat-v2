@@ -1,5 +1,46 @@
 @import "./../App.scss";
 
+.reporteria-metricas{
+  background-color: white;
+  min-width: 1200px;
+  margin: 2rem 2rem;
+  padding: 2rem;
+  border-radius: 25px;
+  .filtros-metricas{
+    display: none;
+  }
+  .btn-metricas-detalle{
+    display: none;
+  }
+  .page-break{
+    margin-top: 2rem;
+  }
+}
+
+.subtitulo-reporteria{
+  font-size: 20px;
+}
+
+.logo-marca{
+  display: flex;
+  align-items: flex-end;
+}
+
+.titulo-reporteria{
+  margin-left: 2rem;
+  font-size: 50px;
+  font-weight: 200;
+}
+
+.nav-reporteria{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  background-color: #dddddd;
+}
+
 
 .statidistics-progress {
   display: flex;

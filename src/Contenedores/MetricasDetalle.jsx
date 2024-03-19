@@ -213,15 +213,16 @@ const MetricasDetalle = ({
               shape="circle"
               icon={<BsTable />}
               style={{ marginRight: "1rem" }}
+              className="btn-metricas-detalle"
             ></Button>
           </Tooltip>
           <Tooltip title="Importante">
             {type === "invitaciones" ? (
-              <Button onClick={info} shape="circle" icon={<BsInfo />} />
+              <Button onClick={info} shape="circle" icon={<BsInfo />} className="btn-metricas-detalle"/>
             ) : type === "conexiones" ? (
-              <Button onClick={infoCon} shape="circle" icon={<BsInfo />} />
+              <Button onClick={infoCon} shape="circle" icon={<BsInfo />} className="btn-metricas-detalle"/>
             ) : (
-              <Button onClick={infoMen} shape="circle" icon={<BsInfo />} />
+              <Button onClick={infoMen} shape="circle" icon={<BsInfo />} className="btn-metricas-detalle"/>
             )}
           </Tooltip>
           <Tooltip title="Exportar a Excel">
@@ -231,6 +232,7 @@ const MetricasDetalle = ({
                         shape="circle"
                         icon={<DownloadOutlined />}
                         style={{ marginLeft: "1rem" }}
+                        className="btn-metricas-detalle"
                     />
                 )}
                 {type === "mensajes" && (
@@ -239,6 +241,7 @@ const MetricasDetalle = ({
                         shape="circle"
                         icon={<DownloadOutlined />}
                         style={{ marginLeft: "1rem" }}
+                        className="btn-metricas-detalle"
                     />
                 )}
             </Tooltip>

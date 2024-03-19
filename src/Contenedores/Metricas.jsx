@@ -12,7 +12,7 @@ import { setMensajesDataNew } from "../Redux/actions";
 import esES from "antd/es/locale/es_ES"; // Importar el paquete de idioma español
 import { ConfigProvider } from "antd";
 
-export default function Metricas() {
+export default function Metricas({fechasReporteria}) {
   const invitacionesString = useSelector((state) => state.invitacionesData);
   const archivos = invitacionesString ? invitacionesString : [];
   const cantArchivos = archivos.length;
@@ -703,7 +703,11 @@ const filteredColumnsMes = columnsMes.filter(
 
   return (
     <>
-      <Filtros onFilterByDate={filterByDate} data={data} />
+        <Filtros 
+          onFilterByDate={filterByDate} 
+          data={data} 
+          fechasReporteria={fechasReporteria ? fechasReporteria : []}
+        />
       <Divider orientation="left">
         <div className="mes">
           {datosFiltrados.length > 0
@@ -739,7 +743,7 @@ const filteredColumnsMes = columnsMes.filter(
           conexiones={datosFiltradoCon}
         />
       </div>
-      <div>
+      <div className="page-break">
         <TreeMapComponent data={datosFiltradoCon} />
       </div>
     </>

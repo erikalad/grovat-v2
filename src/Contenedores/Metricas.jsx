@@ -8,7 +8,7 @@ import "./styles.scss";
 import MetricasDetalle from "./MetricasDetalle";
 import TreeMapComponent from "../Graficos/Treemap";
 import { useDispatch, useSelector } from "react-redux";
-import { setMensajesDataNew } from "../Redux/actions";
+import {setMensajesDataNew } from "../Redux/actions";
 import esES from "antd/es/locale/es_ES"; // Importar el paquete de idioma español
 import { ConfigProvider } from "antd";
 
@@ -727,7 +727,6 @@ const filteredColumnsMes = columnsMes.filter(
           progreso={datosFiltrados}
         />
         <MetricasDetalle
-        
           data={datosFiltradoCon}
           filteredColumns={columnsConexionesFiltered}
           type="conexiones"

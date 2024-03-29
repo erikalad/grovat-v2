@@ -28,13 +28,15 @@ import {
   POST_CLIENTE,
   EDIT_USUARIO,
   SET_CONEXIONES_ALL,
-  SET_FECHAS_FILTROS
+  SET_FECHAS_FILTROS,
+  SET_MENSAJES_ALL
 } from "./actionTypes";
 const storedCualificadosData =
   JSON.parse(localStorage.getItem("cualificadosData")) || [];
 
 const initialState = {
   mensajesData: [],
+  mensajesAll: [],
   conexionesAll: [],
   cualificadosData: storedCualificadosData,
   username: [],
@@ -110,6 +112,12 @@ const rootReducer = (state = initialState, action) => {
       return {
         ...state,
         fechasfiltros: action.payload
+      }
+
+    case SET_MENSAJES_ALL:
+      return{
+        ...state,
+        mensajesAll: action.payload
       }
     case TRANSFER_OK:
       return { ...state, transfer: !state.transfer };

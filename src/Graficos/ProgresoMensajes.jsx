@@ -192,6 +192,8 @@ const ProgresoMensajes = ({ data, conexiones }) => {
       }}
     >
       <Space wrap style={{ cursor: "pointer" }}>
+      <div>
+      <div className="subtitulo">Tasa de Contacto</div>
         <Tooltip
           title={`El ${parseInt(
             porcentaje
@@ -204,8 +206,9 @@ const ProgresoMensajes = ({ data, conexiones }) => {
             size={80}
           />
         </Tooltip>
+        </div>
         <div>
-        <div className="subtitulo">Porcentaje de respuesta del primer mensaje</div>
+        <div className="subtitulo">Tasa de Respuesta del primer mensaje</div>
           <Tooltip
             title={`De ${data.length} conversaciones, ${primerMensajeFiltrado.length} tuvieron respuesta en el primer mensaje `}
           >

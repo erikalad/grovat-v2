@@ -40,8 +40,8 @@ useEffect(() => {
       <Card bordered={false} >
         
         <div className="contenedor-estadisticas">
-        <Statistic title="Mensajes Totales" value={cantidadMensajes} precision={0} />
-        <Tooltip title="Mensajes totales enviados en este rango de fechas, sin importar cuando aceptó la invitación">
+        <Statistic title="Conversaciones nuevas totales" value={cantidadMensajes} precision={0} />
+        <Tooltip title="Mensajes nuevos de apertura totales enviados en este rango de fechas, sin importar cuando aceptó la invitación">
         <IoIosInformationCircleOutline/>
         </Tooltip>
         </div>
@@ -49,8 +49,8 @@ useEffect(() => {
        
        
         <div className="contenedor-estadisticas">
-        <Statistic title="Mensajes Conexiones" value={cantidadMensajesEnRango} precision={0}  />
-        <Tooltip title="Mensajes enviados a las personas que aceptaron la invitación en este rango de fechas">
+        <Statistic title="Conversaciones nuevas conexiones" value={cantidadMensajesEnRango} precision={0}  />
+        <Tooltip title="Mensajes nuevos de apertura enviados a las personas que aceptaron la invitación en este rango de fechas">
         <IoIosInformationCircleOutline/>
         </Tooltip>
         </div>

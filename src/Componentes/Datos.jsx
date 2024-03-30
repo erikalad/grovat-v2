@@ -401,7 +401,7 @@ export default function Datos() {
         .then((resultado) => {
           const { encabezados, datos } = resultado;
           console.log(datos)
-          dispatch(setDataMensBack(datos))
+          dispatch(setDataMensBack(datos, nombreCuenta[0]))
           dispatch(setMensajesDataAll(datos))
 
           // Filtrar los datos para incluir solo los mensajes con 'TO' igual a los valores en nombreCuenta

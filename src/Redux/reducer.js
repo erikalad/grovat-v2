@@ -29,7 +29,8 @@ import {
   EDIT_USUARIO,
   SET_CONEXIONES_ALL,
   SET_FECHAS_FILTROS,
-  SET_MENSAJES_ALL
+  SET_MENSAJES_ALL,
+  ADD_SEGUIMIENTO
 } from "./actionTypes";
 const storedCualificadosData =
   JSON.parse(localStorage.getItem("cualificadosData")) || [];
@@ -92,7 +93,8 @@ const initialState = {
   ],
   //funcionalidades:
   funcionalidades:[],
-  fechasfiltros: []
+  fechasfiltros: [],
+  seguimiento: [],
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -123,6 +125,9 @@ const rootReducer = (state = initialState, action) => {
       return { ...state, transfer: !state.transfer };
     case SET_MES:
       return { ...state, mes: action.payload };
+
+    case ADD_SEGUIMIENTO:
+      return {...state, seguimiento: action.payload}
 
     case NOMBRE_CUENTA:
 

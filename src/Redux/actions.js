@@ -32,7 +32,8 @@ import {
     PATCH_CLIENTES,
     EDIT_USUARIO,
     SET_CONEXIONES_ALL,
-    SET_FECHAS_FILTROS
+    SET_FECHAS_FILTROS,
+    SET_MENSAJES_ALL
   } from './actionTypes';
   
   export const setMensajesData = (mensajes) => ({
@@ -52,6 +53,11 @@ import {
 
   export const setMensajesDataNew = (mensajes) => ({
     type : SET_MENSAJES_NEW,
+    payload : mensajes
+  })
+
+  export const setMensajesDataAll = (mensajes) => ({
+    type : SET_MENSAJES_ALL,
     payload : mensajes
   })
 

@@ -3,7 +3,7 @@ import { UploadOutlined } from "@ant-design/icons";
 import { Button, Upload, Alert, Space, Tooltip, message, Modal, Input } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { actualizarPosicionesAction, deleteNameCuenta, setAllConexiones, setConexionesData, setInvitacionesData, setMensajesData, setNameCuenta } from "../Redux/actions";
+import { actualizarPosicionesAction, deleteNameCuenta, setAllConexiones, setConexionesData, setInvitacionesData, setMensajesData, setMensajesDataAll, setNameCuenta } from "../Redux/actions";
 import './styles.scss'
 
 export default function Datos() {
@@ -375,11 +375,23 @@ export default function Datos() {
       });
     });
   }
-  
+
   function ordenarMensajesPorFecha(mensajes) {
-    return mensajes.sort((a, b) => new Date(a.DATE.DATE) - new Date(b.DATE.DATE));
-  }
-  
+    return mensajes.sort((a, b) => {
+        // Primero, convertimos la fecha de DD/MM/YYYY a YYYY/MM/DD para una correcta interpretación
+        const fechaA = a.DATE.DATE.split("/").reverse().join("-");
+        const fechaB = b.DATE.DATE.split("/").reverse().join("-");
+
+        // Concatenamos la fecha en formato YYYY-MM-DD con la hora para obtener un datetime completo
+        const datetimeA = new Date(fechaA + "T" + a.DATE.HORA);
+        const datetimeB = new Date(fechaB + "T" + b.DATE.HORA);
+
+        // Comparamos los datetimes
+        return datetimeA - datetimeB;
+    });
+}
+
+
   function handleFileUploadMensajes(info) {
     if (info.fileList.length > 0) {
       const archivo = info.fileList[info.fileList.length - 1].originFileObj;
@@ -388,6 +400,8 @@ export default function Datos() {
       parsearCSVMensajes(archivo)
         .then((resultado) => {
           const { encabezados, datos } = resultado;
+
+          dispatch(setMensajesDataAll(datos))
 
           // Filtrar los datos para incluir solo los mensajes con 'TO' igual a los valores en nombreCuenta
           const mensajesFiltrados = datos.filter(item => nombreCuenta.includes(item.FROM));

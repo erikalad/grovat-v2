@@ -32,7 +32,8 @@ import {
     PATCH_CLIENTES,
     EDIT_USUARIO,
     SET_CONEXIONES_ALL,
-    SET_FECHAS_FILTROS
+    SET_FECHAS_FILTROS,
+    SET_MENSAJES_ALL
   } from './actionTypes';
   
   export const setMensajesData = (mensajes) => ({
@@ -52,6 +53,11 @@ import {
 
   export const setMensajesDataNew = (mensajes) => ({
     type : SET_MENSAJES_NEW,
+    payload : mensajes
+  })
+
+  export const setMensajesDataAll = (mensajes) => ({
+    type : SET_MENSAJES_ALL,
     payload : mensajes
   })
 
@@ -179,6 +185,24 @@ export const logoutUser = (idUsuario, email, user) => {
     }
   };
 };
+
+export const setDataMensBack = (datos) => {
+  return async (dispatch) => {
+    try {
+      // Enviar solicitud POST para desloguear al usuario
+      const response = await axios.post("https://meicanalitycs.onrender.com/mensajes" , datos)
+
+      // Verificar si la solicitud fue exitosa
+      if (response.status === 200) {
+        dispatch({ type: LOGOUT_USER });
+      } else {
+        console.error("Error al desloguear al usuario:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error para desloguear al usuario:", error);
+    }
+  }
+}
 
 export const editUser = (campos) => {
   return async (dispatch) => {

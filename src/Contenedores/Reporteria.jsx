@@ -9,6 +9,7 @@ import { GoDownload } from "react-icons/go";
 
 export default function Reporteria() {
   const fechas = useSelector(state => state.fechasfiltros);
+  const nombreCuenta = useSelector((state)=> state.nombreCuenta[0])
   const logoUrl = useSelector(
     (state) =>
       state.customizaciones.find((item) => item.fieldName === "URL del Logo")
@@ -55,9 +56,16 @@ export default function Reporteria() {
 
     const contenedor = reporteriaRef.current;
 
+      // Obtener la fecha actual
+      const fechaActual = new Date();
+      // Formatear la fecha como 'YYYY-MM-DD'
+      const fechaFormateada = fechaActual.toISOString().split('T')[0];
+      // Crear el nombre del archivo con la fecha actual y el nombre de la cuenta
+      const nombreArchivo = `${nombreEmpresa}_métricas_${nombreCuenta}_${fechaFormateada}.pdf`;
+
     const opciones = {
       margin: [0, 0, 0, 0],
-      filename: `${nombreEmpresa} métricas.pdf`,
+      filename: nombreArchivo,
       image: { type: "jpeg", quality: 1.0, src: logoLoaded }, // Utiliza logoLoaded como fuente de la imagen
       html2canvas: { scale: 2 },
       jsPDF: {

@@ -7,7 +7,9 @@ const { Search } = Input;
 
 const ContactTable = () => {
   const dataMes = useSelector(state=> state.seguimiento)
-  console.log(dataMes)
+  const fechas = useSelector(state => state.fechasfiltros);
+
+  console.log(fechas)
   const [filteredData, setFilteredData] = useState([]);
   const [uniqueContactarValues, setUniqueContactarValues] = useState([]);
 
@@ -18,15 +20,13 @@ const ContactTable = () => {
       extractUniqueContactarValues(seguimientoData);
     }
   }, [dataMes]);
-
+  
   const extractUniqueContactarValues = (data) => {
     const uniqueValues = new Set(['hoy', 'atrasado', '1 días', '2 días', "-"]);
     data.forEach(item => {
-      for (let i = 1; i <= 4; i++) {
-        const contactarKey = `contactarF${i}`;
-        if (item[contactarKey]) {
-          uniqueValues.add(item[contactarKey]);
-        }
+      const contactar = item.contactar;
+      if (contactar) {
+        uniqueValues.add(contactar);
       }
     });
     setUniqueContactarValues(Array.from(uniqueValues));
@@ -113,8 +113,8 @@ const ContactTable = () => {
   const getColorForDays = (days) => {
     if (days === 'hoy') return 'green'; // Si es "Hoy", color verde
     if (days === 'atrasado') return 'red'; // Si es "Atrasado", color rojo
-    if (days === 1) return 'yellow'; // Si es 1 día, color amarillo
-    if (days === 2) return 'grey'; // Si son 2 días, color gris
+    if (days === '1 días') return 'yellow'; // Si es 1 día, color amarillo
+    if (days === '2 días') return 'grey'; // Si son 2 días, color gris
     return 'default'; // De lo contrario, color por defecto
   };
 
@@ -245,25 +245,15 @@ const ContactTable = () => {
     ])),
     {
       title: 'Contactar',
+      dataIndex: 'contactar',
       key: 'contactar',
       filters: uniqueContactarValues.map(value => ({ text: value, value })),
-      onFilter: (value, record) => {
-        const lastContactar = Object.values(record).filter(val => {
-          if (val === 'hoy' || val === 'atrasado' || val === '-') {
-            return true;
-          } else if (!isNaN(val)) {
-            return `${val} días`; // Convertir números a la forma '1 días', '2 días', etc.
-          }
-          return false;
-        }).pop();        return lastContactar === value;
-      },
+      onFilter: (value, record) => record.contactar === value,
       render: (text, record) => {
-        const { nextFollowUp, daysLeft } = getNextFollowUp(record);
-        if (nextFollowUp && daysLeft !== '-') {
+        const daysLeft = record.contactar;
+        if (daysLeft) {
           const color = getColorForDays(daysLeft);
-          console.log(daysLeft)
-          const daysText = daysLeft === 'hoy' || daysLeft === 'atrasado' ? daysLeft : daysLeft === 1 ? `${daysLeft} día` : `${daysLeft} días`;
-          return <Tag color={color}>{daysText}</Tag>;
+          return <Tag color={color}>{daysLeft}</Tag>;
         }
         return null;
       },
@@ -276,7 +266,7 @@ const ContactTable = () => {
         <Search placeholder="Buscar por nombre de contacto" onSearch={handleSearch} value={searchText} onChange={e => setSearchText(e.target.value)} />
         <Button type="primary" onClick={clearFilters}>Borrar filtros</Button>
       </div>
-      <Table columns={columns} dataSource={filteredData} />
+      <Table columns={columns} dataSource={filteredData}   scroll={{ x: "max-content" }}/>
     </>
   );
 };

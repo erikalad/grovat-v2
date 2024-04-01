@@ -14,9 +14,9 @@ const TabsMetricas = () => {
         <TabPane tab="Métricas" key="metricas">
           <Metricas />
         </TabPane>
-        <TabPane tab="Seguimientos" key="seguimientos">
+        {/* <TabPane tab="Seguimientos" key="seguimientos">
           <Seguimientos />
-        </TabPane>
+        </TabPane> */}
       </>
     </Tabs>
   );

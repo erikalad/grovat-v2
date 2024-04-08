@@ -4,6 +4,8 @@ import './styles.scss';
 import { useSelector } from 'react-redux';
 import Conversaciones from '../Componentes/Conversaciones';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
+import calendly from "./../imagenes/calendly.webp"
+import calendlydis from "./../imagenes/calen-dis.webp"
 
 const { Search } = Input;
 
@@ -171,7 +173,7 @@ const ContactTable = () => {
       ],
       onFilter: (value, record) => record.calendlyEnviado === value,
       render: calendlyEnviado => (
-        calendlyEnviado ? <CheckOutlined style={{ color: 'green' }} /> : <CloseOutlined style={{ color: 'red' }} />
+        calendlyEnviado ? <img className='img-calen' src={calendly}/> : <img className='img-calen calen-dis' src={calendlydis}/>
       ),
     },
     {
@@ -219,13 +221,14 @@ const ContactTable = () => {
                 size='small'
                 onRow={(record, rowIndex) => {
                   return {
-                    onClick: () => handleRowClick(record)
+                    onClick: () => handleRowClick(record),
+                    style: { cursor: 'pointer' } // Aplica el estilo del cursor aquí
                   };
                 }}
 
             />
         </div>
-        <div style={{ width: '30%' }} className='mensajes-view'>
+        <div style={{ width: '30%' }}>
           <Conversaciones conversacion={selectedConversation} />
         </div>
     </div>

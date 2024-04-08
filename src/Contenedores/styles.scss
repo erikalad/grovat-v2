@@ -34,17 +34,23 @@
 
 .mensajes-view {
   display: flex;
-  width: 30%;
   height: 550px;
   border: 0.3px solid rgba(208, 208, 208, 0.592);
   border-radius: 10px;
-  padding: 1rem 0.5rem;
   overflow-y: auto; /* Agregar scroll vertical */
 }
 
 .contenedor-tabla-mensajes{
 display: flex;
 gap: 0.5rem;
+}
+
+.img-calen{
+  width: 30%;
+}
+
+.calen-dis{
+  cursor: no-drop;
 }
 
 .subtitulo-reporteria{

@@ -1,60 +1,72 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from "react-redux";
-import { Tag, Empty} from 'antd';
+import { Tag, Empty, Avatar } from 'antd';
 import './styles.scss'; 
 
-
 export default function Conversaciones({ conversacion }) {
-    const nombreCuenta = useSelector((state)=> state.nombreCuenta)
+    const nombreCuenta = useSelector((state) => state.nombreCuenta);
+    const [nombreOtroUsuario, setNombreOtroUsuario] = useState('');
+
+    useEffect(() => {
+        // Extraer el nombre del otro usuario de la conversación
+        if (conversacion && conversacion.length > 0) {
+            const otroUsuario = conversacion.find(msg => msg.TO !== nombreCuenta[0]);
+            if (otroUsuario) {
+                setNombreOtroUsuario(otroUsuario.TO);
+            }
+        } else {
+            // Resetea el nombre del otro usuario si no hay conversaciones
+            setNombreOtroUsuario('');
+        }
+    }, [conversacion, nombreCuenta]);
 
     // Función para determinar si el mensaje es enviado por el usuario actual o no
-    const isSentByCurrentUser = (msgFrom) => {
-        // Comparar el remitente del mensaje con el usuario actual (puedes usar algún sistema de autenticación para obtener el usuario actual)
-        return msgFrom === nombreCuenta[0]; // Ejemplo: si el usuario actual es 'Erika Ladner'
+    const isSentByCurrentUser = (msgFrom) => msgFrom === nombreCuenta[0];
+
+    // Función para formatear la fecha del mensaje
+    const formatDate = (dateString) => {
+        const [month, day, year] = dateString.split('/');
+        return `${month}/${day}/${year}`;
     };
 
-        // Función para formatear la fecha del mensaje
-        const formatDate = (dateString) => {
-            const [month, day, year] = dateString.split('/'); // Dividir la fecha en partes
-            // Formatear la fecha en formato dd/mm/yyyy
-            const formattedDate = `${month}/${day}/${year}`;
-            return formattedDate;
-        };
-
-    // Variable para almacenar el día del último mensaje mostrado
-    let lastDate = '';
-
-     // Verifica si conversacion es null y muestra el componente Empty si es así
-     if (!conversacion) {
-        return <Empty />;
-    }
-
+    // Genera un número aleatorio para usar como seed en el avatar
+    const randomNumber = Math.floor(Math.random() * 10000) + 1;
+    let lastDate = ""
+    // Verifica si hay conversaciones y las muestra, o muestra el componente Empty
     return (
-        <div className="conversaciones-container">
-            {/* Mapea cada mensaje y muestra el contenido */}
-            {conversacion.map((msg, index) => {
-                // Verificar si el mensaje tiene una fecha diferente al último mensaje mostrado
-                const currentDate = formatDate(msg.DATE.DATE);
-                const isNewDate = currentDate !== lastDate;
-                lastDate = currentDate;
-
-                return (
-                    <div key={index} className='contenedor-mensajes'>
-                        {/* Mostrar la fecha si es diferente al último mensaje mostrado */}
-                        {isNewDate && <div className="fecha"><Tag color='grey'>{currentDate}</Tag></div>}
-                        
-                        {/* Mostrar el nombre del remitente */}
-                        <div className={isSentByCurrentUser(msg.FROM) ? 'nombre-saliente' : 'nombre-entrante'}>{msg.FROM}</div>
-                        
-                        {/* Mostrar el contenido del mensaje */}
-                        <div className={isSentByCurrentUser(msg.FROM) ? 'mensaje-saliente' : 'mensaje-entrante'}>
-                            <p>{msg.CONTENT}</p>
-                            {/* Mostrar la hora del mensaje */}
-                            <div className="hora">{msg.DATE.HORA}</div>
+        <div className={!conversacion ? "empty-conv mensajes-view" : "conversaciones-container mensajes-view"}>
+            {/* Comprueba si hay contenido para mostrar */}
+            {conversacion && conversacion.length > 0 ? (
+                <>
+                    {/* Mostrar el nombre del otro usuario */}
+                    {nombreOtroUsuario && (
+                        <div className='nav-conv'>
+                            <Avatar src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${randomNumber}`} />
+                            <div className="nombre-otro-usuario">{nombreOtroUsuario}</div>
                         </div>
-                    </div>
-                );
-            })}
+                    )}
+                    {/* Mapea cada mensaje y muestra el contenido */}
+                    {conversacion.map((msg, index) => {
+                        const currentDate = formatDate(msg.DATE.DATE);
+                        const isNewDate = currentDate !== lastDate;
+                        lastDate = currentDate;
+
+                        return (
+                            <div key={index} className='contenedor-mensajes'>
+                                {isNewDate && <div className="fecha"><Tag color='grey'>{currentDate}</Tag></div>}
+                                <div className={isSentByCurrentUser(msg.FROM) ? 'nombre-saliente' : 'nombre-entrante'}>{msg.FROM}</div>
+                                <div className={isSentByCurrentUser(msg.FROM) ? 'mensaje-saliente' : 'mensaje-entrante'}>
+                                    <p>{msg.CONTENT}</p>
+                                    <div className="hora">{msg.DATE.HORA}</div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </>
+            ) : (
+                // Muestra Empty si no hay conversaciones
+                <Empty description="Hacé click en una conversación para visualizarla" />
+            )}
         </div>
     );
 }

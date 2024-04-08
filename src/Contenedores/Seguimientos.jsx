@@ -2,16 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { Table, Tag, Input, Select, Button } from 'antd';
 import './styles.scss';
 import { useSelector } from 'react-redux';
+import Conversaciones from '../Componentes/Conversaciones';
 
 const { Search } = Input;
 
 const ContactTable = () => {
   const dataMes = useSelector(state=> state.seguimiento)
   const fechas = useSelector(state => state.fechasfiltros);
-
-  console.log(fechas)
+  const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [uniqueContactarValues, setUniqueContactarValues] = useState([]);
+  const [searchText, setSearchText] = useState('');
+  const [openStatusFilter, setOpenStatusFilter] = useState('Todos');
+  const [followUpFilters, setFollowUpFilters] = useState(['Todos', 'Todos', 'Todos', 'Todos']);
 
   useEffect(() => {
     if (dataMes && dataMes.length > 0) {
@@ -22,7 +25,7 @@ const ContactTable = () => {
   }, [dataMes]);
   
   const extractUniqueContactarValues = (data) => {
-    const uniqueValues = new Set(['hoy', 'atrasado', '1 días', '2 días', "-"]);
+    const uniqueValues = new Set([]);
     data.forEach(item => {
       const contactar = item.contactar;
       if (contactar) {
@@ -32,89 +35,28 @@ const ContactTable = () => {
     setUniqueContactarValues(Array.from(uniqueValues));
   };
 
-  // Datos de ejemplo
-  // const data = [
-  //   {
-  //     key: '1',
-  //     contacto:'Juan Pérez',
-  //     link: 'https://www.linkedin.com/in/juanperez/',
-  //     mensajeApertura: { enviado: true, contesto: false },
-  //     followUp1: { enviado: true, contesto: true },
-  //     contactarF1: 2,
-  //     followUp2: { enviado: true, contesto: true },
-  //     contactarF2: 1,
-  //     followUp3: { enviado: false, contesto: false },
-  //     contactarF3: 1,
-  //     followUp4: { enviado: false, contesto: false },
-  //     contactarF4: '-',
-  //   },
-  //   {
-  //     key: '2',
-  //     contacto: 'Emilia Gomez',
-  //     link: 'https://www.linkedin.com/in/juanperez/',
-  //     mensajeApertura: { enviado: true, contesto: true },
-  //     followUp1: { enviado: true, contesto: false },
-  //     contactarF1: 2,
-  //     followUp2: { enviado: false, contesto: false },
-  //     contactarF2: 2,
-  //     followUp3: { enviado: false, contesto: false },
-  //     contactarF3: 2,
-  //     followUp4: { enviado: false, contesto: false },
-  //     contactarF4: "-",
-  //   },
-  //   {
-  //     key: '3',
-  //     contacto: 'Emilia Gomez',
-  //     link: 'https://www.linkedin.com/in/juanperez/',
-  //     mensajeApertura: { enviado: true, contesto: true },
-  //     followUp1: { enviado: true, contesto: false },
-  //     contactarF1: 2,
-  //     followUp2: { enviado: true, contesto: false },
-  //     contactarF2: 2,
-  //     followUp3: { enviado: true, contesto: true },
-  //     contactarF3: 'Hoy',
-  //     followUp4: { enviado: false, contesto: false },
-  //     contactarF4: 'Hoy',
-  //   },
-  //   {
-  //     key: '4',
-  //     contacto: 'Emilia Gomez',
-  //     link: 'https://www.linkedin.com/in/juanperez/',
-  //     mensajeApertura: { enviado: true, contesto: true },
-  //     followUp1: { enviado: false, contesto: false },
-  //     contactarF1: "Atrasado",
-  //     followUp2: { enviado: false, contesto: false },
-  //     contactarF2: 2,
-  //     followUp3: { enviado: false, contesto: false },
-  //     contactarF3: 2,
-  //     followUp4: { enviado: false, contesto: false },
-  //     contactarF4: 2,
-  //   },
-  //   {
-  //     key: '3',
-  //     contacto: 'Emilia Gomez',
-  //     link: 'https://www.linkedin.com/in/juanperez/',
-  //     mensajeApertura: { enviado: true, contesto: true },
-  //     followUp1: { enviado: true, contesto: false },
-  //     contactarF1: 2,
-  //     followUp2: { enviado: true, contesto: false },
-  //     contactarF2: 2,
-  //     followUp3: { enviado: true, contesto: true },
-  //     contactarF3: 'Hoy',
-  //     followUp4: { enviado: false, contesto: false },
-  //     contactarF4: 'Hoy',
-  //   },
-  //   // Más entradas...
-  // ];
-  const [searchText, setSearchText] = useState('');
-  const [openStatusFilter, setOpenStatusFilter] = useState('Todos');
-  const [followUpFilters, setFollowUpFilters] = useState(['Todos', 'Todos', 'Todos', 'Todos']);
+
+    // Define la función para manejar el cambio de filas expandidas
+    const handleExpandedChange = (expandedRowKeys) => {
+      setExpandedRowKeys(expandedRowKeys);
+    };
+
+    // Define la función para renderizar el contenido de la fila expandida
+    const renderExpandedRow = (record) => {
+      const matchingItem = dataMes.find(item => item.seguimiento.key === record.key);
+      const conversacion = matchingItem ? matchingItem.conversacion : [];
+      return (
+        <div>
+          <Conversaciones conversacion={conversacion} /> 
+        </div>
+      );
+    };
 
   const getColorForDays = (days) => {
     if (days === 'hoy') return 'green'; // Si es "Hoy", color verde
     if (days === 'atrasado') return 'red'; // Si es "Atrasado", color rojo
-    if (days === '1 días') return 'yellow'; // Si es 1 día, color amarillo
-    if (days === '2 días') return 'grey'; // Si son 2 días, color gris
+    if (days === '1') return 'yellow'; // Si es 1 día, color amarillo
+    if (days === '2') return 'grey'; // Si son 2 días, color gris
     return 'default'; // De lo contrario, color por defecto
   };
 
@@ -152,24 +94,6 @@ const ContactTable = () => {
     setFilteredData(filteredData);
   };
 
-  const getNextFollowUp = (record) => {
-    let nextFollowUp = null;
-    let daysLeft = null;
-  
-    // Buscar el próximo seguimiento pendiente
-    for (let i = 1; i <= 4; i++) {
-      const followUpKey = `followUp${i}`;
-      const contactarKey = `contactarF${i}`;
-  
-      if (!record[followUpKey]?.enviado) {
-        nextFollowUp = record[followUpKey];
-        daysLeft = record[contactarKey];
-        break;
-      }
-    }
-  
-    return { nextFollowUp, daysLeft };
-  };
   const columns = [
     {
       title: 'Contacto',
@@ -188,24 +112,6 @@ const ContactTable = () => {
       dataIndex: 'mensajeApertura',
       key: 'mensajeApertura',
       width: '15%',
-      filters: [
-        { text: 'Enviado', value: 'Enviado' },
-        { text: 'Pendiente', value: 'Pendiente' },
-        { text: 'Contestó', value: 'Contestó' },
-        { text: 'No contestó', value: 'No contestó' },
-      ],
-      onFilter: (value, record) => {
-        if (value === 'Enviado') {
-          return record.mensajeApertura.enviado;
-        } else if (value === 'Pendiente') {
-          return !record.mensajeApertura.enviado;
-        } else if (value === 'Contestó') {
-          return record.mensajeApertura.contesto;
-        } else if (value === 'No contestó') {
-          return !record.mensajeApertura.contesto;
-        }
-        return true;
-      },
       render: ({ enviado, contesto }) => (
         <div className='tags-seguimientos'>
           {enviado ? <Tag color='green'>Enviado</Tag> : <Tag color='volcano'>Pendiente</Tag>}
@@ -218,18 +124,6 @@ const ContactTable = () => {
         title: `Follow Up ${index + 1}`,
         dataIndex: `followUp${index + 1}`,
         key: `followUp${index + 1}`,
-        filters: [
-          { text: 'Enviado', value: 'Enviado' },
-          { text: 'Pendiente', value: 'Pendiente' },
-        ],
-        onFilter: (value, record) => {
-          if (value === 'Enviado') {
-            return record.mensajeApertura.enviado;
-          } else if (value === 'Pendiente') {
-            return !record.mensajeApertura.enviado;
-          }
-          return true;
-        },
         render: ({ enviado, contesto }, record) => {
           const prevKey = index === 0 ? 'mensajeApertura' : `followUp${index}`;
           const prevEnviado = record[prevKey]?.enviado;
@@ -251,11 +145,16 @@ const ContactTable = () => {
       onFilter: (value, record) => record.contactar === value,
       render: (text, record) => {
         const daysLeft = record.contactar;
-        if (daysLeft) {
-          const color = getColorForDays(daysLeft);
-          return <Tag color={color}>{daysLeft}</Tag>;
+        let displayText;
+        if (daysLeft === '1') {
+          displayText = '1 día';
+        } else if (daysLeft === '2') {
+          displayText = '2 días';
+        } else {
+          displayText = daysLeft;
         }
-        return null;
+        const color = getColorForDays(daysLeft);
+        return <Tag color={color}>{displayText}</Tag>;
       },
     }
   ];
@@ -266,7 +165,16 @@ const ContactTable = () => {
         <Search placeholder="Buscar por nombre de contacto" onSearch={handleSearch} value={searchText} onChange={e => setSearchText(e.target.value)} />
         <Button type="primary" onClick={clearFilters}>Borrar filtros</Button>
       </div>
-      <Table columns={columns} dataSource={filteredData}   scroll={{ x: "max-content" }}/>
+      <Table
+        columns={columns}
+        dataSource={filteredData}
+        expandable={{
+          expandedRowKeys: expandedRowKeys,
+          onExpandedRowsChange: handleExpandedChange,
+          expandedRowRender: renderExpandedRow
+        }}
+        className='table-prosp'
+      />
     </>
   );
 };

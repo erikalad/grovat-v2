@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Tag, Input, Select, Button } from 'antd';
+import { Table, Tag, Input, Select, Button, DatePicker } from 'antd';
 import './styles.scss';
 import { useSelector } from 'react-redux';
 import Conversaciones from '../Componentes/Conversaciones';
@@ -8,13 +8,13 @@ const { Search } = Input;
 
 const ContactTable = () => {
   const dataMes = useSelector(state=> state.seguimiento)
-  const fechas = useSelector(state => state.fechasfiltros);
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [uniqueContactarValues, setUniqueContactarValues] = useState([]);
   const [searchText, setSearchText] = useState('');
-  const [openStatusFilter, setOpenStatusFilter] = useState('Todos');
-  const [followUpFilters, setFollowUpFilters] = useState(['Todos', 'Todos', 'Todos', 'Todos']);
+  const [startDate, setStartDate] = useState(null); // Estado para la fecha de inicio
+  const [endDate, setEndDate] = useState(null); // Estado para la fecha de fin
+
 
   useEffect(() => {
     if (dataMes && dataMes.length > 0) {
@@ -46,8 +46,8 @@ const ContactTable = () => {
       const matchingItem = dataMes.find(item => item.seguimiento.key === record.key);
       const conversacion = matchingItem ? matchingItem.conversacion : [];
       return (
-        <div>
-          <Conversaciones conversacion={conversacion} /> 
+        <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
+                    <Conversaciones conversacion={conversacion} /> 
         </div>
       );
     };
@@ -60,40 +60,62 @@ const ContactTable = () => {
     return 'default'; // De lo contrario, color por defecto
   };
 
-  const handleSearch = searchText => {
+
+  const handleSearch = (searchText) => {
     setSearchText(searchText);
-    filterData(searchText, openStatusFilter, followUpFilters);
+    filterData(searchText, startDate, endDate);
+  };
+
+  const handleStartDateChange = (date) => {
+    setStartDate(date);
+    filterData(searchText, date, endDate);
+  };
+
+  const handleEndDateChange = (date) => {
+    setEndDate(date);
+    filterData(searchText, startDate, date);
   };
 
 
-  const filterData = (searchText, openStatusFilter, followUpFilters) => {
-    let filtered = filteredData.filter(item =>
-      item.contacto.toLowerCase().includes(searchText.toLowerCase())
-    );
-
-    filtered = filtered.filter(item => {
-      if (openStatusFilter === 'Todos') return true;
-      return openStatusFilter === 'Enviado' ? item.mensajeApertura.enviado : !item.mensajeApertura.enviado;
+  const filterData = (searchText, startDate, endDate) => {
+    let filtered = dataMes.filter(item => {
+      const seguimiento = item.seguimiento; // Accede al seguimiento del elemento
+      if (!seguimiento) return false; // Verifica si seguimiento es null
+      const searchTextMatch = !searchText || (seguimiento.contacto && seguimiento.contacto.toLowerCase().includes(searchText.toLowerCase()));
+      const startDateMatch = !startDate || item.conversacion.some(message => isDateInRange(parseDate(message.DATE.DATE), startDate, endDate));
+      return searchTextMatch && startDateMatch;
     });
-
-    followUpFilters.forEach((filter, index) => {
-      if (filter !== 'Todos') {
-        filtered = filtered.filter(item => {
-          return filter === 'Enviado' ? item[`followUp${index + 1}`]?.enviado : !item[`followUp${index + 1}`]?.enviado;
-        });
-      }
-    });
-
-    setFilteredData(filtered);
+  
+    const seguimientoData = filtered.map(item => item.seguimiento);
+  
+    setFilteredData(seguimientoData);
   };
+  
+  const parseDate = (dateString) => {
+    const [day, month, year] = dateString.split('/');
+    return new Date(`${month}/${day}/${year}`);
+  };
+  
+  const isDateInRange = (messageDate, startDate, endDate) => {
+    if (startDate && endDate) {
+      return messageDate >= startDate && messageDate <= endDate;
+    } else if (startDate) {
+      return messageDate >= startDate;
+    } else if (endDate) {
+      return messageDate <= endDate;
+    }
+    return true;
+  };
+  
+  
 
   const clearFilters = () => {
     setSearchText('');
-    setOpenStatusFilter('Todos');
-    setFollowUpFilters(['Todos', 'Todos', 'Todos', 'Todos']);
-    setFilteredData(filteredData);
+    setStartDate(null);
+    setEndDate(null);
+    const seguimientoData = dataMes.map(item => item.seguimiento);
+    setFilteredData(seguimientoData);
   };
-
   const columns = [
     {
       title: 'Contacto',
@@ -162,7 +184,8 @@ const ContactTable = () => {
   return (
     <>
       <div className="filters">
-        <Search placeholder="Buscar por nombre de contacto" onSearch={handleSearch} value={searchText} onChange={e => setSearchText(e.target.value)} />
+        <Search placeholder="Buscar por nombre de contacto" onSearch={handleSearch} value={searchText} onChange={e => setSearchText(e.target.value)} style={{width:"50%"}}/>
+        <DatePicker.RangePicker value={[startDate, endDate]} onChange={([start, end]) => { handleStartDateChange(start); handleEndDateChange(end); }} />
         <Button type="primary" onClick={clearFilters}>Borrar filtros</Button>
       </div>
       <Table

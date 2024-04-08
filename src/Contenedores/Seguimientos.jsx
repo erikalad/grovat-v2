@@ -3,6 +3,7 @@ import { Table, Tag, Input, Select, Button, DatePicker } from 'antd';
 import './styles.scss';
 import { useSelector } from 'react-redux';
 import Conversaciones from '../Componentes/Conversaciones';
+import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 
 const { Search } = Input;
 
@@ -14,6 +15,8 @@ const ContactTable = () => {
   const [searchText, setSearchText] = useState('');
   const [startDate, setStartDate] = useState(null); // Estado para la fecha de inicio
   const [endDate, setEndDate] = useState(null); // Estado para la fecha de fin
+  const [selectedConversation, setSelectedConversation] = useState(filteredData[0]);
+  
 
 
   useEffect(() => {
@@ -119,25 +122,22 @@ const ContactTable = () => {
   const columns = [
     {
       title: 'Contacto',
-      dataIndex: 'contacto',
       key: 'contacto',
-      render: text => text,
-    },
-    {
-      title: 'Perfil Linkedin',
-      dataIndex: 'link',
-      key: 'link',
-      render: link => <a href={link} target="_blank" rel="noopener noreferrer">Ver perfil</a>,
+      width: "16%",
+      render: (record) => (
+        <a href={record.link} target="_blank" rel="noopener noreferrer">{record.contacto}</a>
+      )
     },
     {
       title: 'Mensaje de Apertura',
       dataIndex: 'mensajeApertura',
       key: 'mensajeApertura',
-      width: '15%',
-      render: ({ enviado, contesto }) => (
+      width:"12.5%",
+      render: ({ enviado, contesto, calendly }) => (
         <div className='tags-seguimientos'>
           {enviado ? <Tag color='green'>Enviado</Tag> : <Tag color='volcano'>Pendiente</Tag>}
-          {contesto ? <Tag color='blue'>Contestó</Tag> : enviado ? <Tag color='default'>No contestó</Tag> : null}
+          {contesto ? <Tag color='blue'>Contestó</Tag> : enviado ? <Tag color='default'><div>No contestó</div></Tag> : null}
+          {calendly ? <Tag color='pink'><div>Calendly<br/>Enviado</div></Tag> : null}  
         </div>
       ),
     },
@@ -146,19 +146,34 @@ const ContactTable = () => {
         title: `Follow Up ${index + 1}`,
         dataIndex: `followUp${index + 1}`,
         key: `followUp${index + 1}`,
-        render: ({ enviado, contesto }, record) => {
+        width:"12.5%",
+        render: ({ enviado, contesto, calendly }, record) => {
           const prevKey = index === 0 ? 'mensajeApertura' : `followUp${index}`;
           const prevEnviado = record[prevKey]?.enviado;
           if (!prevEnviado) return '-';
           return (
             <div className='tags-seguimientos'>
               {enviado ? <Tag color='green'>Enviado</Tag> : <Tag color='volcano'>Pendiente</Tag>}
-              {contesto ? <Tag color='blue'>Contestó</Tag> : enviado ? <Tag color='default'>No contestó</Tag> : null}
+              {contesto ? <Tag color='blue'>Contestó</Tag> : enviado ? <Tag color='default'><div>No contestó</div></Tag> : null}
+              {calendly ? <Tag color='pink'><div>Calendly<br/> Enviado</div></Tag> : null}  
             </div>
           );
         },
       },
     ])),
+    {
+      title: 'Calendly Enviado',
+      dataIndex: 'calendlyEnviado',
+      key: 'calendlyEnviado',
+      filters: [
+        { text: 'Sí', value: true },
+        { text: 'No', value: false }
+      ],
+      onFilter: (value, record) => record.calendlyEnviado === value,
+      render: calendlyEnviado => (
+        calendlyEnviado ? <CheckOutlined style={{ color: 'green' }} /> : <CloseOutlined style={{ color: 'red' }} />
+      ),
+    },
     {
       title: 'Contactar',
       dataIndex: 'contactar',
@@ -181,6 +196,12 @@ const ContactTable = () => {
     }
   ];
 
+  const handleRowClick = (record) => {
+    const matchingItem = dataMes.find(item => item.seguimiento.key === record.key);
+    const conversacion = matchingItem ? matchingItem.conversacion : [];
+    setSelectedConversation(conversacion);
+  };
+
   return (
     <>
       <div className="filters">
@@ -188,16 +209,26 @@ const ContactTable = () => {
         <DatePicker.RangePicker value={[startDate, endDate]} onChange={([start, end]) => { handleStartDateChange(start); handleEndDateChange(end); }} />
         <Button type="primary" onClick={clearFilters}>Borrar filtros</Button>
       </div>
-      <Table
-        columns={columns}
-        dataSource={filteredData}
-        expandable={{
-          expandedRowKeys: expandedRowKeys,
-          onExpandedRowsChange: handleExpandedChange,
-          expandedRowRender: renderExpandedRow
-        }}
-        className='table-prosp'
-      />
+      <div className='contenedor-tabla-mensajes'>
+        <div style={{ width: '75%' }}>
+            <Table
+                columns={columns}
+                dataSource={filteredData}
+                scroll={{ y: 450 }}
+                className='table-prosp'
+                size='small'
+                onRow={(record, rowIndex) => {
+                  return {
+                    onClick: () => handleRowClick(record)
+                  };
+                }}
+
+            />
+        </div>
+        <div style={{ width: '30%' }} className='mensajes-view'>
+          <Conversaciones conversacion={selectedConversation} />
+        </div>
+    </div>
     </>
   );
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from "react-redux";
-import { Tag} from 'antd';
+import { Tag, Empty} from 'antd';
 import './styles.scss'; 
 
 
@@ -23,6 +23,11 @@ export default function Conversaciones({ conversacion }) {
 
     // Variable para almacenar el día del último mensaje mostrado
     let lastDate = '';
+
+     // Verifica si conversacion es null y muestra el componente Empty si es así
+     if (!conversacion) {
+        return <Empty />;
+    }
 
     return (
         <div className="conversaciones-container">

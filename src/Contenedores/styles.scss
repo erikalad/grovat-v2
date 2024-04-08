@@ -16,11 +16,35 @@
     margin-bottom: 0rem;
   }
 }
+.table-prosp{
+  font-size: 10rem;
+}
+.tags-seguimientos .ant-tag {
+  max-width: 150px; // Establece un ancho máximo para los tags
+  overflow: hidden; // Oculta el texto que desborda el ancho máximo
+  text-overflow: ellipsis; // Agrega puntos suspensivos (...) al texto truncado
+  white-space: nowrap; // Evita que el texto se ajuste automáticamente
+}
 
 .filters{
   display: flex;
   margin-bottom: 2rem;
   gap: 2rem;
+}
+
+.mensajes-view {
+  display: flex;
+  width: 30%;
+  height: 550px;
+  border: 0.3px solid rgba(208, 208, 208, 0.592);
+  border-radius: 10px;
+  padding: 1rem 0.5rem;
+  overflow-y: auto; /* Agregar scroll vertical */
+}
+
+.contenedor-tabla-mensajes{
+display: flex;
+gap: 0.5rem;
 }
 
 .subtitulo-reporteria{
@@ -47,10 +71,6 @@
   background-color: #dddddd;
 }
 
-.table-prosp{
-  max-width: max-content;
-  min-width: 90vw;
-}
 
 
 .statidistics-progress {

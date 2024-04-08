@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Tag, Input, Select, Button, DatePicker } from 'antd';
+import { Table, Tag, Input, Button, DatePicker } from 'antd';
 import './styles.scss';
 import { useSelector } from 'react-redux';
 import Conversaciones from '../Componentes/Conversaciones';
-import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import calendly from "./../imagenes/calendly.webp"
 import calendlydis from "./../imagenes/calen-dis.webp"
+import dayjs from 'dayjs';
 
 const { Search } = Input;
 
 const ContactTable = () => {
   const dataMes = useSelector(state=> state.seguimiento)
-  const [expandedRowKeys, setExpandedRowKeys] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [uniqueContactarValues, setUniqueContactarValues] = useState([]);
   const [searchText, setSearchText] = useState('');
-  const [startDate, setStartDate] = useState(null); // Estado para la fecha de inicio
-  const [endDate, setEndDate] = useState(null); // Estado para la fecha de fin
+  const [startDate, setStartDate] =useState(dayjs().startOf('month'));// Estado para la fecha de inicio
+  const [endDate, setEndDate] =useState(dayjs().endOf('month'));  // Estado para la fecha de fin
   const [selectedConversation, setSelectedConversation] = useState(filteredData[0]);
   
 
@@ -27,6 +26,7 @@ const ContactTable = () => {
       setFilteredData(seguimientoData);
       extractUniqueContactarValues(seguimientoData);
     }
+    filterData("",startDate,endDate)
   }, [dataMes]);
   
   const extractUniqueContactarValues = (data) => {
@@ -40,22 +40,6 @@ const ContactTable = () => {
     setUniqueContactarValues(Array.from(uniqueValues));
   };
 
-
-    // Define la función para manejar el cambio de filas expandidas
-    const handleExpandedChange = (expandedRowKeys) => {
-      setExpandedRowKeys(expandedRowKeys);
-    };
-
-    // Define la función para renderizar el contenido de la fila expandida
-    const renderExpandedRow = (record) => {
-      const matchingItem = dataMes.find(item => item.seguimiento.key === record.key);
-      const conversacion = matchingItem ? matchingItem.conversacion : [];
-      return (
-        <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
-                    <Conversaciones conversacion={conversacion} /> 
-        </div>
-      );
-    };
 
   const getColorForDays = (days) => {
     if (days === 'hoy') return 'green'; // Si es "Hoy", color verde
@@ -207,16 +191,16 @@ const ContactTable = () => {
   return (
     <>
       <div className="filters">
-        <Search placeholder="Buscar por nombre de contacto" onSearch={handleSearch} value={searchText} onChange={e => setSearchText(e.target.value)} style={{width:"50%"}}/>
+        <Search placeholder="Buscar por nombre de contacto" onSearch={handleSearch} value={searchText} onChange={e => setSearchText(e.target.value)} className='select-filter'/>
         <DatePicker.RangePicker value={[startDate, endDate]} onChange={([start, end]) => { handleStartDateChange(start); handleEndDateChange(end); }} />
         <Button type="primary" onClick={clearFilters}>Borrar filtros</Button>
       </div>
       <div className='contenedor-tabla-mensajes'>
-        <div style={{ width: '75%' }}>
+        <div className="table-width">
             <Table
                 columns={columns}
                 dataSource={filteredData}
-                scroll={{ y: 450 }}
+                scroll={{ y: 450, x: "95vh" }}
                 className='table-prosp'
                 size='small'
                 onRow={(record, rowIndex) => {
@@ -228,7 +212,7 @@ const ContactTable = () => {
 
             />
         </div>
-        <div style={{ width: '30%' }}>
+        <div className='conver-width'>
           <Conversaciones conversacion={selectedConversation} />
         </div>
     </div>

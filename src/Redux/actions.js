@@ -33,7 +33,8 @@ import {
     EDIT_USUARIO,
     SET_CONEXIONES_ALL,
     SET_FECHAS_FILTROS,
-    SET_MENSAJES_ALL
+    SET_MENSAJES_ALL,
+    ADD_SEGUIMIENTO
   } from './actionTypes';
   
   export const setMensajesData = (mensajes) => ({
@@ -185,6 +186,24 @@ export const logoutUser = (idUsuario, email, user) => {
     }
   };
 };
+
+export const setDataMensBack = (mensajes, nombre) => {
+  return async (dispatch) => {
+    try {
+      // Enviar solicitud POST para desloguear al usuario
+      const response = await axios.post("https://meicanalitycs.onrender.com/mensaje" , {mensajes, nombre})
+      console.log(response)
+      // Verificar si la solicitud fue exitosa
+      if (response.status === 200) {
+        dispatch({ type: ADD_SEGUIMIENTO, payload: response.data });
+      } else {
+        console.error("Error al desloguear al usuario:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error para desloguear al usuario:", error);
+    }
+  }
+}
 
 export const editUser = (campos) => {
   return async (dispatch) => {

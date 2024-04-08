@@ -196,10 +196,8 @@ export default function Filtros({ onFilterByDate, data, fechasReporteria }) {
               ))}
             </div>
           )}
+    </Card>
 
-    
-
-  </Card>
       <Modal
         title="Puestos cualificados"
         open={isModalOpen}

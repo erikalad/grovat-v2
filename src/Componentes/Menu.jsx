@@ -3,7 +3,7 @@ import { BsGraphUp } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { BsUpload } from "react-icons/bs";
 import { Layout, Menu, theme } from "antd";
-import Metricas from "./../Contenedores/Metricas";
+import Seguimientos from "./../Contenedores/Seguimientos";
 import Datos from "./Datos";
 import "./styles.scss";
 import { FloatButton, Tooltip } from "antd";
@@ -16,6 +16,9 @@ import { MdOutlineMailOutline } from "react-icons/md";
 import { CiLogin } from "react-icons/ci";
 import { logoutUser } from "../Redux/actions";
 import { useNavigate } from "react-router-dom";
+import { PiUserListLight } from "react-icons/pi";
+import Metricas from "../Contenedores/Metricas";
+
 
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -98,11 +101,17 @@ export default function MenuDesplegable() {
             <span>Métricas</span>
           </Menu.Item>
 
-          <Menu.Item key="3" icon={<IoSettingsSharp />}>
-            <span>Ajustes</span>
+          <Menu.Item key="3" icon={<PiUserListLight />}>
+            <span>Seguimientos</span>
           </Menu.Item>
 
-          <Menu.Item key="4" icon={<CiLogin/>} onClick={handleLogout}>
+          <Menu.Item key="4" icon={<IoSettingsSharp />}>
+            <span>Ajustes</span>
+          </Menu.Item>
+       
+
+
+          <Menu.Item key="5" icon={<CiLogin/>} onClick={handleLogout}>
             {/* <Link to="/"> */}
               <span>Salir</span>
             {/* </Link> */}
@@ -132,9 +141,11 @@ export default function MenuDesplegable() {
             {page === "1" ? (
               <Datos />
             ) : page === "2" ? (
-              <Metricas />
-            ) : page === "3" ? (
+              <Metricas/>
+            ) : page === "4" ? (
               <Ajustes />
+            ) : page === "3" ? (
+                <Seguimientos />
             ): null
             }
 

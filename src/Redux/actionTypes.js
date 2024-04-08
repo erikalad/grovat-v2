@@ -43,3 +43,6 @@ export const PATCH_FUNCIONALIDAD = "PATCH_FUNCIONALIDAD"
 
 //customizaciones
 export const POST_CUSTOMIZACIONES = 'POST_CUSTOMIZACIONES'
+
+//seguimiento
+export const ADD_SEGUIMIENTO = "ADD_SEGUIMIENTO"

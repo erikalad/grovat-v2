@@ -16,6 +16,42 @@
     margin-bottom: 0rem;
   }
 }
+.table-prosp{
+  font-size: 10rem;
+}
+.tags-seguimientos .ant-tag {
+  max-width: 150px; // Establece un ancho máximo para los tags
+  overflow: hidden; // Oculta el texto que desborda el ancho máximo
+  text-overflow: ellipsis; // Agrega puntos suspensivos (...) al texto truncado
+  white-space: nowrap; // Evita que el texto se ajuste automáticamente
+}
+
+.filters{
+  display: flex;
+  margin-bottom: 2rem;
+  gap: 2rem;
+}
+
+.mensajes-view {
+  display: flex;
+  height: 550px;
+  border: 0.3px solid rgba(208, 208, 208, 0.592);
+  border-radius: 10px;
+  overflow-y: auto; /* Agregar scroll vertical */
+}
+
+.contenedor-tabla-mensajes{
+display: flex;
+gap: 0.5rem;
+}
+
+.img-calen{
+  width: 30%;
+}
+
+.calen-dis{
+  cursor: no-drop;
+}
 
 .subtitulo-reporteria{
   font-size: 20px;
@@ -40,6 +76,7 @@
   padding: 1rem;
   background-color: #dddddd;
 }
+
 
 
 .statidistics-progress {
@@ -72,7 +109,7 @@ box-shadow: 2px 4px 5px -2px rgba(182, 182, 182, 0.75);
 -moz-box-shadow: 2px 4px 5px -2px rgba(182, 182, 182, 0.75);
   padding: 1rem;
   margin-bottom: 1rem;
-} 
+}  
 
 .contenedor-estadisticas-barra {
   display: flex;
@@ -120,10 +157,53 @@ box-shadow: 2px 4px 5px -2px rgba(182, 182, 182, 0.75);
   width: 32%;
 }
 
+.table-width{
+  width: 75%;
+}
+
+.conver-width{
+  width: 30%;
+}
+
+.select-filter{
+  width: 50%;
+}
+
+
+@media (max-width: 1100px) { /* Ajusta este valor según tus necesidades */
+  .table-prosp{
+    overflow-x: auto; /* Oculta el desplazamiento horizontal para pantallas más grandes */
+  }
+}
+
+
 @media (max-width: 1100px) {
   .img-login{
     display: none;
   }
+
+  .select-filter{
+    width: 100%;
+  }
+
+  .filters{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2rem;
+    gap: 2rem;
+  }
+
+  .contenedor-tabla-mensajes{
+    flex-direction: column;
+    }
+
+    .table-width{
+      width: 100%;
+    }
+
+    .conver-width{
+      width: 100%;
+    }
 
   .container-detalles{
     width: 100%;
@@ -153,6 +233,7 @@ box-shadow: 2px 4px 5px -2px rgba(182, 182, 182, 0.75);
 .form-login{
   margin-top: 50%;
 }
+
   
 }
 
@@ -176,4 +257,11 @@ background-color: #25272E;
     font-weight: 200;
     color:rgb(0, 0, 0);
     margin-bottom: 1rem;
+}
+
+.tags-seguimientos{
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: center;
 }

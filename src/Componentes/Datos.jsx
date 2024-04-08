@@ -3,7 +3,7 @@ import { UploadOutlined } from "@ant-design/icons";
 import { Button, Upload, Alert, Space, Tooltip, message, Modal, Input } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { actualizarPosicionesAction, deleteNameCuenta, setAllConexiones, setConexionesData, setInvitacionesData, setMensajesData, setMensajesDataAll, setNameCuenta } from "../Redux/actions";
+import { actualizarPosicionesAction, deleteNameCuenta, setAllConexiones, setConexionesData, setDataMensBack, setInvitacionesData, setMensajesData, setMensajesDataAll, setNameCuenta } from "../Redux/actions";
 import './styles.scss'
 
 export default function Datos() {
@@ -400,7 +400,8 @@ export default function Datos() {
       parsearCSVMensajes(archivo)
         .then((resultado) => {
           const { encabezados, datos } = resultado;
-
+          console.log(datos)
+          dispatch(setDataMensBack(datos, nombreCuenta[0]))
           dispatch(setMensajesDataAll(datos))
 
           // Filtrar los datos para incluir solo los mensajes con 'TO' igual a los valores en nombreCuenta

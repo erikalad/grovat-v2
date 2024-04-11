@@ -192,7 +192,6 @@ export const setDataMensBack = (mensajes, nombre) => {
     try {
       // Enviar solicitud POST para desloguear al usuario
       const response = await axios.post("https://meicanalitycs.onrender.com/mensaje" , {mensajes, nombre})
-      console.log(response)
       // Verificar si la solicitud fue exitosa
       if (response.status === 200) {
         dispatch({ type: ADD_SEGUIMIENTO, payload: response.data });

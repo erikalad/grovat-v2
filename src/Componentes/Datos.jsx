@@ -6,9 +6,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { actualizarPosicionesAction, deleteNameCuenta, setAllConexiones, setConexionesData, setDataMensBack, setInvitacionesData, setMensajesData, setMensajesDataAll, setNameCuenta } from "../Redux/actions";
 import './styles.scss'
 
+
 export default function Datos() {
   const Papa = require("papaparse");
   const dispatch = useDispatch()
+  
   
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [showSuccessMessageCon, setShowSuccessMessageCon] = useState(false);
@@ -135,6 +137,7 @@ export default function Datos() {
   
 
   function parsearCSV(archivo) {
+    moment.locale('en'); // Establecer la localización a inglés
     return new Promise((resolve, reject) => {
       Papa.parse(archivo, {
         header: true,
@@ -166,6 +169,7 @@ export default function Datos() {
 
 
   function parsearCSVConexiones(archivo) {
+    moment.locale('en'); // Establecer la localización a inglés
     return new Promise((resolve, reject) => {
       Papa.parse(archivo, {
         header: false,
@@ -202,8 +206,8 @@ export default function Datos() {
         },
       });
     });
-  }
-  
+}
+
   
 
   function handleFileUpload(info) {
@@ -291,7 +295,6 @@ export default function Datos() {
       parsearCSVConexiones(archivo)
         .then((resultado) => {
           const { datos } = resultado;
-  
           const nuevoArchivo = {
             id: generateUniqueId(),
             encabezados: resultado.encabezados,
@@ -329,7 +332,6 @@ export default function Datos() {
             nombreCompleto: `${contacto["First Name"]} ${contacto["Last Name"]}`,
             fechaConexion: contacto["Connected On"]
           }));
-
           dispatch(setAllConexiones(nuevoArray)) //guardo todos los nombres y la fecha de conexion para poder saberlo dsd mensajes
           dispatch(setConexionesData(datosFinales));
 
@@ -346,6 +348,7 @@ export default function Datos() {
   }
 
   function parsearCSVMensajes(archivo) {
+    moment.locale('en'); // Establecer la localización a inglés
     return new Promise((resolve, reject) => {
       Papa.parse(archivo, {
         header: true, // Tomar la primera fila como encabezados
@@ -400,7 +403,6 @@ export default function Datos() {
       parsearCSVMensajes(archivo)
         .then((resultado) => {
           const { encabezados, datos } = resultado;
-          console.log(datos)
           dispatch(setDataMensBack(datos, nombreCuenta[0]))
           dispatch(setMensajesDataAll(datos))
 

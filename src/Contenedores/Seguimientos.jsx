@@ -6,6 +6,7 @@ import Conversaciones from '../Componentes/Conversaciones';
 import calendly from "./../imagenes/calendly.webp"
 import calendlydis from "./../imagenes/calen-dis.webp"
 import dayjs from 'dayjs';
+import MetricasSeguimientos from './MetricasSeguimientos';
 
 const { Search } = Input;
 
@@ -188,6 +189,7 @@ const ContactTable = () => {
     setSelectedConversation(conversacion);
   };
 
+
   return (
     <>
       <div className="filters">
@@ -195,23 +197,28 @@ const ContactTable = () => {
         <DatePicker.RangePicker value={[startDate, endDate]} onChange={([start, end]) => { handleStartDateChange(start); handleEndDateChange(end); }} />
         <Button type="primary" onClick={clearFilters}>Borrar filtros</Button>
       </div>
+      <div>
+          <MetricasSeguimientos data={filteredData}/>
+        </div>
       <div className='contenedor-tabla-mensajes'>
         <div className="table-width">
-            <Table
-                columns={columns}
-                dataSource={filteredData}
-                scroll={{ y: 450, x: "95vh" }}
-                className='table-prosp'
-                size='small'
-                onRow={(record, rowIndex) => {
-                  return {
-                    onClick: () => handleRowClick(record),
-                    style: { cursor: 'pointer' } // Aplica el estilo del cursor aquí
-                  };
-                }}
-
-            />
+        <Table
+          bordered
+          columns={columns}
+          dataSource={filteredData}
+          scroll={{ y: 450, x: "95vh" }}
+          className='table-prosp'
+          size='small'
+          onRow={(record, rowIndex) => ({
+            onClick: () => handleRowClick(record),
+            style: { cursor: 'pointer' } // Aplica el estilo del cursor aquí
+          })}
+          pagination={{
+            showTotal: (total, range) => `${range[0]}-${range[1]} de ${total} conversaciones totales`
+          }}
+        />
         </div>
+  
         <div className='conver-width'>
           <Conversaciones conversacion={selectedConversation} />
         </div>

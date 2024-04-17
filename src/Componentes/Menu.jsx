@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { BsGraphUp } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { BsUpload } from "react-icons/bs";
-import { Layout, Menu, theme } from "antd";
+import { Card, Layout, Menu, theme } from "antd";
 import Seguimientos from "./../Contenedores/Seguimientos";
 import Datos from "./Datos";
 import "./styles.scss";
@@ -17,6 +17,7 @@ import { CiLogin } from "react-icons/ci";
 import { logoutUser } from "../Redux/actions";
 import { useNavigate } from "react-router-dom";
 import { PiUserListLight } from "react-icons/pi";
+import { PiUserThin } from "react-icons/pi";
 import Metricas from "../Contenedores/Metricas";
 
 
@@ -84,7 +85,7 @@ export default function MenuDesplegable() {
       >
         <div className="nav">
           <div className="user">
-            Bienvenid@ {nameEmpresa} / {userLogeado.nombre}
+          <PiUserThin /> {userLogeado.nombre} - {nameEmpresa}
           </div>
         </div>
         <Menu

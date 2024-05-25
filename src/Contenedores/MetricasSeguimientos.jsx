@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Progress, Table, Card, Tag, Statistic } from "antd";
+import { Progress, Card, Tag, Statistic } from "antd";
 import { useSelector } from "react-redux";
 import { Column, Pie } from "@ant-design/plots";
-import calendly from "./../imagenes/calendly.webp"
-import conversaciones from './../imagenes/conversaciones.webp'
-import respuestas from './../imagenes/respuestas.webp'
+import calendly from "./../imagenes/calendly.webp";
+import conversaciones from "./../imagenes/conversaciones.webp";
+import respuestas from "./../imagenes/respuestas.webp";
 import "./styles.scss";
 
 export default function MetricasSeguimientos({ data }) {
@@ -13,6 +13,7 @@ export default function MetricasSeguimientos({ data }) {
   const [porcentajeFollowUp2, setPorcentajeFollowUp2] = useState(0);
   const [porcentajeFollowUp3, setPorcentajeFollowUp3] = useState(0);
   const [porcentajeFollowUp4, setPorcentajeFollowUp4] = useState(0);
+  const [porcentajePropuesta, setPorcentajePropuesta] = useState(0);
   const [calendlyEnviadoCount, setCalendlyEnviadoCount] = useState(0);
   const [procesoConMasCalendly, setProcesoConMasCalendly] = useState("");
   const [conversacionesAtrasadas, setConversacionesAtrasadas] = useState(0);
@@ -25,6 +26,10 @@ export default function MetricasSeguimientos({ data }) {
   const [respuestasFollowUp2, setRespuestasFollowUp2] = useState(0);
   const [respuestasFollowUp3, setRespuestasFollowUp3] = useState(0);
   const [respuestasFollowUp4, setRespuestasFollowUp4] = useState(0);
+  const [respuestasPropuesta, setRespuestasPropuesta] = useState(0);
+
+  const [totalPropuestas, setTotalPropuestas] = useState(0);
+  const [porcentajePropuestas, setPorcentajePropuestas] = useState(0);
 
   const colorPrincipal = useSelector(
     (state) =>
@@ -48,6 +53,7 @@ export default function MetricasSeguimientos({ data }) {
     let respuestasFollowUp2 = 0;
     let respuestasFollowUp3 = 0;
     let respuestasFollowUp4 = 0;
+    let respuestasPropuesta = 0;
     let calendlyEnviadoCount = 0;
     let procesoConMasCalendlyCount = 0;
     let procesoConMasCalendly = "";
@@ -55,13 +61,16 @@ export default function MetricasSeguimientos({ data }) {
     let conversacionesHoy = 0;
     let conversacionesEnUnDia = 0;
     let conversacionesEnDosDias = 0;
+    let totalPropuestas = 0;
+    let totalRespuestasPropuestas = 0;
 
     data.forEach((item) => {
-      if (item.mensajeApertura.contesto) respuestasApertura++;
-      if (item.followUp1.contesto) respuestasFollowUp1++;
-      if (item.followUp2.contesto) respuestasFollowUp2++;
-      if (item.followUp3.contesto) respuestasFollowUp3++;
-      if (item.followUp4.contesto) respuestasFollowUp4++;
+      if (item.mensajeApertura?.contesto) respuestasApertura++;
+      if (item.followUp1?.contesto) respuestasFollowUp1++;
+      if (item.followUp2?.contesto) respuestasFollowUp2++;
+      if (item.followUp3?.contesto) respuestasFollowUp3++;
+      if (item.followUp4?.contesto) respuestasFollowUp4++;
+      if (item.propuesta?.contesto) respuestasPropuesta++;
 
       if (item.calendlyEnviado) calendlyEnviadoCount++;
 
@@ -96,14 +105,33 @@ export default function MetricasSeguimientos({ data }) {
         }
       }
 
-      if (item.contactar === "atrasado") {
+      if (item.contactar?.toLowerCase() === "atrasado") {
         conversacionesAtrasadas++;
-      } else if (item.contactar === "hoy") {
+      } else if (item.contactar?.toLowerCase() === "hoy") {
         conversacionesHoy++;
       } else if (item.contactar === "1") {
         conversacionesEnUnDia++;
       } else if (item.contactar === "2") {
         conversacionesEnDosDias++;
+      }
+
+      if (
+        item.mensajeApertura?.propuesta ||
+        item.followUp1?.propuesta ||
+        item.followUp2?.propuesta ||
+        item.followUp3?.propuesta ||
+        item.followUp4?.propuesta
+      ) {
+        totalPropuestas++;
+        if (
+          item.mensajeApertura?.contesto ||
+          item.followUp1?.contesto ||
+          item.followUp2?.contesto ||
+          item.followUp3?.contesto ||
+          item.followUp4?.contesto
+        ) {
+          totalRespuestasPropuestas++;
+        }
       }
     });
 
@@ -115,6 +143,7 @@ export default function MetricasSeguimientos({ data }) {
     setPorcentajeFollowUp2((respuestasFollowUp2 / totalMensajes) * 100);
     setPorcentajeFollowUp3((respuestasFollowUp3 / totalMensajes) * 100);
     setPorcentajeFollowUp4((respuestasFollowUp4 / totalMensajes) * 100);
+    setPorcentajePropuesta((respuestasPropuesta / totalMensajes) * 100);
     setCalendlyEnviadoCount(calendlyEnviadoCount);
     setProcesoConMasCalendly(procesoConMasCalendly);
     setConversacionesAtrasadas(conversacionesAtrasadas);
@@ -127,6 +156,24 @@ export default function MetricasSeguimientos({ data }) {
     setRespuestasFollowUp2(respuestasFollowUp2);
     setRespuestasFollowUp3(respuestasFollowUp3);
     setRespuestasFollowUp4(respuestasFollowUp4);
+    setRespuestasPropuesta(respuestasPropuesta);
+
+    setTotalPropuestas(totalPropuestas);
+    if (totalPropuestas > 0) {
+      setPorcentajePropuestas(
+        (totalRespuestasPropuestas / totalPropuestas) * 100
+      );
+    } else {
+      setPorcentajePropuestas(0);
+    }
+
+    console.log({
+      totalPropuestas,
+      porcentajePropuestas:
+        totalPropuestas > 0
+          ? (totalRespuestasPropuestas / totalPropuestas) * 100
+          : 0,
+    });
   }, [data]);
 
   const columns = [
@@ -165,21 +212,29 @@ export default function MetricasSeguimientos({ data }) {
     },
   ];
 
-  const config = {
+  const configConversaciones = {
     appendPadding: 10,
     data: [
       {
         type: "Atrasadas",
         value: (conversacionesAtrasadas / data.length) * 100,
       },
-      { type: "Al Día", value: porcentajeAlDia },
+      {
+        type: "Al Día",
+        value:
+          ((conversacionesHoy +
+            conversacionesEnUnDia +
+            conversacionesEnDosDias) /
+            data.length) *
+          100,
+      },
     ],
     angleField: "value",
     colorField: "type",
     radius: 0.8,
     label: {
       type: "outer",
-      content: "{percentage}",
+      content: (data) => `${data.value.toFixed(2)}%`, // Asegurar que las etiquetas muestran los valores correctos
     },
     interactions: [{ type: "pie-legend-active" }, { type: "element-active" }],
     tooltip: {
@@ -194,7 +249,39 @@ export default function MetricasSeguimientos({ data }) {
     },
   };
 
-  const configBarra = {
+  const configPropuestas = {
+    appendPadding: 10,
+    data: [{ proceso: "Propuesta", porcentaje: porcentajePropuestas }],
+    xField: "proceso",
+    yField: "porcentaje",
+    yAxis: {
+      label: (datum) => {
+        return {
+          name: datum.proceso,
+          value: `${datum.porcentaje.toFixed(
+            2
+          )}% - ${totalPropuestas} propuestas`,
+        };
+      },
+    },
+    tooltip: {
+      formatter: (datum) => {
+        return {
+          name: datum.proceso,
+          value: `${datum.porcentaje.toFixed(
+            2
+          )}% - ${totalPropuestas} propuestas`,
+        };
+      },
+    },
+
+    meta: {
+      proceso: { alias: "Proceso" },
+      porcentaje: { alias: "Porcentaje" },
+    },
+  };
+
+  const configRespuestas = {
     appendPadding: 10,
     data: [
       { proceso: "MA", porcentaje: porcentajeApertura },
@@ -251,38 +338,44 @@ export default function MetricasSeguimientos({ data }) {
     <div className="contenedor-metricas-seguimientos">
       <Card
         title={
-            <span className="card-title-metricas">
-            <img className='calendly-img' src={conversaciones}/> Conversaciones
+          <span className="card-title-metricas">
+            <img className="calendly-img" src={conversaciones} /> Conversaciones
           </span>
         }
         className="carta-metricas-seguimiento"
         bordered={false}
       >
-        <Pie {...config} height={200} />
+        <Pie {...configConversaciones} height={200} />
       </Card>
 
-      <Table
-        columns={columns}
-        dataSource={dataSource}
-        pagination={false}
-        bordered
-      />
-
-      <Card
-        title={
-            <span className="card-title-metricas">
-            <img className='calendly-img' src={respuestas}/> Respuestas
-          </span>
-        }
-        className="carta-metricas-seguimiento"
-        bordered={false}
-      >
-        <Column {...configBarra} height={200} />
-      </Card>
       <Card
         title={
           <span className="card-title-metricas">
-            <img className='calendly-img' src={calendly}/> Calendly
+            <img className="calendly-img" src={respuestas} /> Propuestas
+          </span>
+        }
+        className="carta-metricas-seguimiento"
+        bordered={false}
+      >
+        <Column {...configPropuestas} height={200} />
+      </Card>
+
+      <Card
+        title={
+          <span className="card-title-metricas">
+            <img className="calendly-img" src={respuestas} /> Respuestas
+          </span>
+        }
+        className="carta-metricas-seguimiento"
+        bordered={false}
+      >
+        <Column {...configRespuestas} height={200} />
+      </Card>
+
+      <Card
+        title={
+          <span className="card-title-metricas">
+            <img className="calendly-img" src={calendly} /> Calendly
           </span>
         }
         className="carta-metricas-seguimiento"

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Progress, Card, Tag, Statistic } from "antd";
 import { useSelector } from "react-redux";
-import { Column, Pie } from "@ant-design/plots";
+import { Column } from "@ant-design/plots";
+import GraficoPie from "./GraficoPie";
 import calendly from "./../imagenes/calendly.webp";
 import conversaciones from "./../imagenes/conversaciones.webp";
 import respuestas from "./../imagenes/respuestas.webp";
@@ -27,9 +28,10 @@ export default function MetricasSeguimientos({ data }) {
   const [respuestasFollowUp3, setRespuestasFollowUp3] = useState(0);
   const [respuestasFollowUp4, setRespuestasFollowUp4] = useState(0);
   const [respuestasPropuesta, setRespuestasPropuesta] = useState(0);
-
   const [totalPropuestas, setTotalPropuestas] = useState(0);
   const [porcentajePropuestas, setPorcentajePropuestas] = useState(0);
+  const [noInteresados, setNoInteresados] = useState(0);
+  const [conversacionesFinalizadas, setConversacionesFinalizadas] = useState(0);
 
   const colorPrincipal = useSelector(
     (state) =>
@@ -63,6 +65,8 @@ export default function MetricasSeguimientos({ data }) {
     let conversacionesEnDosDias = 0;
     let totalPropuestas = 0;
     let totalRespuestasPropuestas = 0;
+    let noInteresados = 0;
+    let conversacionesFinalizadas = 0;
 
     data.forEach((item) => {
       if (item.mensajeApertura?.contesto) respuestasApertura++;
@@ -115,6 +119,14 @@ export default function MetricasSeguimientos({ data }) {
         conversacionesEnDosDias++;
       }
 
+      if (item.contactar?.toLowerCase() === "no interesado") {
+        noInteresados++;
+      }
+
+      if (item.contactar?.toLowerCase() === "finalizado") {
+        conversacionesFinalizadas++;
+      }
+
       if (
         item.mensajeApertura?.propuesta ||
         item.followUp1?.propuesta ||
@@ -136,7 +148,8 @@ export default function MetricasSeguimientos({ data }) {
     });
 
     const totalMensajes = data.length;
-    const conversacionesAlDia = totalMensajes - conversacionesAtrasadas;
+    const conversacionesAlDia =
+      conversacionesHoy + conversacionesEnUnDia + conversacionesEnDosDias;
 
     setPorcentajeApertura((respuestasApertura / totalMensajes) * 100);
     setPorcentajeFollowUp1((respuestasFollowUp1 / totalMensajes) * 100);
@@ -157,6 +170,8 @@ export default function MetricasSeguimientos({ data }) {
     setRespuestasFollowUp3(respuestasFollowUp3);
     setRespuestasFollowUp4(respuestasFollowUp4);
     setRespuestasPropuesta(respuestasPropuesta);
+    setNoInteresados(noInteresados);
+    setConversacionesFinalizadas(conversacionesFinalizadas);
 
     setTotalPropuestas(totalPropuestas);
     if (totalPropuestas > 0) {
@@ -212,41 +227,14 @@ export default function MetricasSeguimientos({ data }) {
     },
   ];
 
-  const configConversaciones = {
-    appendPadding: 10,
-    data: [
-      {
-        type: "Atrasadas",
-        value: (conversacionesAtrasadas / data.length) * 100,
-      },
-      {
-        type: "Al Día",
-        value:
-          ((conversacionesHoy +
-            conversacionesEnUnDia +
-            conversacionesEnDosDias) /
-            data.length) *
-          100,
-      },
-    ],
-    angleField: "value",
-    colorField: "type",
-    radius: 0.8,
-    label: {
-      type: "outer",
-      content: (data) => `${data.value.toFixed(2)}%`, // Asegurar que las etiquetas muestran los valores correctos
-    },
-    interactions: [{ type: "pie-legend-active" }, { type: "element-active" }],
-    tooltip: {
-      formatter: (datum) => ({
-        name: datum.type,
-        value: `${datum.value.toFixed(2)}%`, // Formatear el valor con solo dos decimales
-      }),
-    },
-    legend: {
-      layout: "horizontal", // Establecer el diseño horizontal
-      position: "bottom", // Colocar la leyenda debajo del gráfico
-    },
+  const pieData = {
+    totalMensajes: data.length,
+    conversacionesAtrasadas,
+    conversacionesHoy,
+    conversacionesEnUnDia,
+    conversacionesEnDosDias,
+    conversacionesFinalizadas,
+    noInteresados,
   };
 
   const configPropuestas = {
@@ -345,7 +333,7 @@ export default function MetricasSeguimientos({ data }) {
         className="carta-metricas-seguimiento"
         bordered={false}
       >
-        <Pie {...configConversaciones} height={200} />
+        <GraficoPie data={pieData} />
       </Card>
 
       <Card

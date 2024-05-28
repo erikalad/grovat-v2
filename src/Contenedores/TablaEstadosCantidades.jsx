@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table } from "antd";
+import { Table, Row, Col } from "antd";
 
 const TablaEstadosCantidades = ({ data }) => {
   const [conversacionesHoy, setConversacionesHoy] = useState(0);
@@ -10,7 +10,8 @@ const TablaEstadosCantidades = ({ data }) => {
   const [propuestasEnviadas, setPropuestasEnviadas] = useState(0);
   const [calendlysEnviados, setCalendlysEnviados] = useState(0);
   const [noInteresados, setNoInteresados] = useState(0);
-  const [sinPropuesta, setSinPropuesta] = useState(0); // Estado para "Sin propuesta"
+  const [sinPropuesta, setSinPropuesta] = useState(0);
+  const [noInteresadosPropuesta, setNoInteresadosPropuesta] = useState(0);
   const [totalConversaciones, setTotalConversaciones] = useState(0);
 
   useEffect(() => {
@@ -51,6 +52,19 @@ const TablaEstadosCantidades = ({ data }) => {
         !item.followUp3?.propuesta &&
         !item.followUp4?.propuesta
     ).length;
+    const noInteresadosPropuestaCount = data?.filter(
+      (item) =>
+        (item.mensajeApertura?.propuesta ||
+          item.followUp1?.propuesta ||
+          item.followUp2?.propuesta ||
+          item.followUp3?.propuesta ||
+          item.followUp4?.propuesta) &&
+        (item.mensajeApertura?.noInteresado ||
+          item.followUp1?.noInteresado ||
+          item.followUp2?.noInteresado ||
+          item.followUp3?.noInteresado ||
+          item.followUp4?.noInteresado)
+    ).length;
 
     setConversacionesHoy(hoy);
     setConversacionesManana(manana);
@@ -60,7 +74,8 @@ const TablaEstadosCantidades = ({ data }) => {
     setPropuestasEnviadas(propuestas);
     setCalendlysEnviados(calendlys);
     setNoInteresados(noInteresadoCount);
-    setSinPropuesta(sinPropuestaCount); // Actualizar estado "Sin propuesta"
+    setSinPropuesta(sinPropuestaCount);
+    setNoInteresadosPropuesta(noInteresadosPropuestaCount);
     setTotalConversaciones(total);
   }, [data]);
 
@@ -83,7 +98,7 @@ const TablaEstadosCantidades = ({ data }) => {
     },
   ];
 
-  const dataSource = [
+  const dataSourceEstado = [
     {
       key: "1",
       estado: "Hoy",
@@ -104,51 +119,77 @@ const TablaEstadosCantidades = ({ data }) => {
     },
     {
       key: "4",
+      estado: "Conversaciones al Día",
+      cantidad:
+        conversacionesHoy + conversacionesManana + conversacionesEnDosDias,
+      porcentaje:
+        ((conversacionesHoy + conversacionesManana + conversacionesEnDosDias) /
+          totalConversaciones) *
+        100,
+    },
+    {
+      key: "5",
       estado: "Atrasadas",
       cantidad: conversacionesAtrasadas,
       porcentaje: (conversacionesAtrasadas / totalConversaciones) * 100,
     },
     {
-      key: "5",
+      key: "6",
       estado: "Finalizadas",
       cantidad: finalizadas,
       porcentaje: (finalizadas / totalConversaciones) * 100,
     },
     {
-      key: "6",
+      key: "7",
+      estado: "No Interesados",
+      cantidad: noInteresados,
+      porcentaje: (noInteresados / totalConversaciones) * 100,
+    },
+  ];
+
+  const dataSourcePropuestas = [
+    {
+      key: "1",
       estado: "Propuestas Enviadas",
       cantidad: propuestasEnviadas,
       porcentaje: (propuestasEnviadas / totalConversaciones) * 100,
     },
     {
-      key: "7",
-      estado: "Calendlys Enviados",
-      cantidad: calendlysEnviados,
-      porcentaje: (calendlysEnviados / totalConversaciones) * 100,
-    },
-    {
-      key: "8",
-      estado: "No Interesados",
-      cantidad: noInteresados,
-      porcentaje: (noInteresados / totalConversaciones) * 100,
-    },
-    {
-      key: "9",
+      key: "2",
       estado: "Sin Propuesta",
       cantidad: sinPropuesta,
       porcentaje: (sinPropuesta / totalConversaciones) * 100,
+    },
+    {
+      key: "3",
+      estado: "Propuesta enviada - No interesado",
+      cantidad: noInteresadosPropuesta,
+      porcentaje: (noInteresadosPropuesta / totalConversaciones) * 100,
     },
   ];
 
   return (
     <div style={{ width: "100%" }}>
-      <Table
-        columns={columns}
-        dataSource={dataSource}
-        pagination={false}
-        bordered
-        style={{ width: "100%" }}
-      />
+      <Row gutter={16}>
+        <Col span={12}>
+          <h3>Estado de Conversaciones</h3>
+          <Table
+            columns={columns}
+            dataSource={dataSourceEstado}
+            pagination={false}
+            bordered
+          />
+        </Col>
+        <Col span={12}>
+          <h3>Detalles de Propuestas</h3>
+          <Table
+            columns={columns}
+            dataSource={dataSourcePropuestas}
+            pagination={false}
+            bordered
+          />
+        </Col>
+      </Row>
     </div>
   );
 };

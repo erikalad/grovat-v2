@@ -27,8 +27,11 @@ const ContactTable = () => {
       setFilteredData(seguimientoData);
       extractUniqueContactarValues(seguimientoData);
     }
-    filterData("", startDate, endDate);
   }, [dataMes]);
+
+  useEffect(() => {
+    filterData(searchText, startDate, endDate);
+  }, [searchText, startDate, endDate]);
 
   const extractUniqueContactarValues = (data) => {
     const uniqueValues = new Set([]);
@@ -79,17 +82,14 @@ const ContactTable = () => {
 
   const handleSearch = (searchText) => {
     setSearchText(searchText);
-    filterData(searchText, startDate, endDate);
   };
 
   const handleStartDateChange = (date) => {
     setStartDate(date);
-    filterData(searchText, date, endDate);
   };
 
   const handleEndDateChange = (date) => {
     setEndDate(date);
-    filterData(searchText, startDate, date);
   };
 
   const filterData = (searchText, startDate, endDate) => {
@@ -102,12 +102,12 @@ const ContactTable = () => {
           seguimiento.contacto
             .toLowerCase()
             .includes(searchText.toLowerCase()));
-      const startDateMatch =
-        !startDate ||
+      const dateMatch =
+        item.conversacion &&
         item.conversacion.some((message) =>
           isDateInRange(parseDate(message.DATE.DATE), startDate, endDate)
         );
-      return searchTextMatch && startDateMatch;
+      return searchTextMatch && dateMatch;
     });
 
     const seguimientoData = filtered.map((item) => item.seguimiento || {});
@@ -133,8 +133,8 @@ const ContactTable = () => {
 
   const clearFilters = () => {
     setSearchText("");
-    setStartDate(null);
-    setEndDate(null);
+    setStartDate(dayjs().startOf("month"));
+    setEndDate(dayjs().endOf("month"));
     const seguimientoData = dataMes.map((item) => item.seguimiento || {});
     setFilteredData(seguimientoData);
   };

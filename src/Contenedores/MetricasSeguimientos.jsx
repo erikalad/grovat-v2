@@ -8,7 +8,7 @@ import conversaciones from "./../imagenes/conversaciones.webp";
 import respuestas from "./../imagenes/respuestas.webp";
 import "./styles.scss";
 
-export default function MetricasSeguimientos({ data }) {
+export default function MetricasSeguimientos({ data, setStateDescarga }) {
   const [porcentajeApertura, setPorcentajeApertura] = useState(0);
   const [porcentajeFollowUp1, setPorcentajeFollowUp1] = useState(0);
   const [porcentajeFollowUp2, setPorcentajeFollowUp2] = useState(0);
@@ -182,50 +182,15 @@ export default function MetricasSeguimientos({ data }) {
       setPorcentajePropuestas(0);
     }
 
-    console.log({
-      totalPropuestas,
-      porcentajePropuestas:
-        totalPropuestas > 0
-          ? (totalRespuestasPropuestas / totalPropuestas) * 100
-          : 0,
-    });
+    // console.log({
+    //   totalPropuestas,
+    //   porcentajePropuestas:
+    //     totalPropuestas > 0
+    //       ? (totalRespuestasPropuestas / totalPropuestas) * 100
+    //       : 0,
+    // });
   }, [data]);
 
-  const columns = [
-    {
-      title: "Estado",
-      dataIndex: "estado",
-      key: "estado",
-    },
-    {
-      title: "Cantidad",
-      dataIndex: "cantidad",
-      key: "cantidad",
-    },
-  ];
-
-  const dataSource = [
-    {
-      key: "1",
-      estado: "Hoy",
-      cantidad: conversacionesHoy,
-    },
-    {
-      key: "2",
-      estado: "En 1 día",
-      cantidad: conversacionesEnUnDia,
-    },
-    {
-      key: "3",
-      estado: "En 2 días",
-      cantidad: conversacionesEnDosDias,
-    },
-    {
-      key: "4",
-      estado: "Atrasadas",
-      cantidad: conversacionesAtrasadas,
-    },
-  ];
 
   const pieData = {
     totalMensajes: data.length,
@@ -321,6 +286,10 @@ export default function MetricasSeguimientos({ data }) {
       porcentaje: { alias: "Porcentaje" },
     },
   };
+
+  useEffect(()=>{
+    setStateDescarga([data.length,calendlyEnviadoCount,totalPropuestas,porcentajePropuestas],"Metricas")
+  },[data,porcentajeApertura])
 
   return (
     <div className="contenedor-metricas-seguimientos">

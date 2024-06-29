@@ -742,7 +742,7 @@ const filteredColumnsMes = columnsMes.filter(
           conexiones={datosFiltradoCon}
         />
       </div>
-      <div className="page-break">
+      <div className="page-break"  style={{display: !fechasReporteria ? "flex" : "none"}}>
         <TreeMapComponent data={datosFiltradoCon} />
       </div>
     </>

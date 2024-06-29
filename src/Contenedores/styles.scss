@@ -1,4 +1,6 @@
 @import "./../App.scss";
+$color-principal: var(--color-principal);
+$color-secundario: var(--color-secundario);
 
 .reporteria-metricas {
   background-color: white;
@@ -138,15 +140,17 @@
   gap: 0.5rem;
 }
 
+
+
 .calendlyenviado {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+  // margin-top: 1rem;
+  // margin-bottom: 1rem;
   color: #00000073;
   font-size: 14px;
 }
 
 .tag-followup {
-  font-size: 16px;
+  font-size: 15px;
   padding: 0.5rem;
   font-family: "Montserrat";
 }
@@ -198,11 +202,11 @@
 }
 
 .table-width {
-  width: 75%;
+  width: 77%;
 }
 
 .conver-width {
-  width: 30%;
+  width: 28%;
   height: 550px;
 }
 
@@ -304,4 +308,8 @@
   flex-direction: column;
   gap: 0.5rem;
   text-align: center;
+}
+
+.btn-descargar-info{
+  background-color: $color-secundario;
 }

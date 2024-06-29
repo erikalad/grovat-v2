@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Table, Row, Col } from "antd";
 import { Pie } from "@ant-design/plots";
 
-const TablaEstadosCantidades = ({ data }) => {
+const TablaEstadosCantidades = ({ data, setStateDescarga }) => {
   const [conversacionesHoy, setConversacionesHoy] = useState(0);
   const [conversacionesManana, setConversacionesManana] = useState(0);
   const [conversacionesEnDosDias, setConversacionesEnDosDias] = useState(0);
@@ -321,6 +321,10 @@ const TablaEstadosCantidades = ({ data }) => {
       porcentaje: (calendlysEnviados / totalConversaciones) * 100,
     },
   ];
+
+  useEffect(()=>{
+    setStateDescarga([dataSourceMetrics,dataSourcePropuestas,dataSourceEstado], "Tablas")
+  },[data,totalConversaciones])
 
   return (
     <div style={{ width: "100%" }}>

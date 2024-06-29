@@ -212,7 +212,7 @@ export const setDataMensBack = (mensajes, nombre) => {
         { mensajes, nombre }
       );
       // Verificar si la solicitud fue exitosa
-      console.log("data msj del back", response);
+      // console.log("data msj del back", response);
       if (response.status === 200) {
         dispatch({ type: ADD_SEGUIMIENTO, payload: response.data });
       } else {

@@ -8,10 +8,12 @@ import calendlydis from "./../imagenes/calen-dis.webp";
 import dayjs from "dayjs";
 import MetricasSeguimientos from "./MetricasSeguimientos";
 import TablaEstadosCantidades from "./TablaEstadosCantidades";
+import * as XLSX from 'xlsx';
 
 const { Search } = Input;
 
 const ContactTable = () => {
+  const nombreCuenta = useSelector((state) => state.nombreCuenta);
   const dataMes = useSelector((state) => state.seguimiento);
   const [filteredData, setFilteredData] = useState([]);
   const [uniqueContactarValues, setUniqueContactarValues] = useState([]);
@@ -20,6 +22,10 @@ const ContactTable = () => {
   const [endDate, setEndDate] = useState(dayjs().endOf("month"));
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [selectedRowKey, setSelectedRowKey] = useState(null);
+  const [dataDescarga, setDataDescarga] = useState({
+    tablas:[],
+    metricas:[]
+  })
 
   useEffect(() => {
     if (dataMes && dataMes.length > 0) {
@@ -330,7 +336,11 @@ const ContactTable = () => {
           displayText = daysLeft;
         }
         const color = getColorForDays(daysLeft);
-        return <Tag color={color}>{displayText}</Tag>;
+        return (
+          <div  className="tags-seguimientos">
+        <Tag color={color}>{displayText}</Tag>
+        </div>
+        )
       },
     },
   ];
@@ -342,6 +352,64 @@ const ContactTable = () => {
     const conversacion = matchingItem ? matchingItem.conversacion : [];
     setSelectedConversation(conversacion);
     setSelectedRowKey(record.key);
+  };
+
+  const setStateDescarga = (data, tipo) => {
+    setDataDescarga((prevState) => {
+      if (tipo === "Metricas") {
+        return {
+          ...prevState,
+          metricas: data,
+        };
+      } else if (tipo === "Tablas") {
+        return {
+          ...prevState,
+          tablas: data,
+        };
+      }
+      return prevState;
+    });
+  };
+  
+
+  const descargarExcelSeguimiento = () => {
+  
+    // Preparar los datos para la hoja
+    const sheetData = [
+      {
+        Usuario: nombreCuenta[0],
+        MA: `${dataDescarga.tablas[0][0].porcentaje.toFixed(2)}%`,
+        F1: `${dataDescarga.tablas[0][1].porcentaje.toFixed(2)}%`,
+        F2: `${dataDescarga.tablas[0][2].porcentaje.toFixed(2)}%`,
+        F3: `${dataDescarga.tablas[0][3].porcentaje.toFixed(2)}%`,
+        F4: `${dataDescarga.tablas[0][4].porcentaje.toFixed(2)}%`,
+        cantidadConversaciones: dataDescarga.metricas[0],
+        cantidadCalendlys: dataDescarga.tablas[0][6].cantidad,
+        cantidadPropuesta: dataDescarga.metricas[2],
+        "% propuesta": `${dataDescarga.tablas[1][0].porcentaje.toFixed(2)}%`,
+        "% tasa respuesta propuesta": `${dataDescarga.metricas[3].toFixed(2)}%`,
+        cantidadNoInteresados: dataDescarga.tablas[1][2].cantidad,
+        "% propuesta enviada - no interesado": `${dataDescarga.tablas[1][2].porcentaje.toFixed(2)}%`,
+        finalizadas: dataDescarga.tablas[2][5].cantidad,
+        "% finalizadas": `${dataDescarga.tablas[2][5].porcentaje.toFixed(2)}%`,
+        atrasadas: dataDescarga.tablas[2][4].cantidad,
+        "% atrasadas": `${dataDescarga.tablas[2][4].porcentaje.toFixed(2)}%`,
+        "sin propuesta": dataDescarga.tablas[1][1].cantidad,
+        "% sin propuesta": `${dataDescarga.tablas[1][1].porcentaje.toFixed(2)}%`
+      }
+    ];
+    
+  
+    // Crear la hoja de cálculo
+    const worksheet = XLSX.utils.json_to_sheet(sheetData);
+  
+    // Crear el libro de trabajo
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Seguimiento');
+    const today = new Date().toLocaleDateString('es-AR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-');
+
+    // Descargar el archivo Excel
+    XLSX.writeFile(workbook, `Métricas_${nombreCuenta[0]}_${today}.xlsx`);
   };
 
   return (
@@ -364,9 +432,12 @@ const ContactTable = () => {
         <Button type="primary" onClick={clearFilters}>
           Borrar filtros
         </Button>
+        <Button type="primary" className="btn-descargar-info" onClick={descargarExcelSeguimiento}>
+          Descargar Información
+        </Button>
       </div>
       <div>
-        <MetricasSeguimientos data={filteredData} />
+        <MetricasSeguimientos data={filteredData} setStateDescarga={setStateDescarga}/>
       </div>
       <div className="contenedor-tabla-mensajes">
         <div className="table-width">
@@ -394,7 +465,7 @@ const ContactTable = () => {
           <Conversaciones conversacion={selectedConversation} />
         </div>
       </div>
-      <TablaEstadosCantidades data={filteredData} />
+      <TablaEstadosCantidades data={filteredData} setStateDescarga={setStateDescarga}/>
     </>
   );
 };
